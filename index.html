@@ -10,25 +10,60 @@
         a { text-decoration: none; color: inherit; }
         
         /* APKMirror Header Style */
-        header { background: #ff8400; padding: 15px; display: flex; align-items: center; color: white; position: sticky; top: 0; z-index: 100;}
-        .logo { font-size: 20px; font-weight: bold; flex-grow: 1; }
+        header { 
+            background: #ff8400; 
+            padding: 10px 15px; 
+            display: flex; 
+            align-items: center; 
+            color: white; 
+            position: sticky; 
+            top: 0; 
+            z-index: 100;
+            gap: 15px;
+        }
+        .logo { font-size: 20px; font-weight: bold; white-space: nowrap; }
         
+        /* Suchfeld Styling */
+        .search-container {
+            flex-grow: 1;
+            display: flex;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            padding: 5px 10px;
+            align-items: center;
+        }
+        .search-container input {
+            background: transparent;
+            border: none;
+            color: white;
+            padding: 5px;
+            width: 100%;
+            outline: none;
+            font-size: 16px;
+        }
+        .search-container input::placeholder { color: rgba(255, 255, 255, 0.7); }
+        .search-container i { font-size: 16px; }
+
         /* App List */
         .app-item { display: flex; padding: 15px; border-bottom: 1px solid #eee; align-items: center; }
         .app-item:hover { background: #f9f9f9; }
-        .app-icon { width: 48px; height: 48px; border-radius: 4px; margin-right: 15px; background: #eee; }
+        .app-icon { width: 48px; height: 48px; border-radius: 4px; margin-right: 15px; background: #eee; object-fit: cover; }
         .app-name { font-weight: bold; font-size: 16px; color: #000; }
         .app-meta { font-size: 13px; color: #666; margin-top: 3px; }
         .d-icon { margin-left: auto; color: #ccc; font-size: 24px; }
         
         .loader { padding: 20px; text-align: center; color: #777; }
+        .no-results { padding: 40px; text-align: center; color: #999; }
     </style>
 </head>
 <body>
 
 <header>
     <div class="logo">DownAPK</div>
-    <i class="fas fa-search" style="font-size: 20px;"></i>
+    <div class="search-container">
+        <i class="fas fa-search"></i>
+        <input type="text" id="search-input" placeholder="Apps suchen..." autocomplete="off">
+    </div>
 </header>
 
 <div id="app-list">
@@ -36,15 +71,20 @@
 </div>
 
 <script>
-    async function load() {
-        const res = await fetch('/api/apps');
-        const apps = await res.json();
-        const list = document.getElementById('app-list');
-        list.innerHTML = '';
+    let allApps = []; // Speicher für alle geladenen Apps
 
-        apps.forEach(app => {
+    // Funktion zum Rendern der App-Liste
+    function renderApps(appsToDisplay) {
+        const list = document.getElementById('app-list');
+        
+        if (appsToDisplay.length === 0) {
+            list.innerHTML = '<div class="no-results">Keine Apps gefunden.</div>';
+            return;
+        }
+
+        list.innerHTML = '';
+        appsToDisplay.forEach(app => {
             const div = document.createElement('a');
-            // HIER IST DIE ÄNDERUNG: Link zur Detailseite
             div.href = `app.html?id=${app.packageName}`; 
             div.className = 'app-item';
             div.innerHTML = `
@@ -58,6 +98,32 @@
             list.appendChild(div);
         });
     }
+
+    // Daten vom Server laden
+    async function load() {
+        try {
+            const res = await fetch('/api/apps');
+            allApps = await res.json();
+            renderApps(allApps);
+        } catch (error) {
+            document.getElementById('app-list').innerHTML = '<div class="loader">Fehler beim Laden der Daten.</div>';
+            console.error("Fetch Error:", error);
+        }
+    }
+
+    // Such-Logik
+    document.getElementById('search-input').addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase().trim();
+        
+        const filteredApps = allApps.filter(app => 
+            app.name.toLowerCase().includes(query) || 
+            (app.packageName && app.packageName.toLowerCase().includes(query)) ||
+            (app.author && app.author.toLowerCase().includes(query))
+        );
+
+        renderApps(filteredApps);
+    });
+
     load();
 </script>
 
