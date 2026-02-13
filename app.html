@@ -7,9 +7,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --apk-red: #d32f2f;
-            --apk-dark-red: #b71c1c;
-            --bg-gray: #f0f0f0;
+            --brand-orange: #ff8400;
+            --download-red: #d32f2f;
+            --download-red-dark: #b71c1c;
+            --bg-gray: #f5f5f5;
             --border-gray: #e0e0e0;
             --text-main: #333;
             --text-secondary: #757575;
@@ -22,28 +23,34 @@
             color: var(--text-main); 
         }
         
-        /* Header im APK Mirror Stil */
+        /* Header wieder in Orange */
         header { 
-            background: var(--apk-red); 
-            padding: 12px 15px; 
+            background: var(--brand-orange); 
+            padding: 15px; 
             color: white; 
             display: flex; 
             align-items: center;
-            justify-content: space-between;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
-        .header-left { display: flex; align-items: center; }
-        .header-right { display: flex; gap: 18px; font-size: 18px; }
-        .back-btn { margin-right: 15px; cursor: pointer; font-size: 20px; }
-        .brand-name { font-weight: 500; font-size: 19px; }
+        /* Zurück-Button mit Logik */
+        .back-btn { 
+            margin-right: 15px; 
+            cursor: pointer; 
+            font-size: 20px; 
+        }
+
+        .brand-name { 
+            font-weight: bold; 
+            font-size: 20px; 
+        }
 
         /* Breadcrumb / Sub-Nav */
         .breadcrumb {
             background: white;
             padding: 10px 15px;
             font-size: 12px;
-            color: var(--apk-red);
+            color: var(--brand-orange);
             border-bottom: 1px solid var(--border-gray);
             margin-bottom: 10px;
         }
@@ -52,83 +59,90 @@
         .card { 
             background: white; 
             margin: 0 10px 15px 10px; 
-            padding: 15px; 
-            border-radius: 2px; 
-            box-shadow: 0 1px 2px rgba(0,0,0,0.1); 
+            padding: 20px; 
+            border-radius: 4px; 
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1); 
         }
         
         .app-header-flex { display: flex; align-items: flex-start; }
-        .big-icon { width: 64px; height: 64px; border-radius: 4px; margin-right: 15px; }
+        .big-icon { width: 72px; height: 72px; border-radius: 8px; margin-right: 20px; }
         
         .app-title-section h1 { 
-            font-size: 18px; 
+            font-size: 22px; 
             margin: 0; 
-            color: #222; 
-            line-height: 1.3;
+            color: #333; 
+            line-height: 1.2;
         }
-        .dev-name { color: var(--apk-red); font-weight: normal; font-size: 13px; text-decoration: none; display: block; margin-top: 4px;}
+        .dev-name { 
+            color: var(--brand-orange); 
+            font-weight: bold; 
+            font-size: 14px; 
+            text-decoration: none; 
+            display: block; 
+            margin-top: 5px;
+        }
 
-        /* Metadata Bar (Date, Size, etc) */
+        /* Info Leiste */
         .meta-info-bar {
             display: flex;
             border-top: 1px solid var(--border-gray);
             border-bottom: 1px solid var(--border-gray);
-            margin: 15px 0;
-            padding: 10px 0;
+            margin: 20px 0;
+            padding: 12px 0;
         }
         .meta-item {
             flex: 1;
             text-align: center;
-            font-size: 11px;
+            font-size: 12px;
             color: var(--text-secondary);
             border-right: 1px solid var(--border-gray);
         }
         .meta-item:last-child { border-right: none; }
-        .meta-item strong { display: block; color: var(--text-main); font-size: 13px; margin-bottom: 2px; }
+        .meta-item strong { display: block; color: var(--text-main); font-size: 14px; margin-bottom: 2px; }
 
-        /* Der markante ROTE Button */
+        /* Der ROTE Download Button */
         .download-btn {
             display: flex;
             align-items: center;
             justify-content: center;
-            background: var(--apk-red);
+            background: var(--download-red);
             color: white;
-            padding: 14px;
-            font-size: 15px;
+            padding: 15px;
+            font-size: 16px;
             font-weight: bold;
             text-decoration: none;
-            border-radius: 3px;
+            border-radius: 4px;
             text-transform: uppercase;
-            margin: 15px 0;
+            margin: 20px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
-        .download-btn:active { background: var(--apk-dark-red); }
+        .download-btn:active { background: var(--download-red-dark); }
         .download-btn i { margin-right: 10px; font-size: 18px; }
 
         .description-title { 
-            font-size: 15px; 
+            font-size: 16px; 
             font-weight: bold; 
             margin: 20px 0 10px 0; 
-            border-bottom: 2px solid var(--apk-red);
+            border-bottom: 2px solid var(--brand-orange);
             display: inline-block;
             padding-bottom: 3px;
         }
 
         .description { 
             font-size: 14px; 
-            line-height: 1.5; 
-            color: #333;
+            line-height: 1.6; 
+            color: #444;
         }
 
         .ad-placeholder {
-            background: #f9f9f9;
-            border: 1px dashed #ccc;
-            height: 60px;
+            background: #eee;
+            height: 50px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 10px;
+            font-size: 12px;
             color: #999;
-            margin: 10px 0;
+            margin-bottom: 15px;
         }
         
         footer {
@@ -142,14 +156,8 @@
 <body>
 
 <header>
-    <div class="header-left">
-        <i class="fas fa-bars back-btn" onclick="history.back()"></i>
-        <span class="brand-name">DownAPK</span>
-    </div>
-    <div class="header-right">
-        <i class="fas fa-cloud-upload-alt"></i>
-        <i class="fas fa-search"></i>
-    </div>
+    <i class="fas fa-arrow-left back-btn" onclick="history.back()"></i>
+    <span class="brand-name">DownAPK</span>
 </header>
 
 <div class="breadcrumb">
@@ -159,14 +167,14 @@
 <div id="content">
     <div class="card">
         <div style="text-align:center; padding: 30px;">
-            <i class="fas fa-circle-notch fa-spin" style="color: var(--apk-red); font-size: 24px;"></i> 
+            <i class="fas fa-spinner fa-spin" style="color: var(--brand-orange); font-size: 24px;"></i> 
             <p>Lade Details...</p>
         </div>
     </div>
 </div>
 
 <footer>
-    &copy; 2026 DownAPK - APK Mirror Style
+    &copy; 2026 DownAPK
 </footer>
 
 <script>
@@ -188,16 +196,15 @@
                 return;
             }
 
-            // Breadcrumb Name aktualisieren
             document.getElementById('breadcrumb-app').innerText = app.name;
 
             const html = `
                 <div class="card">
                     <div class="app-header-flex">
                         <img src="${app.icon}" class="big-icon" onerror="this.src='https://via.placeholder.com/72'">
-                        <div class="app-title-section">
-                            <h1>${app.name} ${app.version}</h1>
-                            <div class="dev-name">by ${app.author}</div>
+                        <div>
+                            <h1>${app.name}</h1>
+                            <div class="dev-name">${app.author}</div>
                         </div>
                     </div>
 
@@ -224,11 +231,6 @@
 
                     <div class="description-title">Description</div>
                     <div class="description">${app.description}</div>
-                </div>
-
-                <div class="card">
-                    <div class="description-title">All Versions</div>
-                    <p style="font-size: 13px; color: #666;">Alle verfügbaren Versionen von ${app.name} anzeigen...</p>
                 </div>
             `;
 
