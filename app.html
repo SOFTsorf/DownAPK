@@ -21,9 +21,9 @@
             margin: 0; 
             background: var(--bg-gray); 
             color: var(--text-main); 
+            overflow-x: hidden; /* Verhindert horizontales Scrollen der Seite */
         }
         
-        /* Header wieder in Orange */
         header { 
             background: var(--brand-orange); 
             padding: 15px; 
@@ -33,7 +33,6 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
-        /* Zurück-Button mit Logik */
         .back-btn { 
             margin-right: 15px; 
             cursor: pointer; 
@@ -45,7 +44,6 @@
             font-size: 20px; 
         }
 
-        /* Breadcrumb / Sub-Nav */
         .breadcrumb {
             background: white;
             padding: 10px 15px;
@@ -55,34 +53,62 @@
             margin-bottom: 10px;
         }
 
-        /* Main Card */
         .card { 
             background: white; 
             margin: 0 10px 15px 10px; 
             padding: 20px; 
             border-radius: 4px; 
             box-shadow: 0 1px 3px rgba(0,0,0,0.1); 
+            box-sizing: border-box;
         }
         
-        .app-header-flex { display: flex; align-items: flex-start; }
-        .big-icon { width: 72px; height: 72px; border-radius: 8px; margin-right: 20px; }
-        
+        /* FIX: Container für den Header, damit nichts rausspringt */
+        .app-header-flex { 
+            display: flex; 
+            align-items: center; 
+            overflow: hidden; /* Wichtig für den Scroll-Effekt */
+        }
+
+        .big-icon { 
+            width: 72px; 
+            height: 72px; 
+            border-radius: 8px; 
+            margin-right: 15px; 
+            flex-shrink: 0; /* Icon darf nicht kleiner werden */
+        }
+
+        /* FIX: Titel-Sektion mit Marquee-Effekt */
+        .app-title-section {
+            flex: 1;
+            overflow: hidden; /* Schneidet den überlaufenden Text ab */
+            white-space: nowrap;
+        }
+
         .app-title-section h1 { 
-            font-size: 22px; 
+            font-size: 20px; 
             margin: 0; 
             color: #333; 
-            line-height: 1.2;
+            display: inline-block;
+            padding-right: 50px; /* Platz am Ende des Durchlaufs */
+            animation: marquee 10s linear infinite; /* Hier wird gescrollt */
         }
+
+        /* Die Animation für den Textfluss */
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* Falls der Text kurz ist, stoppen wir die Animation (optional via JS, hier immer an für lange IDs) */
+
         .dev-name { 
             color: var(--brand-orange); 
             font-weight: bold; 
             font-size: 14px; 
-            text-decoration: none; 
             display: block; 
             margin-top: 5px;
         }
 
-        /* Info Leiste */
         .meta-info-bar {
             display: flex;
             border-top: 1px solid var(--border-gray);
@@ -100,7 +126,6 @@
         .meta-item:last-child { border-right: none; }
         .meta-item strong { display: block; color: var(--text-main); font-size: 14px; margin-bottom: 2px; }
 
-        /* Der ROTE Download Button */
         .download-btn {
             display: flex;
             align-items: center;
@@ -202,8 +227,8 @@
                 <div class="card">
                     <div class="app-header-flex">
                         <img src="${app.icon}" class="big-icon" onerror="this.src='https://via.placeholder.com/72'">
-                        <div>
-                            <h1>${app.name}</h1>
+                        <div class="app-title-section">
+                            <h1>${app.name} &nbsp;&nbsp;&nbsp; ${app.name}</h1>
                             <div class="dev-name">${app.author}</div>
                         </div>
                     </div>
