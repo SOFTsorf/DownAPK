@@ -3,203 +3,165 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DownAPK - Download Free Android APKs</title>
+    <title>DownAPK - Android App Mirror</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
-            --am-orange: #ff8100;
-            --am-blue: #09305e;
-            --bg-gray: #f0f0f0;
-            --border: #ddd;
-            --text-main: #333;
+            --am-orange: #f68d2e;
+            --am-grey-text: #555;
+            --am-blue-link: #0066cc;
+            --bg-light: #f9f9f9;
         }
 
         body {
-            font-family: Arial, sans-serif;
-            background-color: var(--bg-gray);
+            font-family: sans-serif;
+            background-color: #fff;
             margin: 0;
-            color: var(--text-main);
+            color: #333;
         }
 
-        /* Header im APKMirror-Stil */
+        /* APKMirror Style Header */
         header {
-            background-color: var(--am-blue);
+            background-color: var(--am-orange);
             color: white;
-            padding: 10px 10%;
+            padding: 12px 15px;
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
-        .logo {
-            font-size: 24px;
+        .menu-icon { font-size: 20px; margin-right: 20px; }
+        .logo { font-size: 20px; font-weight: bold; flex-grow: 1; }
+        .header-icons i { margin-left: 20px; font-size: 18px; }
+
+        /* Datums-Trenner */
+        .date-divider {
+            background-color: #fff;
+            padding: 15px;
             font-weight: bold;
-            text-transform: uppercase;
-        }
-
-        .logo span { color: var(--am-orange); }
-
-        nav a {
-            color: white;
-            text-decoration: none;
-            margin-left: 15px;
+            color: #777;
             font-size: 14px;
+            border-bottom: 1px solid #eee;
         }
 
-        /* Suche */
-        .search-bar {
-            background: #fff;
-            padding: 20px 10%;
-            border-bottom: 3px solid var(--am-orange);
-        }
-
-        .search-bar input {
-            width: 70%;
-            padding: 10px;
-            border: 1px solid var(--border);
-        }
-
-        /* Hauptinhalt */
-        .container {
-            display: flex;
-            margin: 20px 10%;
-            gap: 20px;
-        }
-
-        .main-content {
-            flex: 3;
-            background: white;
-            padding: 15px;
-            border: 1px solid var(--border);
-        }
-
-        .sidebar {
-            flex: 1;
-            background: #f9f9f9;
-            padding: 15px;
-            border: 1px solid var(--border);
-        }
-
-        h2 {
-            border-bottom: 2px solid var(--am-orange);
-            padding-bottom: 5px;
-            font-size: 18px;
-            color: var(--am-blue);
-        }
-
-        /* App Listen-Elemente */
-        .app-row {
+        /* Die App-Liste */
+        .app-item {
             display: flex;
             align-items: center;
-            padding: 12px;
-            border-bottom: 1px solid var(--border);
-            transition: background 0.2s;
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            text-decoration: none;
+            color: inherit;
         }
-
-        .app-row:hover { background: #fdfdfd; }
 
         .app-icon {
-            width: 48px;
-            height: 48px;
-            background: #eee;
-            border-radius: 4px;
+            width: 40px;
+            height: 40px;
             margin-right: 15px;
+            object-fit: contain;
         }
 
-        .app-details { flex-grow: 1; }
-
-        .app-title {
-            font-weight: bold;
-            color: #004a99;
-            text-decoration: none;
-            display: block;
+        .app-info {
+            flex-grow: 1;
         }
 
-        .app-meta {
+        .app-name {
+            font-size: 15px;
+            color: #333;
+            margin-bottom: 2px;
+            font-weight: 500;
+        }
+
+        .app-version {
+            font-size: 14px;
+            color: #333;
+        }
+
+        .app-dev {
+            font-size: 13px;
+            color: var(--am-grey-text);
+            margin-top: 2px;
+        }
+
+        .app-variants {
             font-size: 12px;
-            color: #666;
-            margin-top: 3px;
+            color: var(--am-orange);
+            margin-top: 4px;
+            display: flex;
+            align-items: center;
         }
 
-        .download-btn {
-            background: var(--am-orange);
-            color: white;
-            padding: 8px;
-            border-radius: 4px;
-            text-decoration: none;
-            font-size: 18px;
+        .app-variants i { margin-right: 5px; font-size: 10px; }
+
+        .info-button {
+            color: #888;
+            font-size: 20px;
+            margin-left: 10px;
         }
 
-        .verified-badge {
-            color: green;
-            font-size: 11px;
-            font-weight: bold;
+        /* Suchleiste für Mobile */
+        .mobile-search {
+            padding: 10px;
+            background: #eee;
+            display: flex;
+            justify-content: center;
         }
+
     </style>
 </head>
 <body>
 
 <header>
-    <div class="logo">Down<span>APK</span></div>
-    <nav>
-        <a href="#">APPS</a>
-        <a href="#">ALL DEVELOPERS</a>
-        <a href="#">CONTACT</a>
-    </nav>
+    <i class="fas fa-bars menu-icon"></i>
+    <div class="logo">DownAPK</div>
+    <div class="header-icons">
+        <i class="fas fa-search"></i>
+        <i class="fas fa-cloud-upload-alt"></i>
+        <i class="fas fa-user"></i>
+    </div>
 </header>
 
-<div class="search-bar">
-    <input type="text" placeholder="Search for Android Apps...">
-    <button style="padding: 10px; background: var(--am-blue); color: white; border: none;">SEARCH</button>
-</div>
+<div class="date-divider">February 14</div>
 
-<div class="container">
-    <div class="main-content">
-        <h2>LATEST APP UPLOADS</h2>
-        <div id="app-list">
-            <div class="app-row">Lade aktuelle Apps von F-Droid...</div>
+<div class="app-list">
+
+    <a href="#" class="app-item">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Google_Chrome_icon_%282022%29.png" class="app-icon" alt="Chrome">
+        <div class="app-info">
+            <div class="app-name">Chrome Canary (Unstable)</div>
+            <div class="app-version">147.0.7686.0</div>
+            <div class="app-dev">by Google LLC</div>
+            <div class="app-variants">
+                <i class="fas fa-clone"></i> 4 variants
+            </div>
         </div>
-    </div>
+        <div class="info-button"><i class="fas fa-info-circle"></i></div>
+    </a>
 
-    <div class="sidebar">
-        <h2>POPULAR IN LAST 24H</h2>
-        <p style="font-size: 13px;">Hier könnten Trends stehen...</p>
-    </div>
+    <a href="#" class="app-item">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/Google_Wallet_Icon_2022.svg/1024px-Google_Wallet_Icon_2022.svg.png" class="app-icon" alt="GPay">
+        <div class="app-info">
+            <div class="app-name">Google Pay: Save and Pay</div>
+            <div class="app-version">318.1.2</div>
+            <div class="app-dev">by Google LLC</div>
+            <div class="app-variants">
+                <i class="fas fa-clone"></i> 5 variants (3 new)
+            </div>
+        </div>
+        <div class="info-button"><i class="fas fa-info-circle"></i></div>
+    </a>
+
+    <a href="#" class="app-item">
+        <img src="https://play-lh.googleusercontent.com/97mXN_KqYjL0cM_Vf6gG3s8vR_VvH1S7uD7Lz-vV9V0" class="app-icon" alt="Machinika">
+        <div class="app-info">
+            <div class="app-name">Machinika: Museum</div>
+            <div class="app-version">1.20.168</div>
+            <div class="app-dev">by Dear Villagers</div>
+        </div>
+        <div class="info-button"><i class="fas fa-info-circle"></i></div>
+    </a>
+
 </div>
-
-<script>
-    // Wir nutzen einen alternativen Weg für die Daten (direkterer Link)
-    async function loadApps() {
-        const list = document.getElementById('app-list');
-        try {
-            // Hinweis: Im echten Betrieb würde dein Server diese JSON laden.
-            // Dies ist ein Demo-Call auf die F-Droid API.
-            const response = await fetch('https://f-droid.org/repo/index-v1.json');
-            const data = await response.json();
-            
-            const apps = Object.values(data.apps).slice(0, 15);
-            list.innerHTML = ''; // Liste leeren
-
-            apps.forEach(app => {
-                const row = document.createElement('div');
-                row.className = 'app-row';
-                row.innerHTML = `
-                    <div class="app-icon">🤖</div>
-                    <div class="app-details">
-                        <a href="#" class="app-title">${app.name}</a>
-                        <div class="app-meta">von ${app.authorName || 'Open Source Developer'}</div>
-                        <div class="verified-badge">✓ VERIFIED SAFE</div>
-                    </div>
-                    <a href="https://f-droid.org/de/packages/${app.packageName}/" class="download-btn">⬇</a>
-                `;
-                list.appendChild(row);
-            });
-        } catch (e) {
-            list.innerHTML = '<div class="app-row">Fehler beim Laden der API. (CORS-Problem im Browser). <br> Im Live-Betrieb würde dein Server dies lösen.</div>';
-        }
-    }
-
-    loadApps();
-</script>
 
 </body>
 </html>
