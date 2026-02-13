@@ -42,7 +42,6 @@
             font-size: 16px;
         }
         .search-container input::placeholder { color: rgba(255, 255, 255, 0.7); }
-        .search-container i { font-size: 16px; }
 
         /* App List */
         .app-item { display: flex; padding: 15px; border-bottom: 1px solid #eee; align-items: center; }
@@ -52,7 +51,7 @@
         .app-meta { font-size: 13px; color: #666; margin-top: 3px; }
         .d-icon { margin-left: auto; color: #ccc; font-size: 24px; }
         
-        .loader { padding: 20px; text-align: center; color: #777; }
+        .loader { padding: 40px; text-align: center; color: #777; }
         .no-results { padding: 40px; text-align: center; color: #999; }
     </style>
 </head>
@@ -62,7 +61,7 @@
     <div class="logo">DownAPK</div>
     <div class="search-container">
         <i class="fas fa-search"></i>
-        <input type="text" id="search-input" placeholder="Apps suchen..." autocomplete="off">
+        <input type="text" id="search-input" placeholder="In F-Droid suchen..." autocomplete="off">
     </div>
 </header>
 
@@ -71,60 +70,64 @@
 </div>
 
 <script>
-    let allApps = []; // Speicher für alle geladenen Apps
+    const list = document.getElementById('app-list');
+    const searchInput = document.getElementById('search-input');
+    let debounceTimer;
 
-    // Funktion zum Rendern der App-Liste
-    function renderApps(appsToDisplay) {
-        const list = document.getElementById('app-list');
+    // Funktion zum Laden der Apps (entweder alle für die Startseite oder gefiltert durch Suchbegriff)
+    async function loadApps(query = '') {
+        // Zeige Spinner während der Suche
+        list.innerHTML = '<div class="loader"><i class="fas fa-spinner fa-spin"></i> Suche in F-Droid...</div>';
         
-        if (appsToDisplay.length === 0) {
-            list.innerHTML = '<div class="no-results">Keine Apps gefunden.</div>';
-            return;
-        }
-
-        list.innerHTML = '';
-        appsToDisplay.forEach(app => {
-            const div = document.createElement('a');
-            div.href = `app.html?id=${app.packageName}`; 
-            div.className = 'app-item';
-            div.innerHTML = `
-                <img src="${app.icon}" class="app-icon" onerror="this.src='https://via.placeholder.com/48'">
-                <div>
-                    <div class="app-name">${app.name}</div>
-                    <div class="app-meta">${app.version} <br> ${app.author}</div>
-                </div>
-                <div class="d-icon"><i class="fas fa-download"></i></div>
-            `;
-            list.appendChild(div);
-        });
-    }
-
-    // Daten vom Server laden
-    async function load() {
         try {
-            const res = await fetch('/api/apps');
-            allApps = await res.json();
-            renderApps(allApps);
+            // Wir hängen den Suchbegriff als Parameter an die URL an
+            const url = query.length > 0 
+                ? `/api/apps?search=${encodeURIComponent(query)}` 
+                : '/api/apps';
+
+            const res = await fetch(url);
+            const apps = await res.json();
+            
+            list.innerHTML = '';
+
+            if (apps.length === 0) {
+                list.innerHTML = '<div class="no-results">Keine Apps zu "' + query + '" gefunden.</div>';
+                return;
+            }
+
+            apps.forEach(app => {
+                const div = document.createElement('a');
+                div.href = `app.html?id=${app.packageName}`; 
+                div.className = 'app-item';
+                div.innerHTML = `
+                    <img src="${app.icon}" class="app-icon" onerror="this.src='https://via.placeholder.com/48'">
+                    <div>
+                        <div class="app-name">${app.name}</div>
+                        <div class="app-meta">${app.version} <br> ${app.author}</div>
+                    </div>
+                    <div class="d-icon"><i class="fas fa-download"></i></div>
+                `;
+                list.appendChild(div);
+            });
         } catch (error) {
-            document.getElementById('app-list').innerHTML = '<div class="loader">Fehler beim Laden der Daten.</div>';
-            console.error("Fetch Error:", error);
+            list.innerHTML = '<div class="no-results">Fehler beim Abrufen der Apps.</div>';
+            console.error("Fehler:", error);
         }
     }
 
-    // Such-Logik
-    document.getElementById('search-input').addEventListener('input', (e) => {
-        const query = e.target.value.toLowerCase().trim();
-        
-        const filteredApps = allApps.filter(app => 
-            app.name.toLowerCase().includes(query) || 
-            (app.packageName && app.packageName.toLowerCase().includes(query)) ||
-            (app.author && app.author.toLowerCase().includes(query))
-        );
+    // Event-Listener für das Suchfeld mit Debounce
+    searchInput.addEventListener('input', (e) => {
+        clearTimeout(debounceTimer);
+        const query = e.target.value.trim();
 
-        renderApps(filteredApps);
+        // Warte 300ms nach dem letzten Tastendruck, bevor die API angefragt wird
+        debounceTimer = setTimeout(() => {
+            loadApps(query);
+        }, 300);
     });
 
-    load();
+    // Initiales Laden der Startseiten-Apps
+    loadApps();
 </script>
 
 </body>
