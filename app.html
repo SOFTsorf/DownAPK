@@ -6,104 +6,236 @@
     <title>App Details - DownAPK</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { font-family: Roboto, sans-serif; margin: 0; background: #f5f5f5; color: #333; }
+        :root {
+            --apk-red: #d32f2f;
+            --apk-dark-red: #b71c1c;
+            --bg-gray: #f0f0f0;
+            --border-gray: #e0e0e0;
+            --text-main: #333;
+            --text-secondary: #757575;
+        }
+
+        body { 
+            font-family: 'Roboto', sans-serif; 
+            margin: 0; 
+            background: var(--bg-gray); 
+            color: var(--text-main); 
+        }
         
-        /* Header */
-        header { background: #ff8400; padding: 15px; color: white; font-weight: bold; font-size: 20px; display: flex; align-items: center;}
-        .back-btn { margin-right: 15px; cursor: pointer; }
+        /* Header im APK Mirror Stil */
+        header { 
+            background: var(--apk-red); 
+            padding: 12px 15px; 
+            color: white; 
+            display: flex; 
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header-left { display: flex; align-items: center; }
+        .header-right { display: flex; gap: 18px; font-size: 18px; }
+        .back-btn { margin-right: 15px; cursor: pointer; font-size: 20px; }
+        .brand-name { font-weight: 500; font-size: 19px; }
+
+        /* Breadcrumb / Sub-Nav */
+        .breadcrumb {
+            background: white;
+            padding: 10px 15px;
+            font-size: 12px;
+            color: var(--apk-red);
+            border-bottom: 1px solid var(--border-gray);
+            margin-bottom: 10px;
+        }
 
         /* Main Card */
-        .card { background: white; margin: 15px; padding: 20px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .card { 
+            background: white; 
+            margin: 0 10px 15px 10px; 
+            padding: 15px; 
+            border-radius: 2px; 
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1); 
+        }
         
-        .app-header { display: flex; align-items: flex-start; margin-bottom: 20px; }
-        .big-icon { width: 72px; height: 72px; border-radius: 8px; margin-right: 20px; }
+        .app-header-flex { display: flex; align-items: flex-start; }
+        .big-icon { width: 64px; height: 64px; border-radius: 4px; margin-right: 15px; }
         
-        h1 { font-size: 22px; margin: 0 0 5px 0; color: #333; }
-        .dev-name { color: #ff8400; font-weight: bold; font-size: 14px; text-decoration: none;}
-        .version-tag { background: #eee; padding: 2px 6px; border-radius: 4px; font-size: 12px; color: #555; margin-top: 5px; display: inline-block;}
+        .app-title-section h1 { 
+            font-size: 18px; 
+            margin: 0; 
+            color: #222; 
+            line-height: 1.3;
+        }
+        .dev-name { color: var(--apk-red); font-weight: normal; font-size: 13px; text-decoration: none; display: block; margin-top: 4px;}
 
-        /* Der ROTE Button aus deinem Screenshot */
-        .download-btn {
-            display: block;
-            background: #d32f2f; /* Das Rot aus dem Screenshot */
-            color: white;
+        /* Metadata Bar (Date, Size, etc) */
+        .meta-info-bar {
+            display: flex;
+            border-top: 1px solid var(--border-gray);
+            border-bottom: 1px solid var(--border-gray);
+            margin: 15px 0;
+            padding: 10px 0;
+        }
+        .meta-item {
+            flex: 1;
             text-align: center;
-            padding: 15px;
-            font-size: 16px;
+            font-size: 11px;
+            color: var(--text-secondary);
+            border-right: 1px solid var(--border-gray);
+        }
+        .meta-item:last-child { border-right: none; }
+        .meta-item strong { display: block; color: var(--text-main); font-size: 13px; margin-bottom: 2px; }
+
+        /* Der markante ROTE Button */
+        .download-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--apk-red);
+            color: white;
+            padding: 14px;
+            font-size: 15px;
             font-weight: bold;
             text-decoration: none;
-            border-radius: 4px;
+            border-radius: 3px;
             text-transform: uppercase;
-            margin: 20px 0;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            margin: 15px 0;
         }
-        .download-btn:active { background: #b71c1c; }
+        .download-btn:active { background: var(--apk-dark-red); }
+        .download-btn i { margin-right: 10px; font-size: 18px; }
 
-        .description { font-size: 14px; line-height: 1.6; color: #444; border-top: 1px solid #eee; padding-top: 15px;}
+        .description-title { 
+            font-size: 15px; 
+            font-weight: bold; 
+            margin: 20px 0 10px 0; 
+            border-bottom: 2px solid var(--apk-red);
+            display: inline-block;
+            padding-bottom: 3px;
+        }
+
+        .description { 
+            font-size: 14px; 
+            line-height: 1.5; 
+            color: #333;
+        }
+
+        .ad-placeholder {
+            background: #f9f9f9;
+            border: 1px dashed #ccc;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: #999;
+            margin: 10px 0;
+        }
         
-        .info-row { display: flex; justify-content: space-between; font-size: 13px; color: #777; margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 10px;}
+        footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
     </style>
 </head>
 <body>
 
 <header>
-    <i class="fas fa-arrow-left back-btn" onclick="history.back()"></i>
-    <span>DownAPK</span>
+    <div class="header-left">
+        <i class="fas fa-bars back-btn" onclick="history.back()"></i>
+        <span class="brand-name">DownAPK</span>
+    </div>
+    <div class="header-right">
+        <i class="fas fa-cloud-upload-alt"></i>
+        <i class="fas fa-search"></i>
+    </div>
 </header>
 
-<div class="card" id="content">
-    <div style="text-align:center; padding: 30px;">
-        <i class="fas fa-spinner fa-spin"></i> Lade Details...
+<div class="breadcrumb">
+    Home &nbsp;»&nbsp; Apps &nbsp;»&nbsp; <span id="breadcrumb-app">App Details</span>
+</div>
+
+<div id="content">
+    <div class="card">
+        <div style="text-align:center; padding: 30px;">
+            <i class="fas fa-circle-notch fa-spin" style="color: var(--apk-red); font-size: 24px;"></i> 
+            <p>Lade Details...</p>
+        </div>
     </div>
 </div>
 
+<footer>
+    &copy; 2026 DownAPK - APK Mirror Style
+</footer>
+
 <script>
     async function loadDetails() {
-        // Wir holen die ID aus der URL (z.B. app.html?id=org.mozilla.firefox)
         const params = new URLSearchParams(window.location.search);
         const id = params.get('id');
 
         if(!id) {
-            document.getElementById('content').innerHTML = 'Fehler: Keine App ID gefunden.';
+            document.getElementById('content').innerHTML = '<div class="card">Fehler: Keine App ID gefunden.</div>';
             return;
         }
 
-        // Anfrage an UNSERE API
-        const res = await fetch(`/api/details?id=${id}`);
-        const app = await res.json();
+        try {
+            const res = await fetch(`/api/details?id=${id}`);
+            const app = await res.json();
 
-        if(app.error) {
-            document.getElementById('content').innerHTML = 'App nicht gefunden.';
-            return;
-        }
+            if(app.error) {
+                document.getElementById('content').innerHTML = '<div class="card">App nicht gefunden.</div>';
+                return;
+            }
 
-        // HTML füllen
-        const html = `
-            <div class="app-header">
-                <img src="${app.icon}" class="big-icon" onerror="this.src='https://via.placeholder.com/72'">
-                <div>
-                    <h1>${app.name}</h1>
-                    <div class="dev-name">${app.author}</div>
-                    <div class="version-tag">${app.version}</div>
+            // Breadcrumb Name aktualisieren
+            document.getElementById('breadcrumb-app').innerText = app.name;
+
+            const html = `
+                <div class="card">
+                    <div class="app-header-flex">
+                        <img src="${app.icon}" class="big-icon" onerror="this.src='https://via.placeholder.com/72'">
+                        <div class="app-title-section">
+                            <h1>${app.name} ${app.version}</h1>
+                            <div class="dev-name">by ${app.author}</div>
+                        </div>
+                    </div>
+
+                    <div class="ad-placeholder">ADVERTISEMENT</div>
+
+                    <div class="meta-info-bar">
+                        <div class="meta-item">
+                            <strong>Version</strong>
+                            ${app.version}
+                        </div>
+                        <div class="meta-item">
+                            <strong>Updated</strong>
+                            ${app.lastUpdated}
+                        </div>
+                        <div class="meta-item">
+                            <strong>Size</strong>
+                            -- MB
+                        </div>
+                    </div>
+
+                    <a href="${app.downloadUrl}" class="download-btn">
+                        <i class="fas fa-download"></i> Download APK
+                    </a>
+
+                    <div class="description-title">Description</div>
+                    <div class="description">${app.description}</div>
                 </div>
-            </div>
 
-            <div style="background:#eee; height: 50px; margin-bottom: 15px; display:flex; align-items:center; justify-content:center; color:#999; font-size:12px;">ADVERTISEMENT</div>
+                <div class="card">
+                    <div class="description-title">All Versions</div>
+                    <p style="font-size: 13px; color: #666;">Alle verfügbaren Versionen von ${app.name} anzeigen...</p>
+                </div>
+            `;
 
-            <div class="info-row">
-                <span>Updated:</span>
-                <span>${app.lastUpdated}</span>
-            </div>
-
-            <a href="${app.downloadUrl}" class="download-btn">
-                <i class="fas fa-download"></i> &nbsp; Download APK
-            </a>
-
-            <h3>Description</h3>
-            <div class="description">${app.description}</div>
-        `;
-
-        document.getElementById('content').innerHTML = html;
+            document.getElementById('content').innerHTML = html;
+        } catch (e) {
+            document.getElementById('content').innerHTML = '<div class="card">Fehler beim Laden der Daten.</div>';
+        }
     }
 
     loadDetails();
