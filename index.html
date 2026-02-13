@@ -1,20 +1,21 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DownAPK - Android App Mirror</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>DownAPK - Free Android Downloads</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --am-orange: #f68d2e;
-            --am-dark-orange: #d4751c;
-            --bg-body: #ffffff;
-            --text-grey: #555;
-            --border: #e0e0e0;
+            --am-orange: #ff8400;
+            --am-grey-bg: #f5f5f5;
+            --text-dark: #333;
+            --text-light: #777;
+            --border-color: #e5e5e5;
         }
 
-        body { font-family: 'Roboto', sans-serif; margin: 0; background: var(--bg-body); overflow-x: hidden; }
+        body { font-family: 'Roboto', sans-serif; margin: 0; background: #fff; color: var(--text-dark); }
+        a { text-decoration: none; color: inherit; }
 
         /* HEADER */
         header {
@@ -27,175 +28,246 @@
             position: sticky;
             top: 0;
             z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.15);
         }
 
         .menu-btn { font-size: 22px; cursor: pointer; margin-right: 20px; }
-        .logo { font-size: 20px; font-weight: bold; flex-grow: 1; }
-        .header-icons i { margin-left: 18px; font-size: 20px; cursor: pointer; }
+        .logo { font-size: 21px; font-weight: 700; flex-grow: 1; letter-spacing: -0.5px; }
+        .header-icons i { margin-left: 20px; font-size: 19px; cursor: pointer; }
 
-        /* SIDEBAR (MENU) */
+        /* SIDEBAR */
         .sidebar {
             position: fixed;
-            top: 0;
-            left: -280px;
-            width: 280px;
-            height: 100%;
+            top: 0; left: -300px;
+            width: 280px; height: 100vh;
             background: white;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.2);
-            transition: 0.3s ease;
             z-index: 2000;
+            transition: left 0.3s ease;
+            box-shadow: 2px 0 12px rgba(0,0,0,0.3);
+            overflow-y: auto;
         }
-
         .sidebar.active { left: 0; }
-
+        
         .sidebar-header {
             background: var(--am-orange);
-            height: 56px;
-            display: flex;
-            align-items: center;
-            padding: 0 15px;
             color: white;
-            font-weight: bold;
+            padding: 20px;
             font-size: 20px;
+            font-weight: bold;
         }
-
-        .sidebar-header img { width: 30px; margin-right: 10px; }
 
         .menu-list { list-style: none; padding: 0; margin: 0; }
         .menu-list li {
-            padding: 15px 20px;
-            font-size: 16px;
-            color: #333;
-            border-bottom: 1px solid #eee;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 15px;
             cursor: pointer;
         }
-        .menu-list li:hover { background: #f5f5f5; }
+        .menu-list li:hover { background: #f9f9f9; }
 
         .overlay {
-            position: fixed;
-            display: none;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5);
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6);
             z-index: 1500;
+            display: none;
         }
         .overlay.active { display: block; }
 
-        /* APP LISTE */
+        /* SEARCH BAR (Hidden by default) */
+        .search-container {
+            background: #eee;
+            padding: 10px;
+            display: none;
+            border-bottom: 1px solid #ddd;
+        }
+        .search-container.active { display: flex; }
+        .search-input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        /* MAIN CONTENT */
         .date-divider {
-            padding: 15px;
-            background: #f1f1f1;
-            font-size: 14px;
-            font-weight: bold;
-            color: #666;
-            border-bottom: 1px solid var(--border);
+            padding: 12px 15px;
+            background: #fff;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-light);
+            border-bottom: 1px solid var(--border-color);
+            text-transform: uppercase;
         }
 
         .app-item {
             display: flex;
-            padding: 15px;
-            border-bottom: 1px solid var(--border);
-            text-decoration: none;
-            color: inherit;
-            align-items: center;
+            align-items: flex-start;
+            padding: 16px 15px;
+            border-bottom: 1px solid var(--border-color);
+            transition: background 0.2s;
+        }
+        .app-item:active { background: #f0f0f0; }
+
+        .app-icon {
+            width: 48px; height: 48px;
+            margin-right: 16px;
+            border-radius: 4px;
+            background: #eee;
+            object-fit: contain;
         }
 
-        .app-icon { width: 42px; height: 42px; margin-right: 15px; border-radius: 4px; }
-        .app-content { flex-grow: 1; }
-        .app-name { font-weight: bold; font-size: 15px; color: #000; }
-        .app-ver { font-size: 14px; margin: 2px 0; }
-        .app-dev { font-size: 12px; color: var(--text-grey); }
-        .app-variants { font-size: 12px; color: var(--am-orange); margin-top: 4px; font-weight: bold; }
-        
-        .info-icon { color: #999; font-size: 22px; margin-left: 10px; }
+        .app-details { flex: 1; }
 
-        /* LOADER */
-        .loader { text-align: center; padding: 50px; color: var(--text-grey); }
+        .app-name {
+            font-size: 16px;
+            font-weight: 400;
+            color: #222;
+            margin-bottom: 4px;
+            line-height: 1.2;
+        }
+
+        .app-meta {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 6px;
+        }
+
+        .app-dev { color: var(--text-light); font-size: 12px; }
+
+        .variants-tag {
+            display: inline-block;
+            font-size: 11px;
+            color: var(--am-orange);
+            font-weight: 700;
+            margin-top: 4px;
+        }
+        .variants-tag i { margin-right: 4px; }
+
+        .download-arrow {
+            color: #ccc;
+            font-size: 24px;
+            margin-left: 10px;
+            align-self: center;
+        }
+
+        /* Loading Spinner */
+        .loader {
+            padding: 40px;
+            text-align: center;
+            color: var(--text-light);
+        }
     </style>
 </head>
 <body>
 
-<div class="sidebar" id="sidebar">
-    <div class="sidebar-header">
-        <span>DownAPK</span>
+    <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">DownAPK</div>
+        <ul class="menu-list">
+            <li>APKMirror Installer (Official)</li>
+            <li>All Developers</li>
+            <li>All Categories</li>
+            <li>FAQ</li>
+            <li>Contact</li>
+        </ul>
     </div>
-    <ul class="menu-list">
-        <li>All Developers</li>
-        <li>All Categories</li>
-        <li>FAQ</li>
-        <li>Contact</li>
-        <li style="color: #d00;">Premium</li>
-    </ul>
-</div>
-<div class="overlay" id="overlay"></div>
 
-<header>
-    <i class="fas fa-bars menu-btn" onclick="toggleMenu()"></i>
-    <div class="logo">DownAPK</div>
-    <div class="header-icons">
-        <i class="fas fa-search"></i>
-        <i class="fas fa-cloud-upload-alt"></i>
-        <i class="fas fa-user"></i>
+    <header>
+        <i class="fas fa-bars menu-btn" onclick="toggleMenu()"></i>
+        <div class="logo">DownAPK</div>
+        <div class="header-icons">
+            <i class="fas fa-search" onclick="toggleSearch()"></i>
+            <i class="fas fa-cloud-upload-alt"></i>
+        </div>
+    </header>
+
+    <div class="search-container" id="search-box">
+        <input type="text" class="search-input" id="search-input" placeholder="Search specific app..." onkeydown="handleSearch(event)">
     </div>
-</header>
 
-<div class="date-divider" id="current-date">LADE DATUM...</div>
+    <div class="date-divider" id="date-display">Loading Date...</div>
+    
+    <div id="app-list">
+        <div class="loader"><i class="fas fa-circle-notch fa-spin"></i> Loading apps...</div>
+    </div>
 
-<div id="app-container">
-    <div class="loader"><i class="fas fa-spinner fa-spin"></i> Suche Apps...</div>
-</div>
+    <script>
+        // 1. Datum setzen (Wie "Latest Uploads")
+        const dateOptions = { month: 'long', day: 'numeric' };
+        document.getElementById('date-display').innerText = new Date().toLocaleDateString('en-US', dateOptions);
 
-<script>
-    // 1. Menü Funktionen
-    function toggleMenu() {
-        document.getElementById('sidebar').classList.toggle('active');
-        document.getElementById('overlay').classList.toggle('active');
-    }
-
-    document.getElementById('overlay').onclick = toggleMenu;
-
-    // 2. Datum setzen
-    const options = { month: 'long', day: 'numeric' };
-    document.getElementById('current-date').innerText = new Date().toLocaleDateString('en-US', options);
-
-    // 3. F-Droid Daten laden (mit Proxy Fix)
-    async function loadApps() {
-        const container = document.getElementById('app-container');
-        // Wir nutzen "allorigins" als Proxy, um CORS zu umgehen
-        const proxy = "https://api.allorigins.win/raw?url=";
-        const target = "https://f-droid.org/repo/index-v1.json";
-
-        try {
-            const response = await fetch(proxy + encodeURIComponent(target));
-            const data = await response.json();
-            const apps = Object.values(data.apps).slice(0, 20);
-            
-            container.innerHTML = ''; // Loader entfernen
-
-            apps.forEach(app => {
-                const item = document.createElement('a');
-                item.className = 'app-item';
-                item.href = `https://f-droid.org/de/packages/${app.packageName}/`;
-                item.target = "_blank";
-                
-                item.innerHTML = `
-                    <img src="https://f-droid.org/repo/${app.packageName}/en-US/icon.png" class="app-icon" onerror="this.src='https://via.placeholder.com/42?text=APK'">
-                    <div class="app-content">
-                        <div class="app-name">${app.name}</div>
-                        <div class="app-ver">${app.lastVersionName || 'Latest'}</div>
-                        <div class="app-dev">by ${app.authorName || 'Open Source'}</div>
-                        <div class="app-variants"><i class="fas fa-clone"></i> 1 variant</div>
-                    </div>
-                    <div class="info-icon"><i class="far fa-info-circle"></i></div>
-                `;
-                container.appendChild(item);
-            });
-        } catch (error) {
-            container.innerHTML = '<div style="padding: 20px; color: red;">Fehler beim Laden der Apps. Bitte Seite neu laden.</div>';
+        // 2. Menü Logik
+        function toggleMenu() {
+            document.getElementById('sidebar').classList.toggle('active');
+            document.getElementById('overlay').classList.toggle('active');
         }
-    }
 
-    loadApps();
-</script>
+        // 3. Suche Logik
+        function toggleSearch() {
+            const box = document.getElementById('search-box');
+            box.classList.toggle('active');
+            if(box.classList.contains('active')) document.getElementById('search-input').focus();
+        }
 
+        function handleSearch(e) {
+            if (e.key === 'Enter') {
+                const query = document.getElementById('search-input').value;
+                loadApps(query);
+            }
+        }
+
+        // 4. API Abfrage (Der wichtige Teil!)
+        async function loadApps(searchQuery = '') {
+            const list = document.getElementById('app-list');
+            list.innerHTML = '<div class="loader"><i class="fas fa-circle-notch fa-spin"></i> Updating...</div>';
+
+            try {
+                // Wir rufen hier DEINE API auf, nicht F-Droid direkt!
+                const url = searchQuery ? `/api/apps?search=${encodeURIComponent(searchQuery)}` : '/api/apps';
+                const response = await fetch(url);
+                const apps = await response.json();
+
+                list.innerHTML = ''; // Liste leeren
+
+                if (apps.length === 0) {
+                    list.innerHTML = '<div style="padding:20px; text-align:center;">No apps found.</div>';
+                    return;
+                }
+
+                apps.forEach(app => {
+                    // Falls kein Icon da ist, Platzhalter nutzen
+                    const iconUrl = app.icon || 'https://via.placeholder.com/48?text=APK';
+                    
+                    const item = document.createElement('a');
+                    item.href = `https://f-droid.org/en/packages/${app.packageName}/`; // Link zum echten Download
+                    item.className = 'app-item';
+                    item.target = "_blank"; // Öffnet in neuem Tab
+
+                    item.innerHTML = `
+                        <img src="${iconUrl}" class="app-icon" onerror="this.src='https://via.placeholder.com/48?text=APK'">
+                        <div class="app-details">
+                            <div class="app-name">${app.name}</div>
+                            <div class="app-meta">
+                                <span style="color: #333;">${app.version}</span>
+                            </div>
+                            <div class="app-dev">by ${app.author}</div>
+                            <div class="variants-tag">
+                                <i class="fas fa-tag"></i> 1 variant
+                            </div>
+                        </div>
+                        <div class="download-arrow"><i class="fas fa-arrow-circle-down"></i></div>
+                    `;
+                    list.appendChild(item);
+                });
+
+            } catch (error) {
+                console.error(error);
+                list.innerHTML = '<div style="padding:20px; text-align:center; color: red;">Error loading apps. Check backend logs.</div>';
+            }
+        }
+
+        // Start: Apps laden beim Öffnen der Seite
+        loadApps();
+    </script>
 </body>
 </html>
