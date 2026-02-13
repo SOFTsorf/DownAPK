@@ -6,128 +6,319 @@
     <title>DownAPK - Home</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { font-family: Roboto, sans-serif; margin: 0; background: #fff; color: #333; }
+        body { font-family: 'Roboto', sans-serif; margin: 0; background: #fff; color: #333; padding-bottom: 50px; }
         a { text-decoration: none; color: inherit; }
         
-        /* APKMirror Header Style */
+        /* HEADER STYLE */
         header { 
             background: #ff8400; 
-            padding: 10px 15px; 
+            height: 60px; 
             display: flex; 
             align-items: center; 
+            padding: 0 15px; 
             color: white; 
             position: sticky; 
             top: 0; 
             z-index: 100;
-            gap: 15px;
+            overflow: hidden;
         }
-        .logo { font-size: 20px; font-weight: bold; white-space: nowrap; }
         
-        /* Suchfeld Styling */
-        .search-container {
-            flex-grow: 1;
+        .header-content {
             display: flex;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 4px;
-            padding: 5px 10px;
             align-items: center;
-        }
-        .search-container input {
-            background: transparent;
-            border: none;
-            color: white;
-            padding: 5px;
             width: 100%;
-            outline: none;
-            font-size: 16px;
+            transition: transform 0.3s ease;
         }
-        .search-container input::placeholder { color: rgba(255, 255, 255, 0.7); }
-
-        /* App List */
-        .app-item { display: flex; padding: 15px; border-bottom: 1px solid #eee; align-items: center; }
-        .app-item:hover { background: #f9f9f9; }
-        .app-icon { width: 48px; height: 48px; border-radius: 4px; margin-right: 15px; background: #eee; object-fit: cover; }
-        .app-name { font-weight: bold; font-size: 16px; color: #000; }
-        .app-meta { font-size: 13px; color: #666; margin-top: 3px; }
-        .d-icon { margin-left: auto; color: #ccc; font-size: 24px; }
         
-        .loader { padding: 40px; text-align: center; color: #777; }
-        .no-results { padding: 40px; text-align: center; color: #999; }
+        .logo { font-size: 20px; font-weight: bold; flex-grow: 1; }
+        .search-trigger { font-size: 20px; cursor: pointer; padding: 10px; }
+
+        /* Versteckte Suchleiste */
+        .search-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #ff8400;
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+            box-sizing: border-box;
+            transform: translateX(100%); /* Standardmäßig rechts versteckt */
+            transition: transform 0.3s ease;
+        }
+        
+        .search-bar.active { transform: translateX(0); }
+        
+        .search-input {
+            flex-grow: 1;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 4px;
+            padding: 8px 10px;
+            color: white;
+            font-size: 16px;
+            outline: none;
+        }
+        .search-input::placeholder { color: rgba(255, 255, 255, 0.7); }
+        .close-search { font-size: 20px; padding: 10px; cursor: pointer; margin-left: 5px;}
+
+        /* SECTIONS GENERITIC */
+        .section-title {
+            padding: 15px 15px 5px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #444;
+        }
+
+        /* TRENDY APPS (Horizontal Scroll) */
+        .trending-container {
+            display: flex;
+            overflow-x: auto;
+            padding: 10px 15px;
+            gap: 15px;
+            scrollbar-width: none; /* Firefox */
+        }
+        .trending-container::-webkit-scrollbar { display: none; } /* Chrome/Safari */
+
+        .trend-item {
+            min-width: 80px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        .trend-icon { width: 60px; height: 60px; border-radius: 12px; background: #eee; margin-bottom: 5px; object-fit: cover; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .trend-name { font-size: 12px; font-weight: 500; color: #333; max-width: 80px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        /* SUCHBEGRIFFE (Tags) */
+        .tags-container { padding: 10px 15px; display: flex; flex-wrap: wrap; gap: 8px; }
+        .tag {
+            background: #f0f0f0;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            color: #555;
+            border: 1px solid #ddd;
+        }
+
+        /* APP LIST (Vertical) */
+        .app-list-container { display: flex; flex-direction: column; }
+        .app-item { display: flex; padding: 15px; border-bottom: 1px solid #f5f5f5; align-items: center; }
+        .app-item:active { background: #f9f9f9; }
+        .app-icon { width: 48px; height: 48px; border-radius: 8px; margin-right: 15px; background: #eee; object-fit: cover; }
+        .app-info { flex-grow: 1; }
+        .app-name { font-weight: bold; font-size: 16px; color: #000; }
+        .app-meta { font-size: 13px; color: #777; margin-top: 2px; }
+        .d-icon { color: #ccc; font-size: 20px; }
+
+        /* BUTTON STYLING (Orange Line) */
+        .load-more-btn {
+            display: block;
+            width: calc(100% - 30px);
+            margin: 15px auto;
+            padding: 10px;
+            text-align: center;
+            background: #fff;
+            border: 2px solid #ff8400; /* Orangene Linie */
+            color: #ff8400; /* Oranger Text */
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+        .load-more-btn:hover { background: #fff5e6; }
+        .hidden { display: none; }
+
+        .loader { padding: 20px; text-align: center; color: #777; }
     </style>
 </head>
 <body>
 
 <header>
-    <div class="logo">DownAPK</div>
-    <div class="search-container">
-        <i class="fas fa-search"></i>
-        <input type="text" id="search-input" placeholder="In F-Droid suchen..." autocomplete="off">
+    <div class="header-content" id="header-normal">
+        <div class="logo">DownAPK</div>
+        <i class="fas fa-search search-trigger" onclick="toggleSearch(true)"></i>
+    </div>
+    
+    <div class="search-bar" id="search-bar">
+        <input type="text" class="search-input" id="search-input" placeholder="Suche..." autocomplete="off">
+        <i class="fas fa-times close-search" onclick="toggleSearch(false)"></i>
     </div>
 </header>
 
-<div id="app-list">
-    <div class="loader"><i class="fas fa-spinner fa-spin"></i> Lade Apps...</div>
+<div id="main-content">
+    
+    <div class="section-title">Angesagt <i class="fas fa-fire" style="color: #ff8400;"></i></div>
+    <div class="trending-container" id="trending-list">
+        <div class="loader">Lade Trends...</div>
+    </div>
+
+    <div class="section-title">Beliebte Suchen</div>
+    <div class="tags-container">
+        <a href="#" class="tag">WhatsApp</a>
+        <a href="#" class="tag">Minecraft</a>
+        <a href="#" class="tag">Spotify</a>
+        <a href="#" class="tag">Vanced</a>
+        <a href="#" class="tag">Instagram</a>
+        <a href="#" class="tag">VPN</a>
+    </div>
+
+    <div class="section-title">Social Media & Messenger</div>
+    <div id="social-list" class="app-list-container">
+        </div>
+    <button class="load-more-btn" onclick="loadMore('social')">Mehr laden</button>
+
+</div>
+
+<div id="search-results-container" class="hidden">
+    <div class="section-title">Suchergebnisse</div>
+    <div id="search-list"></div>
 </div>
 
 <script>
-    const list = document.getElementById('app-list');
+    let allApps = [];
+
+    // --- UI Logic: Suche ein/ausblenden ---
+    const headerNormal = document.getElementById('header-normal');
+    const searchBar = document.getElementById('search-bar');
     const searchInput = document.getElementById('search-input');
-    let debounceTimer;
+    const mainContent = document.getElementById('main-content');
+    const searchResultsContainer = document.getElementById('search-results-container');
+    const searchList = document.getElementById('search-list');
 
-    // Funktion zum Laden der Apps (entweder alle für die Startseite oder gefiltert durch Suchbegriff)
-    async function loadApps(query = '') {
-        // Zeige Spinner während der Suche
-        list.innerHTML = '<div class="loader"><i class="fas fa-spinner fa-spin"></i> Suche in F-Droid...</div>';
-        
-        try {
-            // Wir hängen den Suchbegriff als Parameter an die URL an
-            const url = query.length > 0 
-                ? `/api/apps?search=${encodeURIComponent(query)}` 
-                : '/api/apps';
-
-            const res = await fetch(url);
-            const apps = await res.json();
-            
-            list.innerHTML = '';
-
-            if (apps.length === 0) {
-                list.innerHTML = '<div class="no-results">Keine Apps zu "' + query + '" gefunden.</div>';
-                return;
-            }
-
-            apps.forEach(app => {
-                const div = document.createElement('a');
-                div.href = `app.html?id=${app.packageName}`; 
-                div.className = 'app-item';
-                div.innerHTML = `
-                    <img src="${app.icon}" class="app-icon" onerror="this.src='https://via.placeholder.com/48'">
-                    <div>
-                        <div class="app-name">${app.name}</div>
-                        <div class="app-meta">${app.version} <br> ${app.author}</div>
-                    </div>
-                    <div class="d-icon"><i class="fas fa-download"></i></div>
-                `;
-                list.appendChild(div);
-            });
-        } catch (error) {
-            list.innerHTML = '<div class="no-results">Fehler beim Abrufen der Apps.</div>';
-            console.error("Fehler:", error);
+    function toggleSearch(show) {
+        if (show) {
+            searchBar.classList.add('active');
+            searchInput.focus();
+        } else {
+            searchBar.classList.remove('active');
+            searchInput.value = '';
+            // Ansicht zurücksetzen
+            mainContent.classList.remove('hidden');
+            searchResultsContainer.classList.add('hidden');
         }
     }
 
-    // Event-Listener für das Suchfeld mit Debounce
-    searchInput.addEventListener('input', (e) => {
-        clearTimeout(debounceTimer);
-        const query = e.target.value.trim();
+    // --- Helper: App Item HTML generieren ---
+    function createAppItem(app) {
+        return `
+            <a href="app.html?id=${app.packageName}" class="app-item">
+                <img src="${app.icon}" class="app-icon" onerror="this.src='https://via.placeholder.com/48'">
+                <div class="app-info">
+                    <div class="app-name">${app.name}</div>
+                    <div class="app-meta">${app.version} • ${app.author}</div>
+                </div>
+                <div class="d-icon"><i class="fas fa-download"></i></div>
+            </a>
+        `;
+    }
 
-        // Warte 300ms nach dem letzten Tastendruck, bevor die API angefragt wird
-        debounceTimer = setTimeout(() => {
-            loadApps(query);
-        }, 300);
+    function createTrendItem(app) {
+        return `
+            <a href="app.html?id=${app.packageName}" class="trend-item">
+                <img src="${app.icon}" class="trend-icon" onerror="this.src='https://via.placeholder.com/60'">
+                <div class="trend-name">${app.name}</div>
+            </a>
+        `;
+    }
+
+    // --- Daten Laden ---
+    async function init() {
+        try {
+            // Wir laden einmalig alle Apps (oder eine Initiale Menge)
+            // Hinweis: In einer echten großen App würdest du separate Endpoints nutzen
+            const res = await fetch('/api/apps');
+            allApps = await res.json();
+            
+            renderHomepage(allApps);
+
+        } catch (error) {
+            console.error("Fehler beim Laden:", error);
+        }
+    }
+
+    // --- Rendering der Startseite ---
+    let socialAppsShown = 0;
+    let socialAppsCache = [];
+    const BATCH_SIZE = 5; // Wie viele Apps pro "Mehr laden"
+
+    function renderHomepage(apps) {
+        // 1. Trendy: Wir nehmen einfach die ersten 5 Apps als "Trendy" (Simuliert)
+        const trendingList = document.getElementById('trending-list');
+        trendingList.innerHTML = '';
+        apps.slice(0, 6).forEach(app => {
+            trendingList.innerHTML += createTrendItem(app);
+        });
+
+        // 2. Kategorie Social: Wir filtern (simuliert) oder nehmen den Rest
+        // Hier simulieren wir eine Kategorie, indem wir alle Apps nehmen
+        socialAppsCache = apps; 
+        loadMore('social'); // Initial laden
+    }
+
+    // --- "Mehr laden" Funktion ---
+    window.loadMore = function(category) {
+        if (category === 'social') {
+            const container = document.getElementById('social-list');
+            const total = socialAppsCache.length;
+            const nextBatch = socialAppsCache.slice(socialAppsShown, socialAppsShown + BATCH_SIZE);
+
+            nextBatch.forEach(app => {
+                container.innerHTML += createAppItem(app);
+            });
+
+            socialAppsShown += nextBatch.length;
+
+            // Button ausblenden, wenn alle geladen sind
+            if (socialAppsShown >= total) {
+                document.querySelector('.load-more-btn').style.display = 'none';
+            }
+        }
+    };
+
+    // --- Such Logik ---
+    let debounceTimer;
+    searchInput.addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase().trim();
+        clearTimeout(debounceTimer);
+
+        if (query.length > 0) {
+            mainContent.classList.add('hidden');
+            searchResultsContainer.classList.remove('hidden');
+            searchList.innerHTML = '<div class="loader"><i class="fas fa-spinner fa-spin"></i></div>';
+
+            debounceTimer = setTimeout(async () => {
+                // Hier Anfrage an API schicken für echte Suche
+                try {
+                    const res = await fetch(`/api/apps?search=${encodeURIComponent(query)}`);
+                    const results = await res.json();
+                    
+                    searchList.innerHTML = '';
+                    if (results.length === 0) {
+                        searchList.innerHTML = '<div style="padding:20px; text-align:center; color:#999">Keine Ergebnisse</div>';
+                        return;
+                    }
+                    results.forEach(app => {
+                        // Einfach anhängen
+                        const div = document.createElement('div');
+                        div.innerHTML = createAppItem(app);
+                        searchList.appendChild(div.firstElementChild);
+                    });
+                } catch(e) {
+                    searchList.innerHTML = 'Fehler bei der Suche.';
+                }
+            }, 300);
+        } else {
+            // Wenn Suche leer, zeige wieder Startseite
+            mainContent.classList.remove('hidden');
+            searchResultsContainer.classList.add('hidden');
+        }
     });
 
-    // Initiales Laden der Startseiten-Apps
-    loadApps();
+    init();
 </script>
 
 </body>
