@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>App Details - DownAPK</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: Roboto, sans-serif; margin: 0; background: #f5f5f5; color: #333; }
+        
+        /* Header */
+        header { background: #ff8400; padding: 15px; color: white; font-weight: bold; font-size: 20px; display: flex; align-items: center;}
+        .back-btn { margin-right: 15px; cursor: pointer; }
+
+        /* Main Card */
+        .card { background: white; margin: 15px; padding: 20px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        
+        .app-header { display: flex; align-items: flex-start; margin-bottom: 20px; }
+        .big-icon { width: 72px; height: 72px; border-radius: 8px; margin-right: 20px; }
+        
+        h1 { font-size: 22px; margin: 0 0 5px 0; color: #333; }
+        .dev-name { color: #ff8400; font-weight: bold; font-size: 14px; text-decoration: none;}
+        .version-tag { background: #eee; padding: 2px 6px; border-radius: 4px; font-size: 12px; color: #555; margin-top: 5px; display: inline-block;}
+
+        /* Der ROTE Button aus deinem Screenshot */
+        .download-btn {
+            display: block;
+            background: #d32f2f; /* Das Rot aus dem Screenshot */
+            color: white;
+            text-align: center;
+            padding: 15px;
+            font-size: 16px;
+            font-weight: bold;
+            text-decoration: none;
+            border-radius: 4px;
+            text-transform: uppercase;
+            margin: 20px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .download-btn:active { background: #b71c1c; }
+
+        .description { font-size: 14px; line-height: 1.6; color: #444; border-top: 1px solid #eee; padding-top: 15px;}
+        
+        .info-row { display: flex; justify-content: space-between; font-size: 13px; color: #777; margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 10px;}
+    </style>
+</head>
+<body>
+
+<header>
+    <i class="fas fa-arrow-left back-btn" onclick="history.back()"></i>
+    <span>DownAPK</span>
+</header>
+
+<div class="card" id="content">
+    <div style="text-align:center; padding: 30px;">
+        <i class="fas fa-spinner fa-spin"></i> Lade Details...
+    </div>
+</div>
+
+<script>
+    async function loadDetails() {
+        // Wir holen die ID aus der URL (z.B. app.html?id=org.mozilla.firefox)
+        const params = new URLSearchParams(window.location.search);
+        const id = params.get('id');
+
+        if(!id) {
+            document.getElementById('content').innerHTML = 'Fehler: Keine App ID gefunden.';
+            return;
+        }
+
+        // Anfrage an UNSERE API
+        const res = await fetch(`/api/details?id=${id}`);
+        const app = await res.json();
+
+        if(app.error) {
+            document.getElementById('content').innerHTML = 'App nicht gefunden.';
+            return;
+        }
+
+        // HTML füllen
+        const html = `
+            <div class="app-header">
+                <img src="${app.icon}" class="big-icon" onerror="this.src='https://via.placeholder.com/72'">
+                <div>
+                    <h1>${app.name}</h1>
+                    <div class="dev-name">${app.author}</div>
+                    <div class="version-tag">${app.version}</div>
+                </div>
+            </div>
+
+            <div style="background:#eee; height: 50px; margin-bottom: 15px; display:flex; align-items:center; justify-content:center; color:#999; font-size:12px;">ADVERTISEMENT</div>
+
+            <div class="info-row">
+                <span>Updated:</span>
+                <span>${app.lastUpdated}</span>
+            </div>
+
+            <a href="${app.downloadUrl}" class="download-btn">
+                <i class="fas fa-download"></i> &nbsp; Download APK
+            </a>
+
+            <h3>Description</h3>
+            <div class="description">${app.description}</div>
+        `;
+
+        document.getElementById('content').innerHTML = html;
+    }
+
+    loadDetails();
+</script>
+
+</body>
+</html>
