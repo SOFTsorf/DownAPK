@@ -11,7 +11,6 @@
     <title>DownAPK</title>
 
 <link rel="icon" type="image/png" href="https://lh3.googleusercontent.com/d/1K8g5EPJgvE0-RbGiyJVGWFaCBc9s27gM">
-
 <link rel="apple-touch-icon" href="https://lh3.googleusercontent.com/d/1K8g5EPJgvE0-RbGiyJVGWFaCBc9s27gM">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -34,6 +33,7 @@
             font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif; 
             margin: 0; background: var(--ios-bg); color: var(--ios-text); 
             padding-bottom: 120px; overflow-x: hidden; -webkit-font-smoothing: antialiased;
+            user-select: none; -webkit-user-select: none; /* Wichtig für Long-Press */
         }
 
         a { text-decoration: none !important; color: inherit !important; -webkit-tap-highlight-color: transparent; }
@@ -56,11 +56,16 @@
             100% { opacity: 1; }
         }
         
-        /* NEU: Icon Animation */
         @keyframes popBounce {
             0% { transform: scale(1); }
             40% { transform: scale(1.3); }
             100% { transform: scale(1); }
+        }
+        
+        /* Context Menu Animations */
+        @keyframes menuPop {
+            0% { opacity: 0; transform: translate(-50%, -40%) scale(0.9); }
+            100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
         }
 
         .animate-entry {
@@ -191,6 +196,8 @@
             flex-direction: column; justify-content: flex-end; border: var(--glass-border);
             box-shadow: 0 20px 40px rgba(0,0,0,0.6);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            /* Long Press prevent selection */
+            -webkit-touch-callout: none;
         }
         .featured-banner:hover { transform: scale(1.02); box-shadow: 0 30px 60px rgba(0,0,0,0.8); }
         .featured-img-bg {
@@ -224,7 +231,11 @@
         .horizontal-scroll::-webkit-scrollbar { display: none; }
 
         /* CARDS & ITEMS */
-        .card-item { width: 120px; min-width: 120px; cursor: pointer; transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .card-item { 
+            width: 120px; min-width: 120px; cursor: pointer; 
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            -webkit-touch-callout: none; /* Disable native menu */
+        }
         .card-item:hover { transform: translateY(-5px) scale(1.03); }
         .card-icon { width: 120px; height: 120px; border-radius: 26px; object-fit: cover; border: var(--glass-border); margin-bottom: 10px; background: #222; transition: filter 0.3s; }
         .card-item:hover .card-icon { filter: brightness(1.2); }
@@ -232,9 +243,16 @@
         .card-name { font-size: 14px; font-weight: 500; color: white !important; display: inline-block; text-overflow: ellipsis; }
         .card-item:hover .card-name { text-overflow: clip; animation: scrollText 3s linear infinite; padding-right: 20px; }
         .card-author { font-size: 12px; color: var(--ios-subtext); }
+        
+        /* Simulierter Press State */
+        .card-item.pressed, .app-item.pressed { transform: scale(0.95) !important; filter: brightness(0.8); transition: transform 0.2s, filter 0.2s; }
 
         .app-list-container { background: var(--ios-card); margin: 0 20px; border-radius: var(--radius-m); padding: 0 16px; border: var(--glass-border); }
-        .app-item { display: flex; padding: 15px 0; border-bottom: 0.5px solid var(--ios-separator); align-items: center; cursor: pointer; transition: background 0.2s, transform 0.2s; }
+        .app-item { 
+            display: flex; padding: 15px 0; border-bottom: 0.5px solid var(--ios-separator); 
+            align-items: center; cursor: pointer; transition: background 0.2s, transform 0.2s; 
+            -webkit-touch-callout: none;
+        }
         .app-item:last-child { border-bottom: none; }
         .app-item:hover { background: rgba(255,255,255,0.05); transform: scale(1.01); }
         .app-icon { width: 62px; height: 62px; border-radius: 14px; margin-right: 15px; border: var(--glass-border); background: #222; object-fit: cover; }
@@ -250,7 +268,7 @@
         .error-msg { text-align: center; padding: 50px 20px; color: var(--ios-subtext); font-size: 16px; font-weight: 500; }
         .error-icon { font-size: 40px; margin-bottom: 15px; opacity: 0.5; display: block; }
 
-        /* --- UPDATED: ELEGANT SEARCH --- */
+        /* SEARCH BAR & HISTORY */
         .search-bar {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(10, 10, 10, 0.7); 
@@ -281,6 +299,21 @@
         .input-wrap input { background: transparent; border: none; color: white; font-size: 17px; width: 100%; outline: none; margin-left: 10px; font-weight: 500; }
         .input-wrap input::placeholder { color: rgba(255,255,255,0.4); }
 
+        /* Search History Styling */
+        .history-header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 20px 20px 10px; font-size: 20px; font-weight: 700; color: #fff;
+        }
+        .clear-history { font-size: 14px; color: var(--ios-blue); cursor: pointer; }
+        .history-item {
+            display: flex; align-items: center; padding: 12px 20px; 
+            color: var(--ios-blue); font-size: 17px; cursor: pointer;
+            border-bottom: 0.5px solid rgba(255,255,255,0.1);
+        }
+        .history-item i.fa-clock { color: #666; margin-right: 15px; font-size: 15px; }
+        .history-item:last-child { border-bottom: none; }
+        .history-item:active { background: rgba(255,255,255,0.1); }
+
         /* --- UPDATED: NOBLE NAV --- */
         .bottom-nav {
             position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
@@ -296,66 +329,105 @@
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        /* NEUE KLASSE FÜR SCROLL-STATE */
-        .bottom-nav.nav-scrolled {
-            width: 140px;
-            height: 52px;
-            bottom: 20px;
-        }
-
+        .bottom-nav.nav-scrolled { width: 140px; height: 52px; bottom: 20px; }
         .animate-nav { animation: fadeInUp 0.8s 0.6s backwards; }
 
         .nav-item { color: rgba(255,255,255,0.5); text-align: center; cursor: pointer; transition: color 0.3s, transform 0.2s; }
         .nav-item.active { color: #FFF; text-shadow: 0 0 15px rgba(255,255,255,0.3); }
-        
-        /* NEU: Icon Animation wenn aktiv */
-        .nav-item.active i {
-            animation: popBounce 0.4s ease forwards;
-            color: var(--ios-blue);
-        }
-
+        .nav-item.active i { animation: popBounce 0.4s ease forwards; color: var(--ios-blue); }
         .nav-item:hover { transform: scale(1.1); color: #fff; }
         .nav-item i { font-size: 24px; display: block; margin-bottom: 4px; transition: margin 0.3s ease; }
-        
         .nav-item span { 
             font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; 
             display: block; opacity: 1; height: auto;
             transition: opacity 0.3s ease, height 0.3s ease, margin 0.3s ease;
         }
+        .bottom-nav.nav-scrolled .nav-item span { opacity: 0; height: 0; margin: 0; overflow: hidden; }
+        .bottom-nav.nav-scrolled .nav-item i { margin-bottom: 0; }
 
-        /* NEU: Text verstecken wenn gescrollt */
-        .bottom-nav.nav-scrolled .nav-item span {
-            opacity: 0;
-            height: 0;
-            margin: 0;
-            overflow: hidden;
+        /* --- CONTEXT MENU STYLING (NEU) --- */
+        .context-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            z-index: 9999; display: none; align-items: center; justify-content: center;
+            opacity: 0; transition: opacity 0.2s ease;
         }
+        .context-overlay.active { opacity: 1; }
         
-        .bottom-nav.nav-scrolled .nav-item i {
-            margin-bottom: 0;
+        .context-menu {
+            background: rgba(30, 30, 30, 0.85);
+            backdrop-filter: blur(30px) saturate(180%);
+            -webkit-backdrop-filter: blur(30px) saturate(180%);
+            width: 250px; border-radius: 14px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            transform: scale(0.9); opacity: 0;
+            overflow: hidden;
+            display: flex; flex-direction: column;
         }
+        .context-overlay.active .context-menu {
+            animation: menuPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            position: absolute; top: 50%; left: 50%;
+        }
+
+        .ctx-header {
+            padding: 15px; border-bottom: 0.5px solid rgba(255,255,255,0.1);
+            display: flex; align-items: center; gap: 10px;
+        }
+        .ctx-icon { width: 40px; height: 40px; border-radius: 10px; background: #333; }
+        .ctx-title { font-weight: 600; font-size: 15px; color: #fff; }
+        .ctx-sub { font-size: 12px; color: #888; margin-top: 2px; }
+
+        .ctx-actions { display: flex; flex-direction: column; }
+        .ctx-btn {
+            background: transparent; border: none; padding: 12px 16px;
+            color: #fff; font-size: 16px; text-align: left;
+            border-bottom: 0.5px solid rgba(255,255,255,0.1);
+            display: flex; justify-content: space-between; align-items: center;
+            cursor: pointer;
+        }
+        .ctx-btn:active { background: rgba(255,255,255,0.2); }
+        .ctx-btn:last-child { border-bottom: none; }
+        .ctx-btn i { font-size: 18px; width: 24px; text-align: center; }
+        .ctx-btn.danger { color: #ff453a; }
 
         .hidden { display: none; }
     </style>
 </head>
 <body>
 
+<div class="context-overlay" id="ctx-overlay" onclick="closeContextMenu()">
+    <div class="context-menu" id="ctx-menu" onclick="event.stopPropagation()">
+        </div>
+</div>
+
 <div class="search-bar" id="search-overlay">
     <div class="search-box">
         <div class="input-wrap">
             <i class="fas fa-search" style="color:rgba(255,255,255,0.5)"></i>
             <input type="text" id="search-input" placeholder="Apps, Spiele und Tools...">
+            <i class="fas fa-times-circle" id="clear-search-btn" onclick="clearInput()" style="color:rgba(255,255,255,0.3); margin-right:5px; display:none;"></i>
         </div>
         <span onclick="toggleSearch(false)" style="color:var(--ios-blue); font-size:17px; cursor:pointer; font-weight:500;">Abbrechen</span>
     </div>
-    <div id="search-results" class="app-list-container animate-entry" style="margin-top:25px; max-height: 75vh; overflow-y: auto; background: transparent; border: none; padding: 0;"></div>
+    
+    <div id="search-content" class="app-list-container animate-entry" style="margin-top:25px; max-height: 75vh; overflow-y: auto; background: transparent; border: none; padding: 0;">
+        <div id="search-history-container" style="display:none;">
+            <div class="history-header">
+                <span>Zuletzt gesucht</span>
+                <span class="clear-history" onclick="clearHistory()">Löschen</span>
+            </div>
+            <div id="history-list"></div>
+        </div>
+        <div id="search-results"></div>
+    </div>
 </div>
 
 <header id="main-header" class="animate-entry">
     <div class="header-blur-bg" id="header-blur"></div>
     <div class="logo">DownAPK</div>
     
-    <div class="sticky-app-bar" id="sticky-bar" onclick="window.location.href='#'">
+    <div class="sticky-app-bar" id="sticky-bar">
         <div class="sticky-left">
             <img id="sticky-icon" src="" class="sticky-icon" onerror="this.style.background='#333'">
             <div class="sticky-info-text">
@@ -431,7 +503,7 @@
 </nav>
 
 <script>
-    // Kategorien hinzugefügt für Filter-Logik
+    // --- DATEN & SETUP ---
     let appDatabase = [
         { name: "PhotoSwooper", author: "krille-chan", pkg: "com.github.krille_chan.photoswooper", icon: "https://f-droid.org/repo/com.github.krille_chan.photoswooper/en-US/icon.png", ver: "2.1.0", cat: "Tools" },
         { name: "OmWeather", author: "woheller69", pkg: "org.woheller69.omweather", icon: "https://f-droid.org/repo/org.woheller69.omweather/en-US/icon.png", ver: "1.5.2", cat: "Tools" },
@@ -444,23 +516,173 @@
         { name: "SuperTuxKart", author: "Tux", pkg: "org.supertuxkart", icon: "https://f-droid.org/repo/org.supertuxkart.stk/en-US/icon.png", ver: "1.4", cat: "Spiele" } 
     ];
 
-    async function loadFDroidApps() {
-        // Kurzer Delay für Skeleton-Demo
-        await new Promise(r => setTimeout(r, 600));
+    // --- SEARCH HISTORY LOGIC (NEU) ---
+    const HistoryManager = {
+        get: () => JSON.parse(localStorage.getItem('downapk_history') || '[]'),
+        add: (term) => {
+            let hist = HistoryManager.get();
+            hist = hist.filter(t => t !== term); // Duplikate entfernen
+            hist.unshift(term); // Neu hinzufügen am Anfang
+            if(hist.length > 8) hist.pop(); // Max 8 Einträge
+            localStorage.setItem('downapk_history', JSON.stringify(hist));
+        },
+        clear: () => {
+            localStorage.removeItem('downapk_history');
+            renderHistory();
+        },
+        removeOne: (e, term) => {
+            e.stopPropagation();
+            let hist = HistoryManager.get();
+            hist = hist.filter(t => t !== term);
+            localStorage.setItem('downapk_history', JSON.stringify(hist));
+            renderHistory();
+        }
+    };
 
+    function renderHistory() {
+        const list = document.getElementById('history-list');
+        const container = document.getElementById('search-history-container');
+        const hist = HistoryManager.get();
+        
+        if(hist.length === 0) {
+            container.style.display = 'none';
+            return;
+        }
+        
+        container.style.display = 'block';
+        list.innerHTML = "";
+        
+        hist.forEach(term => {
+            list.innerHTML += `
+            <div class="history-item" onclick="useHistory('${term}')">
+                <i class="far fa-clock"></i>
+                <span style="flex:1;">${term}</span>
+                <i class="fas fa-times" style="color:#666; padding:5px;" onclick="HistoryManager.removeOne(event, '${term}')"></i>
+            </div>`;
+        });
+    }
+
+    function clearHistory() { HistoryManager.clear(); }
+    function useHistory(term) {
+        document.getElementById('search-input').value = term;
+        performSearch(term);
+    }
+    function clearInput() {
+        document.getElementById('search-input').value = '';
+        performSearch('');
+        document.getElementById('search-input').focus();
+    }
+
+    // --- CONTEXT MENU LOGIC (NEU) ---
+    let pressTimer;
+    let isLongPress = false;
+    let currentPressElem = null;
+
+    // Helper: Schließt Kontextmenü
+    function closeContextMenu() {
+        const overlay = document.getElementById('ctx-overlay');
+        overlay.classList.remove('active');
+        setTimeout(() => overlay.style.display = 'none', 200);
+        
+        if(currentPressElem) {
+            currentPressElem.classList.remove('pressed');
+            currentPressElem = null;
+        }
+    }
+
+    // Start Long Press
+    function startLongPress(e, appDataJSON) {
+        // Ignoriere Multitouch
+        if(e.touches && e.touches.length > 1) return;
+        
+        const elem = e.currentTarget;
+        isLongPress = false;
+        elem.classList.add('pressed');
+        currentPressElem = elem;
+        
+        pressTimer = setTimeout(() => {
+            isLongPress = true;
+            // Haptic Feedback
+            if(navigator.vibrate) navigator.vibrate(50);
+            
+            // App Data parsen
+            const app = JSON.parse(decodeURIComponent(appDataJSON));
+            showContextMenu(app);
+        }, 600); // 600ms long press
+    }
+
+    // Cancel Long Press (bei Move oder End)
+    function cancelLongPress(e) {
+        clearTimeout(pressTimer);
+        if(!isLongPress && currentPressElem) {
+            currentPressElem.classList.remove('pressed');
+        }
+        // Wenn es ein Longpress war, Standard-Event (Click) verhindern
+        if(isLongPress) {
+            if(e.cancelable) e.preventDefault();
+            e.stopPropagation();
+        }
+    }
+
+    function showContextMenu(app) {
+        const overlay = document.getElementById('ctx-overlay');
+        const menu = document.getElementById('ctx-menu');
+        
+        // HTML für Menü bauen
+        menu.innerHTML = `
+            <div class="ctx-header">
+                <img src="${app.icon}" class="ctx-icon" onerror="this.style.background='#444'">
+                <div style="flex:1; overflow:hidden;">
+                    <div class="ctx-title">${app.name}</div>
+                    <div class="ctx-sub">${app.author}</div>
+                </div>
+            </div>
+            <div class="ctx-actions">
+                <button class="ctx-btn" onclick="window.location.href='app.html?id=${app.pkg}'">
+                    Öffnen <i class="fas fa-chevron-right" style="font-size:12px; opacity:0.5;"></i>
+                </button>
+                <button class="ctx-btn" onclick="shareApp('${app.name}')">
+                    Teilen <i class="fas fa-share" style="color:#0A84FF"></i>
+                </button>
+                <button class="ctx-btn" style="color:#32d74b">
+                    Installieren <i class="fas fa-cloud-arrow-down"></i>
+                </button>
+            </div>
+        `;
+
+        overlay.style.display = 'flex';
+        // Klein wenig delay für fade in
+        setTimeout(() => overlay.classList.add('active'), 10);
+    }
+
+    function shareApp(name) {
+        alert("Teilen simuliert für: " + name);
+        closeContextMenu();
+    }
+    
+    // Normaler Klick-Handler (nur ausführen, wenn kein LongPress stattfand)
+    function handleClick(e, url) {
+        if(isLongPress) {
+            e.preventDefault();
+            e.stopPropagation();
+            isLongPress = false; // Reset
+            return false;
+        }
+        window.location.href = url;
+    }
+
+    // --- STANDARD APP LOGIC ---
+
+    async function loadFDroidApps() {
+        await new Promise(r => setTimeout(r, 600));
         try {
             const response = await fetch('/api/apps');
             const data = await response.json();
             const remoteApps = data.map(app => ({
-                name: app.name,
-                author: app.author,
-                pkg: app.packageName,
-                icon: app.icon,
-                ver: app.version,
-                cat: "Tools" // Default cat für API items
+                name: app.name, author: app.author, pkg: app.packageName, icon: app.icon, ver: app.version, cat: "Tools"
             }));
             appDatabase = [...appDatabase, ...remoteApps];
-        } catch (e) { console.log("Verwende Offline DB"); } 
+        } catch (e) { console.log("Offline Mode"); } 
         finally { render('Alle'); }
     }
 
@@ -470,27 +692,27 @@
         const overlay = document.getElementById('search-overlay');
         const btnSearch = document.getElementById('btn-search');
         const btnHome = document.getElementById('btn-home');
+        const input = document.getElementById('search-input');
         
         if(show) {
             overlay.classList.add('active');
             btnSearch.classList.add('active');
             btnHome.classList.remove('active');
-            setTimeout(() => document.getElementById('search-input').focus(), 100);
+            setTimeout(() => input.focus(), 100);
+            if(input.value.trim() === "") renderHistory(); // Show history initial
         } else {
             overlay.classList.remove('active');
             btnSearch.classList.remove('active');
             btnHome.classList.add('active');
-            document.getElementById('search-input').blur();
+            input.blur();
         }
     }
 
     function viewAll(title) {
         toggleSearch(true);
-        document.getElementById('search-input').value = ""; 
-        performSearch(""); 
+        // Kein Text -> Zeigt History
     }
 
-    // Filter-Funktion für Kategorien
     function selectCat(el, category) {
         document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
         el.classList.add('active');
@@ -500,25 +722,21 @@
     function renderError() {
         document.getElementById('skeleton-loader').style.display = 'none';
         document.getElementById('content-main').style.display = 'block';
-        const errorHTML = `<div class="error-msg"><i class="fas fa-wifi error-icon"></i>Keine Apps gefunden.</div>`;
-        document.getElementById('scroll-trending').innerHTML = errorHTML;
+        document.getElementById('scroll-trending').innerHTML = `<div class="error-msg"><i class="fas fa-wifi error-icon"></i>Keine Apps gefunden.</div>`;
     }
 
-    // Render akzeptiert jetzt Filter
     function render(filterCat) {
         document.getElementById('skeleton-loader').style.display = 'none';
         document.getElementById('content-main').style.display = 'block';
 
         if (!appDatabase || appDatabase.length === 0) { renderError(); return; }
 
-        // Filtern
         let filteredApps = appDatabase;
         if (filterCat && filterCat !== 'Alle') {
             filteredApps = appDatabase.filter(app => app.cat === filterCat);
         }
 
         if(filteredApps.length === 0) {
-             // Fallback falls Kategorie leer
              document.getElementById('scroll-trending').innerHTML = `<div style="padding:20px; color:#666;">Keine Apps in "${filterCat}"</div>`;
              document.getElementById('scroll-top').innerHTML = "";
              document.getElementById('update-feed').innerHTML = "";
@@ -528,15 +746,21 @@
         const shuffled = shuffle([...filteredApps]);
         const feat = shuffled[0];
 
-        // Header Update (nur wenn "Alle" oder wenn gefiltert)
+        // Header
         document.getElementById('header-blur').style.backgroundImage = `url('${feat.icon}')`;
         document.getElementById('sticky-icon').src = feat.icon;
         document.getElementById('sticky-name').innerText = feat.name;
         document.getElementById('sticky-bar').onclick = () => window.location.href = `app.html?id=${feat.pkg}`;
 
-        // Featured nur anzeigen wenn "Alle" ausgewählt ist (optional, hier zeigen wir es immer based auf filter)
+        // Featured
+        const featJSON = encodeURIComponent(JSON.stringify(feat));
         document.getElementById('featured-hero').innerHTML = `
-            <div class="featured-banner" onclick="window.location.href='app.html?id=${feat.pkg}'">
+            <div class="featured-banner" 
+                 onclick="handleClick(event, 'app.html?id=${feat.pkg}')"
+                 ontouchstart="startLongPress(event, '${featJSON}')"
+                 ontouchend="cancelLongPress(event)"
+                 ontouchmove="cancelLongPress(event)"
+                 oncontextmenu="return false;">
                 <div class="featured-img-bg" style="background: url('${feat.icon}') center/cover"></div>
                 <div class="featured-overlay"></div>
                 <div class="featured-info">
@@ -553,19 +777,34 @@
         const feed = document.getElementById('update-feed');
         trending.innerHTML = ""; top.innerHTML = ""; feed.innerHTML = "";
         
-        const createCard = (app) => `
-            <div class="card-item animate-entry" onclick="window.location.href='app.html?id=${app.pkg}'">
+        // Helper zum Erstellen der Karten mit LongPress Events
+        const createCard = (app) => {
+            const appJSON = encodeURIComponent(JSON.stringify(app));
+            return `
+            <div class="card-item animate-entry" 
+                 onclick="handleClick(event, 'app.html?id=${app.pkg}')"
+                 ontouchstart="startLongPress(event, '${appJSON}')"
+                 ontouchend="cancelLongPress(event)"
+                 ontouchmove="cancelLongPress(event)"
+                 oncontextmenu="return false;">
                 <img src="${app.icon}" class="card-icon" onerror="this.src='https://f-droid.org/repo/${app.pkg}/en-US/icon.png'">
                 <div class="card-name-wrap"><span class="card-name">${app.name}</span></div>
                 <span class="card-author">${app.author}</span>
-            </div>
-        `;
+            </div>`;
+        };
 
         shuffled.slice(0, 8).forEach(app => trending.innerHTML += createCard(app));
         [...shuffled].reverse().slice(0, 8).forEach(app => top.innerHTML += createCard(app));
+        
         shuffled.slice(0, 15).forEach(app => {
+            const appJSON = encodeURIComponent(JSON.stringify(app));
             feed.innerHTML += `
-                <div class="app-item animate-entry" onclick="window.location.href='app.html?id=${app.pkg}'">
+                <div class="app-item animate-entry" 
+                     onclick="handleClick(event, 'app.html?id=${app.pkg}')"
+                     ontouchstart="startLongPress(event, '${appJSON}')"
+                     ontouchend="cancelLongPress(event)"
+                     ontouchmove="cancelLongPress(event)"
+                     oncontextmenu="return false;">
                     <img src="${app.icon}" class="app-icon">
                     <div class="app-info">
                         <div class="app-name-wrap"><span class="app-name">${app.name}</span></div>
@@ -579,15 +818,34 @@
 
     function performSearch(query) {
         const resultsBox = document.getElementById('search-results');
-        resultsBox.innerHTML = "";
-        const filtered = query === "" ? [] : appDatabase.filter(a => a.name.toLowerCase().includes(query.toLowerCase()) || a.pkg.toLowerCase().includes(query.toLowerCase())).slice(0, 50);
+        const historyBox = document.getElementById('search-history-container');
+        const clearBtn = document.getElementById('clear-search-btn');
         
-        if(query !== "" && filtered.length === 0) {
+        clearBtn.style.display = query.length > 0 ? 'block' : 'none';
+
+        if(query.trim() === "") {
+            renderHistory();
+            resultsBox.innerHTML = "";
+            return;
+        }
+
+        historyBox.style.display = 'none';
+        resultsBox.innerHTML = "";
+        
+        const filtered = appDatabase.filter(a => a.name.toLowerCase().includes(query.toLowerCase()) || a.pkg.toLowerCase().includes(query.toLowerCase())).slice(0, 50);
+        
+        if(filtered.length === 0) {
             resultsBox.innerHTML = "<div style='padding:40px; color:#888; text-align:center;'>Keine Treffer.</div>";
-        } else if (filtered.length > 0) {
+        } else {
             filtered.forEach(app => {
+                const appJSON = encodeURIComponent(JSON.stringify(app));
                 resultsBox.innerHTML += `
-                    <div class="app-item" style="padding: 10px 16px; background: rgba(255,255,255,0.05); margin-bottom: 1px;" onclick="window.location.href='app.html?id=${app.pkg}'">
+                    <div class="app-item" style="padding: 10px 16px; background: rgba(255,255,255,0.05); margin-bottom: 1px;" 
+                        onclick="saveAndGo('${app.name}', '${app.pkg}')"
+                        ontouchstart="startLongPress(event, '${appJSON}')"
+                        ontouchend="cancelLongPress(event)"
+                        ontouchmove="cancelLongPress(event)"
+                        oncontextmenu="return false;">
                         <img src="${app.icon}" class="app-icon" style="width:48px; height:48px;">
                         <div class="app-info">
                             <div class="app-name-wrap"><span class="app-name" style="font-size:16px;">${app.name}</span></div>
@@ -599,29 +857,34 @@
         }
     }
 
-    // SCROLL LOGIK ERWEITERT
+    // Save search when clicking result
+    function saveAndGo(term, pkg) {
+        if(isLongPress) return; // Prevent click on longpress
+        HistoryManager.add(term);
+        window.location.href = `app.html?id=${pkg}`;
+    }
+    
+    // Save search on Enter key
+    document.getElementById('search-input').addEventListener('keydown', (e) => {
+        if(e.key === 'Enter' && e.target.value.trim() !== "") {
+             HistoryManager.add(e.target.value);
+             document.getElementById('search-input').blur();
+        }
+    });
+
+    // SCROLL LOGIK
     let lastScrollTop = 0;
     const bottomNav = document.querySelector('.bottom-nav');
 
     window.addEventListener('scroll', () => {
-        // Header Logik (Bestehend)
         const header = document.getElementById('main-header');
         if (window.scrollY > 40) header.classList.add('scrolled');
         else header.classList.remove('scrolled');
 
-        // NAV BAR LOGIK (NEU)
         let st = window.scrollY || document.documentElement.scrollTop;
-        
-        // Wenn man nach unten scrollt (mehr als 50px)
-        if (st > lastScrollTop && st > 50) {
-            bottomNav.classList.add('nav-scrolled');
-        } 
-        // Wenn man nach oben scrollt
-        else if (st < lastScrollTop) {
-            bottomNav.classList.remove('nav-scrolled');
-        }
-        
-        lastScrollTop = st <= 0 ? 0 : st; // Verhindert negative Werte
+        if (st > lastScrollTop && st > 50) bottomNav.classList.add('nav-scrolled');
+        else if (st < lastScrollTop) bottomNav.classList.remove('nav-scrolled');
+        lastScrollTop = st <= 0 ? 0 : st;
     });
 
     document.getElementById('search-input').addEventListener('input', (e) => performSearch(e.target.value));
@@ -629,7 +892,7 @@
 </script>
 
 <div style="text-align: center; margin-top: 20px; padding: 10px;">
-    <p style="color: #888888; font-size: 12px; margin: 0;">Version 18.45</p>
+    <p style="color: #888888; font-size: 12px; margin: 0;">Version 19.50</p>
     <p style="color: #666666; font-size: 10px; margin-top: 5px; opacity: 0.7;">By Nexus with ❤️</p>
     <div style="width: 100%; text-align: center; margin-top: 15px;">
         <a href="https://nexus-ashy.vercel.app/" style="color: #00ff00; text-decoration: none; font-size: 12px; font-weight: bold;">Mehr von uns</a>
