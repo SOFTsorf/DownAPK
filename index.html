@@ -495,10 +495,35 @@
         .menu-separator { height: 1px; background: var(--ios-separator); width: 100%; margin-left: 16px; }
 
         .hidden { display: none; }
+
+        /* --- DESKTOP WARNING OVERLAY --- */
+        #desktop-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: #000; z-index: 10000;
+            display: none; /* Default hidden on mobile */
+            flex-direction: column; align-items: center; justify-content: center;
+            padding: 20px; box-sizing: border-box;
+            color: white; text-align: center;
+        }
+        /* Show on screens wider than 768px (typical tablet/PC breakpoint) */
+        @media (min-width: 769px) {
+            #desktop-overlay { display: flex; }
+        }
+        /* Force hide via JS class if dismissed */
+        body.overlay-closed #desktop-overlay {
+            display: none !important;
+        }
     </style>
 </head>
 <body>
 
+<div id="desktop-overlay">
+    <img src="https://lh3.googleusercontent.com/d/1CenhIHZl9A4D9vyuWJErFtyPTQDtQZqU" alt="Mobile optimized" style="max-width: 300px; width: 80%; border-radius: 20px; margin-bottom: 20px; object-fit: contain;">
+    <h1 style="font-size: 32px; font-weight: 800; margin: 0 0 10px 0;">Ooops!</h1>
+    <p style="color: #8E8E93; font-size: 16px; margin: 0 0 30px 0;">Diese Webseite ist für dein Handy optimiert.</p>
+    <button onclick="closeDesktopOverlay()" style="background: white; color: black; border: none; padding: 12px 24px; border-radius: 25px; font-weight: 700; font-size: 16px; cursor: pointer; margin-bottom: 20px; transition: transform 0.2s;">Trotzdem fortfahren</button>
+    <a href="warum.html" style="color: #0A84FF; font-size: 14px; text-decoration: none;">Warum kommt diese Meldung?</a>
+</div>
 <div id="context-menu-overlay" class="context-menu-overlay" onclick="closeContextMenu()">
     <div class="context-menu-wrapper" onclick="event.stopPropagation()">
         <div class="context-preview-card">
@@ -641,6 +666,11 @@
 </nav>
 
 <script>
+    // --- DESKTOP OVERLAY LOGIC ---
+    function closeDesktopOverlay() {
+        document.body.classList.add('overlay-closed');
+    }
+
     // --- THEME LOGIC START ---
     let isLightMode = false;
 
@@ -1022,7 +1052,7 @@
 </script>
 
 <div style="text-align: center; margin-top: 20px; padding: 10px;">
-    <p style="color: #888888; font-size: 12px; margin: 0;">Version 26.79</p>
+    <p style="color: #888888; font-size: 12px; margin: 0;">Version 26.83</p>
     <p style="color: #666666; font-size: 10px; margin-top: 5px; opacity: 0.7;">By Nexus with ❤️</p>
     <div style="width: 100%; text-align: center; margin-top: 15px;">
         <a href="https://nexus-ashy.vercel.app/" style="color: #00ff00; text-decoration: none; font-size: 12px; font-weight: bold;">Mehr von uns</a>
