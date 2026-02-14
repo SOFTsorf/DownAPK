@@ -11,7 +11,6 @@
     <title>DownAPK</title>
 
 <link rel="icon" type="image/png" href="https://lh3.googleusercontent.com/d/1K8g5EPJgvE0-RbGiyJVGWFaCBc9s27gM">
-
 <link rel="apple-touch-icon" href="https://lh3.googleusercontent.com/d/1K8g5EPJgvE0-RbGiyJVGWFaCBc9s27gM">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -20,6 +19,7 @@
             --ios-bg: #000000;
             --ios-card: #1C1C1E;
             --ios-blue: #0A84FF;
+            --ios-red: #FF453A;
             --ios-text: #FFFFFF;
             --ios-subtext: #8E8E93;
             --ios-separator: #38383A;
@@ -34,7 +34,8 @@
             font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif; 
             margin: 0; background: var(--ios-bg); color: var(--ios-text); 
             padding-bottom: 120px; overflow-x: hidden; -webkit-font-smoothing: antialiased;
-            -webkit-user-select: none; user-select: none; /* Verhindert Standard-Browser-Menüs */
+            user-select: none; /* Wichtig für Long-Press */
+            -webkit-user-select: none;
         }
 
         a { text-decoration: none !important; color: inherit !important; -webkit-tap-highlight-color: transparent; }
@@ -57,11 +58,15 @@
             100% { opacity: 1; }
         }
         
-        /* NEU: Icon Animation */
         @keyframes popBounce {
             0% { transform: scale(1); }
             40% { transform: scale(1.3); }
             100% { transform: scale(1); }
+        }
+        
+        @keyframes menuPop {
+            0% { opacity: 0; transform: scale(0.9) translateY(10px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
         }
 
         .animate-entry {
@@ -225,9 +230,9 @@
         .horizontal-scroll::-webkit-scrollbar { display: none; }
 
         /* CARDS & ITEMS */
-        .card-item { width: 120px; min-width: 120px; cursor: pointer; transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); -webkit-touch-callout: none; }
+        .card-item { width: 120px; min-width: 120px; cursor: pointer; transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); user-select: none; }
         .card-item:hover { transform: translateY(-5px) scale(1.03); }
-        .card-icon { width: 120px; height: 120px; border-radius: 26px; object-fit: cover; border: var(--glass-border); margin-bottom: 10px; background: #222; transition: filter 0.3s; }
+        .card-icon { width: 120px; height: 120px; border-radius: 26px; object-fit: cover; border: var(--glass-border); margin-bottom: 10px; background: #222; transition: filter 0.3s; pointer-events: none; }
         .card-item:hover .card-icon { filter: brightness(1.2); }
         .card-name-wrap { width: 100%; overflow: hidden; white-space: nowrap; margin-bottom: 2px; mask-image: linear-gradient(to right, black 90%, transparent 100%); }
         .card-name { font-size: 14px; font-weight: 500; color: white !important; display: inline-block; text-overflow: ellipsis; }
@@ -235,10 +240,10 @@
         .card-author { font-size: 12px; color: var(--ios-subtext); }
 
         .app-list-container { background: var(--ios-card); margin: 0 20px; border-radius: var(--radius-m); padding: 0 16px; border: var(--glass-border); }
-        .app-item { display: flex; padding: 15px 0; border-bottom: 0.5px solid var(--ios-separator); align-items: center; cursor: pointer; transition: background 0.2s, transform 0.2s; -webkit-touch-callout: none; }
+        .app-item { display: flex; padding: 15px 0; border-bottom: 0.5px solid var(--ios-separator); align-items: center; cursor: pointer; transition: background 0.2s, transform 0.2s; user-select: none; }
         .app-item:last-child { border-bottom: none; }
         .app-item:hover { background: rgba(255,255,255,0.05); transform: scale(1.01); }
-        .app-icon { width: 62px; height: 62px; border-radius: 14px; margin-right: 15px; border: var(--glass-border); background: #222; object-fit: cover; }
+        .app-icon { width: 62px; height: 62px; border-radius: 14px; margin-right: 15px; border: var(--glass-border); background: #222; object-fit: cover; pointer-events: none; }
         .app-info { flex-grow: 1; min-width: 0; overflow: hidden; }
         .app-name-wrap { width: 100%; overflow: hidden; white-space: nowrap; margin-bottom: 3px; mask-image: linear-gradient(to right, black 90%, transparent 100%); }
         .app-name { font-weight: 600; font-size: 17px; color: #FFF !important; display: inline-block; text-overflow: ellipsis; }
@@ -251,7 +256,7 @@
         .error-msg { text-align: center; padding: 50px 20px; color: var(--ios-subtext); font-size: 16px; font-weight: 500; }
         .error-icon { font-size: 40px; margin-bottom: 15px; opacity: 0.5; display: block; }
 
-        /* --- SEARCH & HISTORY --- */
+        /* --- UPDATED: ELEGANT SEARCH --- */
         .search-bar {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(10, 10, 10, 0.7); 
@@ -278,41 +283,23 @@
             transition: background 0.2s;
         }
         .input-wrap:focus-within { background: rgba(255, 255, 255, 0.18); }
+        
         .input-wrap input { background: transparent; border: none; color: white; font-size: 17px; width: 100%; outline: none; margin-left: 10px; font-weight: 500; }
         .input-wrap input::placeholder { color: rgba(255,255,255,0.4); }
 
-        .search-history-container { padding: 20px; }
-        .history-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; color: #888; font-size: 13px; font-weight: 600; text-transform: uppercase; }
-        .history-item { display: flex; align-items: center; padding: 12px 0; border-bottom: 0.5px solid var(--ios-separator); color: var(--ios-blue); font-size: 16px; cursor: pointer; }
-        .history-item i { margin-right: 15px; color: #555; font-size: 14px; }
+        /* SEARCH HISTORY STYLE */
+        .search-history-header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px 20px 5px; color: var(--ios-subtext); font-size: 14px; font-weight: 600;
+        }
+        .search-history-item {
+            display: flex; align-items: center; padding: 12px 20px;
+            color: var(--ios-blue); font-size: 17px; cursor: pointer;
+        }
+        .search-history-item i { margin-right: 15px; color: var(--ios-subtext); font-size: 14px; }
+        .search-history-item:hover { background: rgba(255,255,255,0.05); }
 
-        /* --- CONTEXT MENU --- */
-        .cm-overlay {
-            position: fixed; top:0; left:0; width:100%; height:100%;
-            background: rgba(0,0,0,0.4); backdrop-filter: blur(10px);
-            z-index: 9000; opacity: 0; pointer-events: none;
-            transition: opacity 0.3s ease;
-            display: flex; align-items: center; justify-content: center;
-        }
-        .cm-overlay.active { opacity: 1; pointer-events: auto; }
-        .cm-menu {
-            width: 250px; background: rgba(44, 44, 46, 0.95);
-            backdrop-filter: blur(20px); border-radius: 14px;
-            overflow: hidden; transform: scale(0.8); opacity: 0;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-        }
-        .cm-overlay.active .cm-menu { transform: scale(1); opacity: 1; }
-        .cm-item {
-            padding: 14px 18px; display: flex; justify-content: space-between; align-items: center;
-            color: white; font-size: 16px; border-bottom: 0.5px solid rgba(255,255,255,0.1);
-            cursor: pointer; transition: background 0.2s;
-        }
-        .cm-item:active { background: rgba(255,255,255,0.1); }
-        .cm-item:last-child { border-bottom: none; }
-        .cm-item.danger { color: #FF453A; }
-
-        /* --- NAV --- */
+        /* --- UPDATED: NOBLE NAV --- */
         .bottom-nav {
             position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
             width: 240px; height: 74px; 
@@ -326,54 +313,133 @@
             box-shadow: 0 20px 40px rgba(0,0,0,0.5);
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        .bottom-nav.nav-scrolled { width: 140px; height: 52px; bottom: 20px; }
+
+        .bottom-nav.nav-scrolled {
+            width: 140px;
+            height: 52px;
+            bottom: 20px;
+        }
+
         .animate-nav { animation: fadeInUp 0.8s 0.6s backwards; }
+
         .nav-item { color: rgba(255,255,255,0.5); text-align: center; cursor: pointer; transition: color 0.3s, transform 0.2s; }
-        .nav-item.active { color: #FFF; }
-        .nav-item.active i { animation: popBounce 0.4s ease forwards; color: var(--ios-blue); }
+        .nav-item.active { color: #FFF; text-shadow: 0 0 15px rgba(255,255,255,0.3); }
+        
+        .nav-item.active i {
+            animation: popBounce 0.4s ease forwards;
+            color: var(--ios-blue);
+        }
+
         .nav-item:hover { transform: scale(1.1); color: #fff; }
         .nav-item i { font-size: 24px; display: block; margin-bottom: 4px; transition: margin 0.3s ease; }
-        .nav-item span { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; transition: all 0.3s ease; }
-        .bottom-nav.nav-scrolled .nav-item span { opacity: 0; height: 0; margin: 0; overflow: hidden; }
-        .bottom-nav.nav-scrolled .nav-item i { margin-bottom: 0; }
+        
+        .nav-item span { 
+            font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; 
+            display: block; opacity: 1; height: auto;
+            transition: opacity 0.3s ease, height 0.3s ease, margin 0.3s ease;
+        }
+
+        .bottom-nav.nav-scrolled .nav-item span {
+            opacity: 0;
+            height: 0;
+            margin: 0;
+            overflow: hidden;
+        }
+        
+        .bottom-nav.nav-scrolled .nav-item i {
+            margin-bottom: 0;
+        }
+
+        /* --- CONTEXT MENU OVERLAY (NEU) --- */
+        .ctx-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(15px);
+            z-index: 6000;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        .ctx-overlay.active { opacity: 1; pointer-events: auto; }
+        
+        .ctx-preview {
+            width: 140px; text-align: center; margin-bottom: 20px;
+            transform: scale(0.8); transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .ctx-overlay.active .ctx-preview { transform: scale(1); }
+        .ctx-icon { width: 120px; height: 120px; border-radius: 26px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); margin-bottom: 10px; background: #222; }
+        .ctx-title { font-size: 18px; font-weight: 600; color: white; text-shadow: 0 2px 5px rgba(0,0,0,0.5); }
+
+        .ctx-menu {
+            width: 250px; background: rgba(30,30,30,0.85);
+            backdrop-filter: blur(20px);
+            border-radius: 14px;
+            overflow: hidden;
+            animation: menuPop 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+        .ctx-item {
+            padding: 14px 20px; font-size: 16px; 
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 0.5px solid rgba(255,255,255,0.1);
+            color: #fff; cursor: pointer; transition: background 0.2s;
+        }
+        .ctx-item:last-child { border-bottom: none; }
+        .ctx-item:active { background: rgba(255,255,255,0.2); }
+        .ctx-item.danger { color: var(--ios-red); }
 
         .hidden { display: none; }
     </style>
 </head>
 <body>
 
-<div class="cm-overlay" id="cm-overlay" onclick="closeCM()">
-    <div class="cm-menu" id="cm-menu" onclick="event.stopPropagation()">
-        <div class="cm-item" onclick="handleCMAction('details')">
-            Details ansehen <i class="fas fa-info-circle"></i>
-        </div>
-        <div class="cm-item" onclick="handleCMAction('share')">
-            Teilen <i class="fas fa-share-nodes"></i>
-        </div>
-        <div class="cm-item danger" onclick="closeCM()">
-            Abbrechen <i class="fas fa-xmark"></i>
-        </div>
-    </div>
-</div>
-
 <div class="search-bar" id="search-overlay">
     <div class="search-box">
         <div class="input-wrap">
             <i class="fas fa-search" style="color:rgba(255,255,255,0.5)"></i>
-            <input type="text" id="search-input" placeholder="Apps, Spiele und Tools...">
+            <input type="text" id="search-input" placeholder="Apps, Spiele und Tools..." autocomplete="off">
         </div>
         <span onclick="toggleSearch(false)" style="color:var(--ios-blue); font-size:17px; cursor:pointer; font-weight:500;">Abbrechen</span>
     </div>
-    <div id="search-history" class="search-history-container"></div>
-    <div id="search-results" class="app-list-container animate-entry" style="margin-top:25px; max-height: 75vh; overflow-y: auto; background: transparent; border: none; padding: 0;"></div>
+    
+    <div id="search-history-container" style="margin-top:20px; display:none;">
+        <div class="search-history-header">
+            <span>ZULETZT GESUCHT</span>
+            <span onclick="clearHistory()" style="color:var(--ios-blue); cursor:pointer; font-size:13px;">Löschen</span>
+        </div>
+        <div id="search-history-list"></div>
+    </div>
+
+    <div id="search-results" class="app-list-container animate-entry" style="margin-top:15px; max-height: 75vh; overflow-y: auto; background: transparent; border: none; padding: 0;"></div>
+</div>
+
+<div class="ctx-overlay" id="ctx-overlay" onclick="closeContextMenu()">
+    <div class="ctx-preview" id="ctx-preview" onclick="event.stopPropagation()">
+        <img id="ctx-img" class="ctx-icon" src="">
+        <div id="ctx-name" class="ctx-title">App Name</div>
+    </div>
+    <div class="ctx-menu" onclick="event.stopPropagation()">
+        <div class="ctx-item" id="ctx-btn-open">
+            <span>Details ansehen</span>
+            <i class="fas fa-info-circle"></i>
+        </div>
+        <div class="ctx-item" onclick="shareApp()">
+            <span>Teilen</span>
+            <i class="fas fa-share-nodes"></i>
+        </div>
+        <div class="ctx-item danger" onclick="closeContextMenu()">
+            <span>Abbrechen</span>
+            <i class="fas fa-xmark"></i>
+        </div>
+    </div>
 </div>
 
 <header id="main-header" class="animate-entry">
     <div class="header-blur-bg" id="header-blur"></div>
     <div class="logo">DownAPK</div>
-    <div class="sticky-app-bar" id="sticky-bar">
+    
+    <div class="sticky-app-bar" id="sticky-bar" onclick="window.location.href='#'">
         <div class="sticky-left">
-            <img id="sticky-icon" src="" class="sticky-icon">
+            <img id="sticky-icon" src="" class="sticky-icon" onerror="this.style.background='#333'">
             <div class="sticky-info-text">
                 <span id="sticky-name" class="sticky-name">Laden...</span>
                 <span class="sticky-sub">Empfehlung</span>
@@ -387,22 +453,50 @@
 
 <div id="skeleton-loader" class="skeleton-loader">
     <div class="skeleton sk-hero"></div>
-    <div class="sk-row"><div class="skeleton sk-card"></div><div class="skeleton sk-card"></div><div class="skeleton sk-card"></div></div>
+    <div class="sk-row">
+        <div class="skeleton sk-card"></div>
+        <div class="skeleton sk-card"></div>
+        <div class="skeleton sk-card"></div>
+        <div class="skeleton sk-card"></div>
+    </div>
+    <div class="skeleton sk-list-item" style="height: 30px; width: 150px; margin-bottom: 20px;"></div>
+    <div class="sk-list">
+        <div class="sk-item">
+            <div class="skeleton sk-icon"></div>
+            <div class="sk-text-lines">
+                <div class="skeleton sk-line long"></div>
+                <div class="skeleton sk-line short"></div>
+            </div>
+        </div>
+        <div class="sk-item">
+            <div class="skeleton sk-icon"></div>
+            <div class="sk-text-lines">
+                <div class="skeleton sk-line long"></div>
+                <div class="skeleton sk-line short"></div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div id="content-main" style="display: none;">
+    
     <div class="category-scroll animate-entry">
         <div class="cat-pill active" onclick="selectCat(this, 'Alle')">Alle</div>
         <div class="cat-pill" onclick="selectCat(this, 'Spiele')">Spiele</div>
         <div class="cat-pill" onclick="selectCat(this, 'Tools')">Tools</div>
         <div class="cat-pill" onclick="selectCat(this, 'Social Media')">Social Media</div>
+        <div class="cat-pill" onclick="selectCat(this, 'Privacy')">Privacy</div>
         <div class="cat-pill" onclick="selectCat(this, 'Media')">Media</div>
     </div>
+
     <div id="featured-hero" class="animate-entry delay-1"></div>
-    <div class="section-title animate-entry delay-2">Angesagt <i class="fas fa-chevron-right" style="font-size:14px; opacity:0.3;"></i></div>
+
+    <div class="section-title animate-entry delay-2">Angesagt <i class="fas fa-chevron-right" onclick="viewAll('Angesagt')" style="font-size:14px; opacity:0.3; cursor:pointer;"></i></div>
     <div class="horizontal-scroll animate-entry delay-2" id="scroll-trending"></div>
-    <div class="section-title animate-entry delay-3">Top Apps <span class="section-more">Alle</span></div>
+
+    <div class="section-title animate-entry delay-3">Top Apps <span class="section-more" onclick="viewAll('Top Apps')">Alle</span></div>
     <div class="horizontal-scroll animate-entry delay-3" id="scroll-top"></div>
+
     <div class="section-title animate-entry delay-4">Neueste Updates</div>
     <div id="update-feed" class="app-list-container animate-entry delay-4"></div>
 </div>
@@ -419,6 +513,7 @@
 </nav>
 
 <script>
+    // --- DATENBANK & VARIABLEN ---
     let appDatabase = [
         { name: "PhotoSwooper", author: "krille-chan", pkg: "com.github.krille_chan.photoswooper", icon: "https://f-droid.org/repo/com.github.krille_chan.photoswooper/en-US/icon.png", ver: "2.1.0", cat: "Tools" },
         { name: "OmWeather", author: "woheller69", pkg: "org.woheller69.omweather", icon: "https://f-droid.org/repo/org.woheller69.omweather/en-US/icon.png", ver: "1.5.2", cat: "Tools" },
@@ -431,102 +526,178 @@
         { name: "SuperTuxKart", author: "Tux", pkg: "org.supertuxkart", icon: "https://f-droid.org/repo/org.supertuxkart.stk/en-US/icon.png", ver: "1.4", cat: "Spiele" } 
     ];
 
-    let currentCMApp = null;
-    let longPressTimer;
+    // --- INITIALISIERUNG ---
+    async function loadFDroidApps() {
+        await new Promise(r => setTimeout(r, 600)); // Delay für Skeleton
 
-    // --- CONTEXT MENU LOGIC ---
-    function initLongPress(element, app) {
-        const start = (e) => {
-            longPressTimer = setTimeout(() => {
-                if ('vibrate' in navigator) navigator.vibrate(50);
-                openCM(app);
-            }, 600);
-        };
-        const end = () => clearTimeout(longPressTimer);
-        
-        element.addEventListener('touchstart', start);
-        element.addEventListener('touchend', end);
-        element.addEventListener('mousedown', start);
-        element.addEventListener('mouseup', end);
-        element.addEventListener('mouseleave', end);
+        try {
+            const response = await fetch('/api/apps');
+            const data = await response.json();
+            const remoteApps = data.map(app => ({
+                name: app.name,
+                author: app.author,
+                pkg: app.packageName,
+                icon: app.icon,
+                ver: app.version,
+                cat: "Tools"
+            }));
+            appDatabase = [...appDatabase, ...remoteApps];
+        } catch (e) { console.log("Verwende Offline DB"); } 
+        finally { render('Alle'); }
     }
 
-    function openCM(app) {
-        currentCMApp = app;
-        document.getElementById('cm-overlay').classList.add('active');
-    }
+    function shuffle(array) { return array.sort(() => Math.random() - 0.5); }
 
-    function closeCM() {
-        document.getElementById('cm-overlay').classList.remove('active');
-    }
+    // --- CONTEXT MENU (LONG PRESS LOGIK) ---
+    let pressTimer;
+    let isScrolling = false;
+    let currentCtxApp = null;
 
-    function handleCMAction(action) {
-        if(action === 'details' && currentCMApp) {
-            window.location.href = `app.html?id=${currentCMApp.pkg}`;
-        } else if(action === 'share') {
-            alert("Link kopiert: " + currentCMApp.name);
-        }
-        closeCM();
-    }
+    function attachContextListeners(element, app) {
+        // Touch (Mobile)
+        element.addEventListener('touchstart', (e) => {
+            isScrolling = false;
+            pressTimer = setTimeout(() => openContextMenu(app), 600); // 600ms Long Press
+        }, {passive: true});
 
-    // --- SEARCH HISTORY LOGIC ---
-    function getHistory() {
-        return JSON.parse(localStorage.getItem('search_history') || '[]');
-    }
+        element.addEventListener('touchmove', () => {
+            isScrolling = true;
+            clearTimeout(pressTimer);
+        }, {passive: true});
 
-    function saveToHistory(query) {
-        if (!query || query.trim() === "") return;
-        let history = getHistory();
-        history = [query, ...history.filter(h => h !== query)].slice(0, 5);
-        localStorage.setItem('search_history', JSON.stringify(history));
-    }
+        element.addEventListener('touchend', () => clearTimeout(pressTimer));
+        element.addEventListener('touchcancel', () => clearTimeout(pressTimer));
 
-    function renderHistory() {
-        const container = document.getElementById('search-history');
-        const history = getHistory();
-        if (history.length === 0) { container.innerHTML = ""; return; }
-        
-        let html = `<div class="history-header"><span>Zuletzt gesucht</span> <span style="color:var(--ios-blue); cursor:pointer;" onclick="clearHistory()">Leeren</span></div>`;
-        history.forEach(item => {
-            html += `<div class="history-item" onclick="useHistory('${item}')"><i class="fas fa-clock-rotate-left"></i> ${item}</div>`;
+        // Mouse (Desktop/Testing)
+        element.addEventListener('mousedown', () => {
+            pressTimer = setTimeout(() => openContextMenu(app), 600);
         });
-        container.innerHTML = html;
+        element.addEventListener('mouseup', () => clearTimeout(pressTimer));
+        element.addEventListener('mouseleave', () => clearTimeout(pressTimer));
+
+        // Prevent Default Menu
+        element.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            openContextMenu(app);
+            return false;
+        });
+    }
+
+    function openContextMenu(app) {
+        // Haptic Feedback simulieren
+        if (navigator.vibrate) navigator.vibrate(50);
+        
+        currentCtxApp = app;
+        const overlay = document.getElementById('ctx-overlay');
+        document.getElementById('ctx-name').innerText = app.name;
+        document.getElementById('ctx-img').src = app.icon;
+        
+        // Button Aktionen setzen
+        document.getElementById('ctx-btn-open').onclick = () => {
+            window.location.href = `app.html?id=${app.pkg}`;
+        };
+        
+        overlay.classList.add('active');
+    }
+
+    function closeContextMenu() {
+        document.getElementById('ctx-overlay').classList.remove('active');
+    }
+
+    function shareApp() {
+        if(navigator.share && currentCtxApp) {
+            navigator.share({
+                title: currentCtxApp.name,
+                text: `Schau dir ${currentCtxApp.name} auf DownAPK an!`,
+                url: window.location.href
+            });
+        }
+        closeContextMenu();
+    }
+
+    // --- SEARCH HISTORY LOGIK ---
+    const SEARCH_HISTORY_KEY = 'downapk_search_history';
+
+    function getHistory() {
+        return JSON.parse(localStorage.getItem(SEARCH_HISTORY_KEY) || '[]');
+    }
+
+    function addToHistory(term) {
+        if (!term || term.trim() === '') return;
+        let history = getHistory();
+        // Duplikate entfernen und an den Anfang setzen
+        history = history.filter(item => item.toLowerCase() !== term.toLowerCase());
+        history.unshift(term);
+        // Limit auf 5
+        if (history.length > 5) history.pop();
+        localStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify(history));
     }
 
     function clearHistory() {
-        localStorage.removeItem('search_history');
-        renderHistory();
+        localStorage.removeItem(SEARCH_HISTORY_KEY);
+        renderSearchHistory();
     }
 
-    function useHistory(query) {
-        document.getElementById('search-input').value = query;
-        performSearch(query);
+    function renderSearchHistory() {
+        const history = getHistory();
+        const container = document.getElementById('search-history-container');
+        const list = document.getElementById('search-history-list');
+        const resultsBox = document.getElementById('search-results');
+        const inputVal = document.getElementById('search-input').value;
+
+        // Zeige History nur wenn Input leer ist und History existiert
+        if (inputVal === "" && history.length > 0) {
+            container.style.display = 'block';
+            resultsBox.style.display = 'none'; // Verstecke normale Ergebnisse
+            list.innerHTML = "";
+            
+            history.forEach(term => {
+                list.innerHTML += `
+                    <div class="search-history-item" onclick="useHistorySearch('${term}')">
+                        <i class="fas fa-clock"></i>
+                        <span>${term}</span>
+                    </div>
+                `;
+            });
+        } else {
+            container.style.display = 'none';
+            resultsBox.style.display = 'block';
+        }
     }
 
-    // --- CORE FUNCTIONS ---
-    async function loadFDroidApps() {
-        await new Promise(r => setTimeout(r, 600));
-        render('Alle');
+    function useHistorySearch(term) {
+        document.getElementById('search-input').value = term;
+        performSearch(term);
+        // Fokus behalten oder entfernen nach Wahl -> hier lassen wir es für UX
     }
 
+    // --- SEARCH UI ---
     function toggleSearch(show) {
         const overlay = document.getElementById('search-overlay');
         const btnSearch = document.getElementById('btn-search');
         const btnHome = document.getElementById('btn-home');
+        const input = document.getElementById('search-input');
         
         if(show) {
             overlay.classList.add('active');
             btnSearch.classList.add('active');
             btnHome.classList.remove('active');
-            renderHistory();
-            setTimeout(() => document.getElementById('search-input').focus(), 100);
+            setTimeout(() => {
+                input.focus();
+                renderSearchHistory(); // History beim Öffnen zeigen
+            }, 100);
         } else {
             overlay.classList.remove('active');
             btnSearch.classList.remove('active');
             btnHome.classList.add('active');
-            document.getElementById('search-input').value = "";
-            document.getElementById('search-results').innerHTML = "";
+            input.blur();
         }
+    }
+
+    function viewAll(title) {
+        toggleSearch(true);
+        document.getElementById('search-input').value = ""; 
+        renderSearchHistory();
     }
 
     function selectCat(el, category) {
@@ -535,118 +706,184 @@
         render(category);
     }
 
+    function renderError() {
+        document.getElementById('skeleton-loader').style.display = 'none';
+        document.getElementById('content-main').style.display = 'block';
+        const errorHTML = `<div class="error-msg"><i class="fas fa-wifi error-icon"></i>Keine Apps gefunden.</div>`;
+        document.getElementById('scroll-trending').innerHTML = errorHTML;
+    }
+
     function render(filterCat) {
         document.getElementById('skeleton-loader').style.display = 'none';
         document.getElementById('content-main').style.display = 'block';
-        
-        let filteredApps = filterCat === 'Alle' ? appDatabase : appDatabase.filter(app => app.cat === filterCat);
-        const shuffled = [...filteredApps].sort(() => Math.random() - 0.5);
+
+        if (!appDatabase || appDatabase.length === 0) { renderError(); return; }
+
+        let filteredApps = appDatabase;
+        if (filterCat && filterCat !== 'Alle') {
+            filteredApps = appDatabase.filter(app => app.cat === filterCat);
+        }
+
+        if(filteredApps.length === 0) {
+             document.getElementById('scroll-trending').innerHTML = `<div style="padding:20px; color:#666;">Keine Apps in "${filterCat}"</div>`;
+             document.getElementById('scroll-top').innerHTML = "";
+             document.getElementById('update-feed').innerHTML = "";
+             return;
+        }
+
+        const shuffled = shuffle([...filteredApps]);
         const feat = shuffled[0];
 
-        if (feat) {
-            document.getElementById('header-blur').style.backgroundImage = `url('${feat.icon}')`;
-            document.getElementById('sticky-icon').src = feat.icon;
-            document.getElementById('sticky-name').innerText = feat.name;
-            
-            document.getElementById('featured-hero').innerHTML = `
-                <div class="featured-banner" id="feat-card">
-                    <div class="featured-img-bg" style="background: url('${feat.icon}') center/cover"></div>
-                    <div class="featured-overlay"></div>
-                    <div class="featured-info">
-                        <span class="featured-tag">Highlights</span>
-                        <div class="featured-title-wrap"><span class="featured-title">${feat.name}</span></div>
-                        <div class="featured-desc">Von ${feat.author}</div>
-                        <button class="get-btn" onclick="window.location.href='app.html?id=${feat.pkg}'">Laden</button>
-                    </div>
-                </div>`;
-            initLongPress(document.getElementById('feat-card'), feat);
-        }
+        // Header Update
+        document.getElementById('header-blur').style.backgroundImage = `url('${feat.icon}')`;
+        document.getElementById('sticky-icon').src = feat.icon;
+        document.getElementById('sticky-name').innerText = feat.name;
+        document.getElementById('sticky-bar').onclick = () => window.location.href = `app.html?id=${feat.pkg}`;
+
+        document.getElementById('featured-hero').innerHTML = `
+            <div class="featured-banner" id="feat-banner">
+                <div class="featured-img-bg" style="background: url('${feat.icon}') center/cover"></div>
+                <div class="featured-overlay"></div>
+                <div class="featured-info">
+                    <span class="featured-tag">Highlights</span>
+                    <div class="featured-title-wrap"><span class="featured-title">${feat.name}</span></div>
+                    <div class="featured-desc">Von ${feat.author} • ${feat.cat || 'App'}</div>
+                    <button class="get-btn">Laden</button>
+                </div>
+            </div>
+        `;
+        
+        // Context Menu für Featured Banner hinzufügen (Optional)
+        attachContextListeners(document.getElementById('feat-banner'), feat);
+        // Normaler Click
+        document.getElementById('feat-banner').addEventListener('click', () => {
+           if(!pressTimer) window.location.href=`app.html?id=${feat.pkg}`;
+        });
+
 
         const trending = document.getElementById('scroll-trending');
         const top = document.getElementById('scroll-top');
         const feed = document.getElementById('update-feed');
         trending.innerHTML = ""; top.innerHTML = ""; feed.innerHTML = "";
         
-        shuffled.slice(0, 8).forEach(app => {
-            const div = document.createElement('div');
-            div.className = "card-item animate-entry";
-            div.innerHTML = `
-                <img src="${app.icon}" class="card-icon" onclick="window.location.href='app.html?id=${app.pkg}'">
+        // Helper um Elemente zu erzeugen und Listener anzuhängen
+        const appendCard = (container, app) => {
+            const card = document.createElement('div');
+            card.className = "card-item animate-entry";
+            card.innerHTML = `
+                <img src="${app.icon}" class="card-icon" onerror="this.src='https://f-droid.org/repo/${app.pkg}/en-US/icon.png'">
                 <div class="card-name-wrap"><span class="card-name">${app.name}</span></div>
-                <span class="card-author">${app.author}</span>`;
-            initLongPress(div, app);
-            trending.appendChild(div);
-        });
+                <span class="card-author">${app.author}</span>
+            `;
+            // Klick Event (nur wenn kein Longpress war)
+            card.onclick = () => window.location.href = `app.html?id=${app.pkg}`;
+            // Context Menu Listener
+            attachContextListeners(card, app);
+            container.appendChild(card);
+        };
 
-        shuffled.slice(0, 15).forEach(app => {
-            const div = document.createElement('div');
-            div.className = "app-item animate-entry";
-            div.innerHTML = `
-                <img src="${app.icon}" class="app-icon" onclick="window.location.href='app.html?id=${app.pkg}'">
-                <div class="app-info" onclick="window.location.href='app.html?id=${app.pkg}'">
+        const appendList = (container, app) => {
+            const item = document.createElement('div');
+            item.className = "app-item animate-entry";
+            item.innerHTML = `
+                <img src="${app.icon}" class="app-icon">
+                <div class="app-info">
                     <div class="app-name-wrap"><span class="app-name">${app.name}</span></div>
                     <div class="app-meta">${app.cat} • v${app.ver}</div>
                 </div>
-                <div class="laden-badge">LADEN</div>`;
-            initLongPress(div, app);
-            feed.appendChild(div);
-        });
+                <div class="laden-badge">LADEN</div>
+            `;
+            item.onclick = () => window.location.href = `app.html?id=${app.pkg}`;
+            attachContextListeners(item, app);
+            container.appendChild(item);
+        };
+
+        shuffled.slice(0, 8).forEach(app => appendCard(trending, app));
+        [...shuffled].reverse().slice(0, 8).forEach(app => appendCard(top, app));
+        shuffled.slice(0, 15).forEach(app => appendList(feed, app));
     }
 
     function performSearch(query) {
         const resultsBox = document.getElementById('search-results');
-        const historyBox = document.getElementById('search-history');
-        resultsBox.innerHTML = "";
+        const historyContainer = document.getElementById('search-history-container');
         
-        if(query === "") {
-            historyBox.style.display = "block";
-            renderHistory();
+        if (query === "") {
+            renderSearchHistory();
             return;
         }
+
+        // Wenn wir tippen, History verstecken und Ergebnisse zeigen
+        historyContainer.style.display = 'none';
+        resultsBox.style.display = 'block';
+
+        resultsBox.innerHTML = "";
+        const filtered = appDatabase.filter(a => a.name.toLowerCase().includes(query.toLowerCase()) || a.pkg.toLowerCase().includes(query.toLowerCase())).slice(0, 50);
         
-        historyBox.style.display = "none";
-        const filtered = appDatabase.filter(a => a.name.toLowerCase().includes(query.toLowerCase()));
-        
-        if(filtered.length > 0) {
+        if (filtered.length === 0) {
+            resultsBox.innerHTML = "<div style='padding:40px; color:#888; text-align:center;'>Keine Treffer.</div>";
+        } else {
             filtered.forEach(app => {
-                const div = document.createElement('div');
-                div.className = "app-item";
-                div.style.background = "rgba(255,255,255,0.05)";
-                div.style.marginBottom = "1px";
-                div.innerHTML = `
+                // Bei Klick auf Ergebnis -> Zur History hinzufügen
+                const item = document.createElement('div');
+                item.className = "app-item";
+                item.style.padding = "10px 16px";
+                item.style.background = "rgba(255,255,255,0.05)";
+                item.style.marginBottom = "1px";
+                item.innerHTML = `
                     <img src="${app.icon}" class="app-icon" style="width:48px; height:48px;">
                     <div class="app-info">
                         <div class="app-name-wrap"><span class="app-name" style="font-size:16px;">${app.name}</span></div>
                         <div class="app-meta">${app.cat}</div>
                     </div>
-                    <i class="fas fa-chevron-right" style="opacity:0.3; font-size:12px;"></i>`;
-                div.onclick = () => { saveToHistory(query); window.location.href=`app.html?id=${app.pkg}`; };
-                resultsBox.appendChild(div);
+                    <i class="fas fa-chevron-right" style="opacity:0.3; font-size:12px;"></i>
+                `;
+                item.onclick = () => {
+                    addToHistory(query); // Speichern bei Auswahl
+                    window.location.href = `app.html?id=${app.pkg}`;
+                };
+                attachContextListeners(item, app); // Auch in der Suche Context Menu!
+                resultsBox.appendChild(item);
             });
         }
     }
 
-    // Scroll Logic
+    // SCROLL LOGIK
     let lastScrollTop = 0;
+    const bottomNav = document.querySelector('.bottom-nav');
+
     window.addEventListener('scroll', () => {
         const header = document.getElementById('main-header');
-        const bNav = document.querySelector('.bottom-nav');
         if (window.scrollY > 40) header.classList.add('scrolled');
         else header.classList.remove('scrolled');
 
-        let st = window.scrollY;
-        if (st > lastScrollTop && st > 50) bNav.classList.add('nav-scrolled');
-        else bNav.classList.remove('nav-scrolled');
-        lastScrollTop = st;
+        let st = window.scrollY || document.documentElement.scrollTop;
+        if (st > lastScrollTop && st > 50) bottomNav.classList.add('nav-scrolled');
+        else if (st < lastScrollTop) bottomNav.classList.remove('nav-scrolled');
+        lastScrollTop = st <= 0 ? 0 : st;
     });
 
-    document.getElementById('search-input').addEventListener('input', (e) => performSearch(e.target.value));
-    window.onload = loadFDroidApps;
+    // Input Listeners
+    const searchInput = document.getElementById('search-input');
+    searchInput.addEventListener('input', (e) => performSearch(e.target.value));
+    searchInput.addEventListener('focus', (e) => performSearch(e.target.value)); // Check history on focus
+    
+    // Suche speichern beim Drücken von Enter
+    searchInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            addToHistory(searchInput.value);
+            searchInput.blur();
+        }
+    });
+
+    window.onload = () => { loadFDroidApps(); };
 </script>
 
 <div style="text-align: center; margin-top: 20px; padding: 10px;">
-    <p style="color: #888888; font-size: 12px; margin: 0;">Version 19.45</p>
+    <p style="color: #888888; font-size: 12px; margin: 0;">Version 19.50</p>
     <p style="color: #666666; font-size: 10px; margin-top: 5px; opacity: 0.7;">By Nexus with ❤️</p>
+    <div style="width: 100%; text-align: center; margin-top: 15px;">
+        <a href="https://nexus-ashy.vercel.app/" style="color: #00ff00; text-decoration: none; font-size: 12px; font-weight: bold;">Mehr von uns</a>
+    </div>
 </div>
 </body>
 </html>
