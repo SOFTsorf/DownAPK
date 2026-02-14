@@ -75,9 +75,15 @@
             align-items: center;
             justify-content: space-between;
         }
-        .section-more { font-size: 13px; color: #ff8400; font-weight: normal; }
+        .section-more { 
+            font-size: 13px; 
+            color: #ff8400; 
+            font-weight: normal; 
+            cursor: pointer; /* Zeigt an, dass es klickbar ist */
+        }
+        .section-more:active { opacity: 0.7; }
 
-        /* FEATURED BANNER (NEU) */
+        /* FEATURED BANNER (NEU & FIX) */
         .featured-banner {
             margin: 15px;
             background: linear-gradient(135deg, #ff8400, #ffb347);
@@ -87,13 +93,50 @@
             display: flex;
             align-items: center;
             box-shadow: 0 4px 10px rgba(255, 132, 0, 0.3);
+            overflow: hidden; /* Wichtig damit nichts rausragt */
+            position: relative;
         }
-        .featured-info { flex-grow: 1; }
+        /* Fix für das Text-Overflow Problem */
+        .featured-info { 
+            flex: 1; 
+            min-width: 0; /* Zwingt Flexbox, den Text abzuschneiden */
+            margin-right: 10px;
+        }
         .featured-tag { background: rgba(255,255,255,0.3); padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; display: inline-block; margin-bottom: 5px; }
-        .featured-title { font-size: 22px; font-weight: bold; margin-bottom: 5px; }
-        .featured-desc { font-size: 13px; opacity: 0.9; margin-bottom: 10px; }
+        
+        .featured-title { 
+            font-size: 22px; 
+            font-weight: bold; 
+            margin-bottom: 5px;
+            white-space: nowrap; /* Kein Umbruch */
+            overflow: hidden;
+            /* Scroll Effekt Logik */
+            display: block;
+        }
+        
+        /* Animation für scrollenden Text */
+        .scroll-text {
+            animation: scroll 8s linear infinite alternate;
+        }
+
+        @keyframes scroll {
+            0% { transform: translateX(0); }
+            20% { transform: translateX(0); } /* Kurze Pause am Anfang */
+            80% { transform: translateX(calc(-100% + 200px)); } /* Scrollt rüber */
+            100% { transform: translateX(calc(-100% + 200px)); }
+        }
+
+        .featured-desc { font-size: 13px; opacity: 0.9; margin-bottom: 10px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
         .featured-btn { background: white; color: #ff8400; padding: 8px 15px; border-radius: 20px; font-size: 13px; font-weight: bold; display: inline-block; }
-        .featured-img { width: 80px; height: 80px; border-radius: 12px; margin-left: 15px; background: #fff; object-fit: cover; }
+        
+        .featured-img { 
+            width: 80px; 
+            height: 80px; 
+            border-radius: 12px; 
+            background: #fff; 
+            object-fit: cover; 
+            flex-shrink: 0; /* Verhindert das Quetschen des Bildes */
+        }
 
         /* HORIZONTAL SCROLL (Trends & Games) */
         .horizontal-scroll {
@@ -106,6 +149,7 @@
         .horizontal-scroll::-webkit-scrollbar { display: none; }
 
         .card-item {
+            width: 90px; /* Feste Breite für besseres Layout */
             min-width: 90px;
             display: flex;
             flex-direction: column;
@@ -113,7 +157,28 @@
             text-align: center;
         }
         .card-icon { width: 64px; height: 64px; border-radius: 14px; background: #eee; margin-bottom: 8px; object-fit: cover; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
-        .card-name { font-size: 13px; font-weight: 500; color: #333; max-width: 90px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        
+        /* Scrollender Text auch in Karten */
+        .card-name-container {
+            width: 100%;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+        .card-name { 
+            font-size: 13px; 
+            font-weight: 500; 
+            color: #333; 
+            display: inline-block;
+        }
+        /* Scrollt nur wenn Hover oder durch Klasse */
+        .card-item:hover .card-name {
+            animation: scroll-short 3s linear infinite alternate;
+        }
+        @keyframes scroll-short {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
         .card-rating { font-size: 11px; color: #777; margin-top: 2px; }
 
         /* SUCHBEGRIFFE (Tags) */
@@ -135,8 +200,11 @@
         .app-item { display: flex; padding: 15px; border-bottom: 1px solid #f5f5f5; align-items: center; transition: background 0.2s; }
         .app-item:active { background: #fafafa; }
         .app-icon { width: 50px; height: 50px; border-radius: 10px; margin-right: 15px; background: #eee; object-fit: cover; }
-        .app-info { flex-grow: 1; }
-        .app-name { font-weight: bold; font-size: 16px; color: #000; margin-bottom: 4px; }
+        .app-info { flex-grow: 1; min-width: 0; /* Wichtig für Text-Overflow */ }
+        .app-name { 
+            font-weight: bold; font-size: 16px; color: #000; margin-bottom: 4px; 
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
+        }
         .app-meta { font-size: 13px; color: #888; display: flex; align-items: center; gap: 5px; }
         .badge { font-size: 10px; padding: 2px 4px; border-radius: 3px; background: #eee; color: #666; }
         .badge-new { background: #e8f5e9; color: #2e7d32; }
@@ -165,6 +233,10 @@
         
         /* Helper für Suche */
         .highlight { color: #ff8400; }
+        
+        /* Fade Effekt für Banner Wechsel */
+        .fade-anim { animation: fadein 0.5s; }
+        @keyframes fadein { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
@@ -183,8 +255,7 @@
 
 <div id="main-content">
     
-    <div id="featured-section">
-        </div>
+    <div id="featured-section"></div>
 
     <div class="section-title">
         Angesagt <i class="fas fa-fire" style="color: #ff8400;"></i>
@@ -205,25 +276,24 @@
 
     <div class="section-title">
         Top Spiele
-        <span class="section-more">Alle ansehen</span>
+        <span class="section-more" onclick="viewAll('Spiele')">Alle ansehen</span>
     </div>
-    <div class="horizontal-scroll" id="games-list">
-        </div>
+    <div class="horizontal-scroll" id="games-list"></div>
 
     <div class="section-title">Frisch aktualisiert</div>
-    <div id="feed-list" class="app-list-container">
-        </div>
+    <div id="feed-list" class="app-list-container"></div>
     <button class="load-more-btn" onclick="loadMore()">Mehr laden</button>
 
 </div>
 
 <div id="search-results-container" class="hidden">
-    <div class="section-title">Suchergebnisse <span id="search-term-display" class="highlight"></span></div>
+    <div class="section-title">Ergebnisse für <span id="search-term-display" class="highlight"></span> <span class="section-more" onclick="closeViewAll()" style="font-size:20px; padding:0 10px;">&times;</span></div>
     <div id="search-list" class="app-list-container"></div>
 </div>
 
 <script>
     let allApps = [];
+    let featuredInterval;
 
     // --- UI Logic ---
     const headerNormal = document.getElementById('header-normal');
@@ -240,16 +310,40 @@
         } else {
             searchBar.classList.remove('active');
             searchInput.value = '';
-            mainContent.classList.remove('hidden');
-            searchResultsContainer.classList.add('hidden');
+            closeViewAll();
         }
     }
 
     // --- NEU: Auto-Suche beim Klick auf Tag ---
     function autoSearch(term) {
-        toggleSearch(true);       // Suchleiste öffnen
-        searchInput.value = term; // Begriff eintragen
-        performSearch(term);      // Suche sofort auslösen
+        toggleSearch(true);
+        searchInput.value = term;
+        performSearch(term);
+    }
+
+    // --- NEU: Alle ansehen Logik ---
+    function viewAll(category) {
+        mainContent.classList.add('hidden');
+        searchResultsContainer.classList.remove('hidden');
+        document.getElementById('search-term-display').innerText = category;
+        searchList.innerHTML = '<div class="loader">Lade alle ' + category + '...</div>';
+
+        // Simuliere Laden einer Kategorie
+        setTimeout(() => {
+            searchList.innerHTML = '';
+            // Wir nehmen einfach alle Apps und shuffeln sie zur Demo
+            let catApps = [...allApps].sort(() => 0.5 - Math.random());
+            catApps.forEach(app => {
+                const div = document.createElement('div');
+                div.innerHTML = createAppItem(app);
+                searchList.appendChild(div.firstElementChild);
+            });
+        }, 400);
+    }
+
+    function closeViewAll() {
+        mainContent.classList.remove('hidden');
+        searchResultsContainer.classList.add('hidden');
     }
 
     // --- Templates ---
@@ -268,28 +362,52 @@
     }
 
     function createCardItem(app) {
+        // Prüfen ob Text lang ist für Scroll-Effekt
+        const isLong = app.name.length > 10;
+        const nameClass = isLong ? "card-name scroll-active" : "card-name";
+        
         return `
             <a href="app.html?id=${app.packageName}" class="card-item">
                 <img src="${app.icon}" class="card-icon" onerror="this.src='https://via.placeholder.com/64'">
-                <div class="card-name">${app.name}</div>
+                <div class="card-name-container">
+                    <div class="${nameClass}">${app.name}</div>
+                </div>
                 <div class="card-rating"><i class="fas fa-star" style="color:#ffc107; font-size:10px;"></i> 4.8</div>
             </a>
         `;
     }
 
+    // --- Rotation Logic ---
+    let currentFeaturedIndex = 0;
+
     function renderFeatured(app) {
         if(!app) return;
-        document.getElementById('featured-section').innerHTML = `
-            <a href="app.html?id=${app.packageName}" class="featured-banner">
+        
+        // Prüfen ob Titel sehr lang ist
+        const isLongTitle = app.name.length > 15;
+        const titleClass = isLongTitle ? "featured-title scroll-text" : "featured-title";
+        
+        // Style für Animation resetten durch Neu-Einfügen
+        const container = document.getElementById('featured-section');
+        container.innerHTML = `
+            <a href="app.html?id=${app.packageName}" class="featured-banner fade-anim">
                 <div class="featured-info">
                     <span class="featured-tag">Empfehlung</span>
-                    <div class="featured-title">${app.name}</div>
-                    <div class="featured-desc">Die neueste Version ist jetzt verfügbar. Lade es dir direkt herunter.</div>
+                    <div class="${titleClass}" style="${isLongTitle ? 'width:fit-content;' : ''}">${app.name}</div>
+                    <div class="featured-desc">Die neueste Version von ${app.name} ist jetzt verfügbar.</div>
                     <div class="featured-btn">Jetzt installieren</div>
                 </div>
                 <img src="${app.icon}" class="featured-img" onerror="this.src='https://via.placeholder.com/80'">
             </a>
         `;
+    }
+
+    function startFeaturedRotation() {
+        if(featuredInterval) clearInterval(featuredInterval);
+        featuredInterval = setInterval(() => {
+            currentFeaturedIndex = (currentFeaturedIndex + 1) % Math.min(5, allApps.length); // Rotiere durch die ersten 5
+            renderFeatured(allApps[currentFeaturedIndex]);
+        }, 5000); // Alle 5 Sekunden
     }
 
     // --- Daten & Rendering ---
@@ -299,28 +417,48 @@
 
     async function init() {
         try {
-            // Simulierte API Anfrage
-            const res = await fetch('/api/apps');
-            allApps = await res.json();
+            // Simulierte Daten (Da keine echte API da ist)
+            // Erstelle Dummy Data für Demo Zwecke, falls fetch fehlschlägt
+            const dummyData = [
+                { name: "org.woheller69.omweather.very.long.package.name", author: "Woheller", version: "1.0", icon: "https://via.placeholder.com/80/FFA500/fff?text=Sun", packageName: "pkg1" },
+                { name: "WhatsApp Beta", author: "Meta", version: "2.23", icon: "https://via.placeholder.com/80/25D366/fff?text=WA", packageName: "pkg2" },
+                { name: "Minecraft PE", author: "Mojang", version: "1.20", icon: "https://via.placeholder.com/80/4CAF50/fff?text=MC", packageName: "pkg3" },
+                { name: "Spotify Premium", author: "Spotify", version: "8.8", icon: "https://via.placeholder.com/80/1DB954/fff?text=Sp", packageName: "pkg4" },
+                { name: "YouTube Vanced", author: "Team Vanced", version: "17.03", icon: "https://via.placeholder.com/80/FF0000/fff?text=YT", packageName: "pkg5" },
+                { name: "Telegram X", author: "Telegram", version: "0.25", icon: "https://via.placeholder.com/80/0088cc/fff?text=TG", packageName: "pkg6" },
+                { name: "Subway Surfers", author: "Sybo", version: "3.4", icon: "https://via.placeholder.com/80/FFC107/fff?text=SS", packageName: "pkg7" },
+                { name: "Clash Royale", author: "Supercell", version: "3.5", icon: "https://via.placeholder.com/80/2196F3/fff?text=CR", packageName: "pkg8" },
+            ];
             
-            // 1. Featured App (Zufällig oder die erste)
+            // Versuch Fetch, sonst Dummy
+            try {
+                const res = await fetch('/api/apps');
+                if(res.ok) allApps = await res.json();
+                else allApps = dummyData;
+            } catch(e) {
+                allApps = dummyData;
+                // Füge mehr Dummies hinzu um Scrollen zu testen
+                for(let i=0; i<10; i++) allApps.push({...dummyData[i%dummyData.length], name: dummyData[i%dummyData.length].name + " " + i, packageName: "p"+i});
+            }
+            
+            // 1. Featured Starten
             renderFeatured(allApps[0]);
+            startFeaturedRotation();
 
-            // 2. Trends (Horizontal) - App 1 bis 6
+            // 2. Trends
             const trendingList = document.getElementById('trending-list');
             trendingList.innerHTML = '';
             allApps.slice(0, 6).forEach(app => trendingList.innerHTML += createCardItem(app));
 
-            // 3. Games (Horizontal) - Wir simulieren Games, indem wir App 6 bis 12 nehmen
+            // 3. Games
             const gamesList = document.getElementById('games-list');
             gamesList.innerHTML = '';
-            // Falls nicht genug Apps da sind, nehmen wir einfach nochmal die gleichen
             const gameApps = allApps.length > 6 ? allApps.slice(6, 12) : allApps;
             gameApps.forEach(app => gamesList.innerHTML += createCardItem(app));
 
-            // 4. Feed Liste (Vertikal) - Rest der Apps
+            // 4. Feed
             feedAppsCache = allApps; 
-            loadMore(); // Initial laden
+            loadMore(); 
 
         } catch (error) {
             console.error("Fehler:", error);
@@ -334,7 +472,6 @@
         const nextBatch = feedAppsCache.slice(feedAppsShown, feedAppsShown + BATCH_SIZE);
 
         nextBatch.forEach(app => {
-            // true parameter für "isUpdate" Flag (nur optisch)
             container.innerHTML += createAppItem(app, true);
         });
 
@@ -354,26 +491,21 @@
         document.getElementById('search-term-display').innerText = `"${query}"`;
         searchList.innerHTML = '<div class="loader"><i class="fas fa-spinner fa-spin"></i> Suche läuft...</div>';
 
-        // Fake Delay für Feeling oder echte API Request
-        setTimeout(async () => {
-            try {
-                const res = await fetch(`/api/apps?search=${encodeURIComponent(query)}`);
-                const results = await res.json();
-                
-                searchList.innerHTML = '';
-                if (results.length === 0) {
-                    searchList.innerHTML = '<div style="padding:40px; text-align:center; color:#999">Keine Apps gefunden.</div>';
-                    return;
-                }
-                results.forEach(app => {
-                    const div = document.createElement('div');
-                    div.innerHTML = createAppItem(app);
-                    searchList.appendChild(div.firstElementChild);
-                });
-            } catch(e) {
-                searchList.innerHTML = 'Fehler bei der Suche.';
+        setTimeout(() => {
+            // Einfache lokale Filterung für Demo
+            const results = allApps.filter(app => app.name.toLowerCase().includes(query));
+            
+            searchList.innerHTML = '';
+            if (results.length === 0) {
+                searchList.innerHTML = '<div style="padding:40px; text-align:center; color:#999">Keine Apps gefunden.</div>';
+                return;
             }
-        }, 300); // Kleines Debounce simulieren
+            results.forEach(app => {
+                const div = document.createElement('div');
+                div.innerHTML = createAppItem(app);
+                searchList.appendChild(div.firstElementChild);
+            });
+        }, 300);
     }
 
     searchInput.addEventListener('input', (e) => {
@@ -385,9 +517,7 @@
                 performSearch(query);
             }, 300);
         } else {
-            // Zurück zur Startseite wenn leer
-            mainContent.classList.remove('hidden');
-            searchResultsContainer.classList.add('hidden');
+            closeViewAll();
         }
     });
 
