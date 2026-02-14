@@ -96,12 +96,6 @@
             to { opacity: 1; transform: scale(1); }
         }
 
-        /* NEW IOS MENU ANIMATIONS */
-        @keyframes iosMenuSpring {
-            0% { opacity: 0; transform: scale(0.8) translateY(10px); }
-            100% { opacity: 1; transform: scale(1) translateY(0); }
-        }
-
         .animate-entry {
             opacity: 0; 
             animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
@@ -415,101 +409,122 @@
         .bottom-nav.nav-scrolled .nav-item span { opacity: 0; height: 0; margin: 0; overflow: hidden; }
         .bottom-nav.nav-scrolled .nav-item i { margin-bottom: 0; }
 
-        /* --- IOS 26 / APPLE STYLE CONTEXT MENU --- */
+        /* --- CONTEXT MENU STYLES --- */
         .context-menu-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.0); /* Start transparent */
-            backdrop-filter: blur(0px);
-            -webkit-backdrop-filter: blur(0px);
-            z-index: 6000;
-            display: none; 
-            opacity: 0; 
-            transition: background 0.3s, opacity 0.3s, backdrop-filter 0.3s;
-        }
-        
-        .context-menu-overlay.active {
-            display: block;
-            opacity: 1;
-            background: rgba(0,0,0,0.4);
+            background: rgba(0,0,0,0.6); 
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
+            z-index: 6000;
+            display: none; 
+            justify-content: center; 
+            align-items: center; 
+            opacity: 0; transition: opacity 0.2s ease;
         }
-        body.light-mode .context-menu-overlay.active { background: rgba(255,255,255,0.3); }
+        body.light-mode .context-menu-overlay { background: rgba(255,255,255,0.4); }
 
-        /* The Cloned Element (Floating) */
-        .ios-clone-element {
-            position: fixed;
-            z-index: 6005;
-            pointer-events: none;
-            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-            transform-origin: center center;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-        }
-        body.light-mode .ios-clone-element { box-shadow: 0 20px 50px rgba(0,0,0,0.2); }
+        .context-menu-overlay.active { display: flex; opacity: 1; }
         
-        .ios-clone-element.active {
-            transform: scale(1.05);
+        .context-menu-wrapper {
+            width: 90%; max-width: 280px; 
+            text-align: center;
+            animation: scaleIn 0.25s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
         }
-
-        /* The Menu List */
-        .ios-menu-wrapper {
-            position: absolute;
-            width: 250px;
-            background: rgba(30,30,30,0.85);
+        
+        .context-preview-card {
+            background: rgba(30,30,30,0.85); 
             backdrop-filter: blur(30px);
             -webkit-backdrop-filter: blur(30px);
+            border-radius: 20px; padding: 25px 20px;
+            display: flex; flex-direction: column; align-items: center;
+            margin-bottom: 15px; border: var(--glass-border);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+        }
+        body.light-mode .context-preview-card { background: rgba(255,255,255,0.85); box-shadow: 0 15px 35px rgba(0,0,0,0.15); }
+        
+        .ctx-icon { width: 90px; height: 90px; border-radius: 20px; margin-bottom: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.3); object-fit: cover; background: #222; }
+        
+        .ctx-name { 
+            font-size: 18px; font-weight: 700; margin-bottom: 5px; color: var(--ios-text); 
+            width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
+        }
+        .ctx-author { 
+            font-size: 13px; color: var(--ios-subtext); margin-bottom: 20px; 
+            width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
+        }
+        
+        .ctx-btn {
+            background: #FFF; color: #000;
+            width: 100%; padding: 12px 0; border-radius: 12px;
+            font-weight: 600; font-size: 16px; margin-top: 5px;
+            cursor: pointer; border: none;
+        }
+        body.light-mode .ctx-btn { background: #000; color: #FFF; }
+        
+        .ctx-cancel-btn {
+            background: rgba(255,255,255,0.15); color: #FFF;
+            backdrop-filter: blur(20px); width: 100%; padding: 14px 0;
+            border-radius: 14px; font-weight: 600; font-size: 16px;
+            border: none; cursor: pointer;
+        }
+        body.light-mode .ctx-cancel-btn { background: rgba(0,0,0,0.05); color: #000; }
+
+        /* --- NEU: SPEZIFISCHE STYLES FÜR DAS MENU --- */
+        .menu-list-wrapper {
+            background: rgba(30,30,30,0.85); 
+            backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
             border-radius: 14px;
             overflow: hidden;
+            border: var(--glass-border);
             display: flex; flex-direction: column;
-            z-index: 6006;
-            transform-origin: top center;
-            animation: iosMenuSpring 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+            width: 250px;
         }
-        body.light-mode .ios-menu-wrapper { background: rgba(250,250,250,0.9); box-shadow: 0 15px 40px rgba(0,0,0,0.15); }
+        body.light-mode .menu-list-wrapper { background: rgba(250,250,250,0.9); border: 1px solid rgba(0,0,0,0.1); }
 
         .menu-item {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 14px 16px;
+            padding: 16px 16px;
             cursor: pointer;
             transition: background 0.2s;
             color: var(--ios-text);
             font-size: 16px;
-            font-weight: 500;
         }
-        .menu-item:active { background: rgba(255,255,255,0.15); }
+        .menu-item:active { background: rgba(255,255,255,0.1); }
         body.light-mode .menu-item:active { background: rgba(0,0,0,0.1); }
         
-        .menu-item i { font-size: 18px; width: 25px; text-align: center; }
-        .menu-item .menu-text { flex: 1; margin-left: 10px; }
-        
-        .menu-separator { height: 1px; background: var(--ios-separator); width: 100%; }
-
-        .menu-danger { color: #ff453a; }
-
-        /* SETTINGS OVERLAY SPECIFIC */
-        #settings-menu-overlay .context-menu-wrapper {
-            position: absolute; bottom: 120px; right: 20px;
-            width: auto;
-        }
+        .menu-separator { height: 1px; background: var(--ios-separator); width: 100%; margin-left: 16px; }
 
         .hidden { display: none; }
     </style>
 </head>
 <body>
 
-<div id="context-menu-overlay" class="context-menu-overlay" onclick="closeContextMenu()"></div>
+<div id="context-menu-overlay" class="context-menu-overlay" onclick="closeContextMenu()">
+    <div class="context-menu-wrapper" onclick="event.stopPropagation()">
+        <div class="context-preview-card">
+            <img id="ctx-icon" class="ctx-icon" src="">
+            <div id="ctx-name" class="ctx-name">App Name</div>
+            <div id="ctx-author" class="ctx-author">Developer</div>
+            <button class="ctx-btn" id="ctx-action-btn">Details ansehen</button>
+        </div>
+        <button class="ctx-cancel-btn" onclick="closeContextMenu()">Abbrechen</button>
+    </div>
+</div>
 
 <div id="settings-menu-overlay" class="context-menu-overlay" onclick="toggleSettings(false)">
-    <div class="ios-menu-wrapper" style="position: absolute; bottom: 120px; right: 20px; width: 260px;" onclick="event.stopPropagation()">
-        <div class="menu-item" onclick="toggleTheme()">
-            <span class="menu-text" id="theme-text">Zu Light Mode wechseln</span>
-            <i id="theme-icon" class="fas fa-sun"></i>
-        </div>
-        <div class="menu-separator"></div>
-        <div class="menu-item" onclick="location.reload()">
-            <span class="menu-text">Seite neu laden</span>
-            <i class="fas fa-rotate-right"></i>
+    <div class="context-menu-wrapper" style="width: auto;" onclick="event.stopPropagation()">
+        <div class="menu-list-wrapper">
+            <div class="menu-item" onclick="toggleTheme()">
+                <span id="theme-text">Zu Light Mode wechseln</span>
+                <i id="theme-icon" class="fas fa-sun"></i>
+            </div>
+            
+            <div class="menu-separator"></div>
+            
+            <div class="menu-item" onclick="location.reload()">
+                <span>Seite neu laden</span>
+                <i class="fas fa-rotate-right"></i>
+            </div>
         </div>
     </div>
 </div>
@@ -781,18 +796,15 @@
         render(category);
     }
 
-    // --- NEW IOS CONTEXT MENU LOGIC START ---
+    // --- CONTEXT MENU LOGIC START ---
     let pressTimer;
     let selectedApp = {};
-    let activeClone = null; // Track the cloned element
 
+    // Helper für Long Press Simulation in Template Strings
     function startLongPress(e, name, author, icon, pkg) {
-        // We need to capture the exact element that was touched to clone it positionally
-        const targetElement = e.currentTarget;
-        
         selectedApp = { name, author, icon, pkg };
         pressTimer = setTimeout(() => {
-            openContextMenu(targetElement);
+            openContextMenu();
         }, 500); 
     }
 
@@ -800,124 +812,30 @@
         clearTimeout(pressTimer);
     }
 
+    // Für Desktop Rechtsklick
     function handleContext(e, name, author, icon, pkg) {
         e.preventDefault();
-        // For desktop right click, we use currentTarget
-        const targetElement = e.currentTarget;
         selectedApp = { name, author, icon, pkg };
-        openContextMenu(targetElement);
+        openContextMenu();
         return false;
     }
 
-    function openContextMenu(element) {
-        if(navigator.vibrate) navigator.vibrate(50); 
+    function openContextMenu() {
+        if(navigator.vibrate) navigator.vibrate(50); // Haptic Feedback
         const overlay = document.getElementById('context-menu-overlay');
-        overlay.innerHTML = ''; // Clear previous
-
-        // 1. Get position of the clicked element
-        const rect = element.getBoundingClientRect();
+        document.getElementById('ctx-icon').src = selectedApp.icon;
+        document.getElementById('ctx-name').innerText = selectedApp.name;
+        document.getElementById('ctx-author').innerText = selectedApp.author;
         
-        // 2. Clone the element
-        const clone = element.cloneNode(true);
-        clone.classList.remove('animate-entry'); // Remove entry animation to prevent flickering
-        clone.classList.add('ios-clone-element');
+        document.getElementById('ctx-action-btn').onclick = () => {
+             window.location.href = `app.html?id=${selectedApp.pkg}`;
+        };
         
-        // 3. Position the clone exactly where the original is
-        clone.style.top = rect.top + 'px';
-        clone.style.left = rect.left + 'px';
-        clone.style.width = rect.width + 'px';
-        clone.style.height = rect.height + 'px';
-        clone.style.margin = '0'; // Reset margins
-        
-        // Append clone to overlay
-        overlay.appendChild(clone);
-        activeClone = clone;
-
-        // 4. Construct the Menu Items
-        const menuHTML = `
-            <div class="ios-menu-wrapper" id="ios-menu-list">
-                <div class="menu-item" onclick="window.location.href='app.html?id=${selectedApp.pkg}'">
-                    <span class="menu-text">Öffnen</span>
-                    <i class="fas fa-arrow-up-right-from-square"></i>
-                </div>
-                <div class="menu-separator"></div>
-                <div class="menu-item" onclick="shareApp('${selectedApp.name}')">
-                    <span class="menu-text">Teilen</span>
-                    <i class="fas fa-share-nodes"></i>
-                </div>
-                <div class="menu-separator"></div>
-                <div class="menu-item">
-                    <span class="menu-text">Zur Merkliste</span>
-                    <i class="fas fa-bookmark"></i>
-                </div>
-                <div class="menu-separator"></div>
-                <div class="menu-item menu-danger">
-                    <span class="menu-text">Entfernen</span>
-                    <i class="fas fa-trash"></i>
-                </div>
-            </div>
-        `;
-        overlay.insertAdjacentHTML('beforeend', menuHTML);
-
-        // 5. Position the Menu Smartly
-        const menu = document.getElementById('ios-menu-list');
-        const windowHeight = window.innerHeight;
-        const menuHeight = 220; // Approx height
-
-        // Center horizontally relative to item, but constrained to screen
-        let menuLeft = rect.left + (rect.width / 2) - 125; // 125 is half menu width
-        if(menuLeft < 10) menuLeft = 10;
-        if(menuLeft + 250 > window.innerWidth) menuLeft = window.innerWidth - 260;
-
-        // Determine Vertical Position (Above or Below)
-        let menuTop;
-        const spaceBelow = windowHeight - rect.bottom;
-        
-        if (spaceBelow > menuHeight + 20) {
-            // Place below
-            menuTop = rect.bottom + 15;
-            menu.style.transformOrigin = 'top center';
-        } else {
-            // Place above
-            menuTop = rect.top - menuHeight - 15;
-            menu.style.transformOrigin = 'bottom center';
-        }
-
-        menu.style.top = menuTop + 'px';
-        menu.style.left = menuLeft + 'px';
-
-        // 6. Activate Overlay & Animation
         overlay.classList.add('active');
-        
-        // Slight delay to allow DOM render before transforming clone
-        requestAnimationFrame(() => {
-            clone.classList.add('active'); // Scales up 1.05x
-        });
     }
 
     function closeContextMenu() {
-        const overlay = document.getElementById('context-menu-overlay');
-        overlay.classList.remove('active');
-        
-        if(activeClone) {
-            activeClone.style.transform = 'scale(1)'; // Scale back down
-        }
-
-        setTimeout(() => {
-            overlay.innerHTML = ''; // Cleanup
-            activeClone = null;
-        }, 300);
-    }
-    
-    function shareApp(name) {
-        if (navigator.share) {
-            navigator.share({
-                title: 'DownAPK',
-                text: 'Schau dir ' + name + ' auf DownAPK an!',
-                url: window.location.href
-            });
-        }
-        closeContextMenu();
+        document.getElementById('context-menu-overlay').classList.remove('active');
     }
     // --- CONTEXT MENU LOGIC END ---
 
@@ -930,7 +848,6 @@
 
     // Erstellt das HTML für ein App-Item der Update-Liste
     function getAppItemHTML(app) {
-        // Pass event.currentTarget implicitly by handling it in startLongPress via event
         return `
             <div class="app-item animate-entry" 
                  onclick="if(!document.getElementById('context-menu-overlay').classList.contains('active')) window.location.href='app.html?id=${app.pkg}'"
@@ -1105,7 +1022,7 @@
 </script>
 
 <div style="text-align: center; margin-top: 20px; padding: 10px;">
-    <p style="color: #888888; font-size: 12px; margin: 0;">Version 28.80</p>
+    <p style="color: #888888; font-size: 12px; margin: 0;">Version 26.79</p>
     <p style="color: #666666; font-size: 10px; margin-top: 5px; opacity: 0.7;">By Nexus with ❤️</p>
     <div style="width: 100%; text-align: center; margin-top: 15px;">
         <a href="https://nexus-ashy.vercel.app/" style="color: #00ff00; text-decoration: none; font-size: 12px; font-weight: bold;">Mehr von uns</a>
