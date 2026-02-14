@@ -30,18 +30,47 @@
         header { padding: 50px 20px 10px; display: flex; justify-content: flex-start; align-items: center; }
         .logo { font-size: 34px; font-weight: 800; letter-spacing: -1px; }
 
+        /* ANIMATIONS (NEU) */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-entry {
+            opacity: 0; /* Start invisible */
+            animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+
+        /* Staggered delays for children of content-main */
+        #content-main > *:nth-child(1) { animation-delay: 0.1s; }
+        #content-main > *:nth-child(2) { animation-delay: 0.2s; }
+        #content-main > *:nth-child(3) { animation-delay: 0.3s; }
+        #content-main > *:nth-child(4) { animation-delay: 0.4s; }
+        #content-main > *:nth-child(5) { animation-delay: 0.5s; }
+        #content-main > *:nth-child(6) { animation-delay: 0.6s; }
+
         /* FEATURED BANNER */
         .featured-banner {
             margin: 15px 20px 30px; background: #111; border-radius: var(--radius-l);
             height: 420px; position: relative; overflow: hidden; display: flex;
             flex-direction: column; justify-content: flex-end; border: var(--glass-border);
             box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+            /* Hover Effect */
+            transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.4s ease;
         }
+        .featured-banner:hover {
+            transform: scale(1.02);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.8);
+        }
+
         .featured-img-bg {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background-size: cover !important; background-position: center !important;
             filter: brightness(0.5); z-index: 1;
+            transition: filter 0.4s ease;
         }
+        .featured-banner:hover .featured-img-bg { filter: brightness(0.6); }
+
         .featured-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.95) 100%);
@@ -51,29 +80,61 @@
         .featured-tag { color: #bf55ec; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
         .featured-title { font-size: 28px; font-weight: 800; margin-bottom: 5px; color: white !important; }
         .featured-desc { font-size: 15px; color: var(--ios-subtext); margin-bottom: 20px; }
-        .get-btn { background: #FFFFFF; color: #000; padding: 12px 50px; border-radius: 25px; font-weight: 700; font-size: 16px; border: none; }
+        .get-btn { 
+            background: #FFFFFF; color: #000; padding: 12px 50px; border-radius: 25px; font-weight: 700; font-size: 16px; border: none; 
+            transition: transform 0.2s ease, background-color 0.2s;
+        }
+        .get-btn:hover { transform: scale(1.05); background-color: #f0f0f0; }
 
         /* SECTIONS */
         .section-title { padding: 20px 20px 15px; font-size: 22px; font-weight: 700; display: flex; justify-content: space-between; align-items: center; }
-        .section-more { color: var(--ios-blue); font-size: 16px; font-weight: 400; cursor: pointer; }
+        .section-more { color: var(--ios-blue); font-size: 16px; font-weight: 400; cursor: pointer; transition: opacity 0.2s; }
+        .section-more:hover { opacity: 0.7; }
 
         .horizontal-scroll { display: flex; overflow-x: auto; padding: 0 20px 25px; gap: 18px; scrollbar-width: none; }
         .horizontal-scroll::-webkit-scrollbar { display: none; }
 
-        .card-item { width: 120px; min-width: 120px; cursor: pointer; }
+        .card-item { 
+            width: 120px; min-width: 120px; cursor: pointer; 
+            transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        .card-item:hover { transform: scale(1.08); }
+
         .card-icon { width: 120px; height: 120px; border-radius: 26px; object-fit: cover; border: var(--glass-border); margin-bottom: 10px; background: #222; }
         .card-name { font-size: 14px; font-weight: 500; margin-bottom: 2px; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: white !important; }
         .card-author { font-size: 12px; color: var(--ios-subtext); }
 
         /* LIST STYLE */
         .app-list-container { background: var(--ios-card); margin: 0 20px; border-radius: var(--radius-m); padding: 0 16px; border: var(--glass-border); }
-        .app-item { display: flex; padding: 15px 0; border-bottom: 0.5px solid var(--ios-separator); align-items: center; cursor: pointer; }
+        .app-item { 
+            display: flex; padding: 15px 0; border-bottom: 0.5px solid var(--ios-separator); align-items: center; cursor: pointer; 
+            transition: background-color 0.2s ease, transform 0.2s ease;
+        }
         .app-item:last-child { border-bottom: none; }
+        .app-item:hover { 
+            background-color: rgba(255,255,255,0.08); 
+            transform: translateX(5px);
+            border-radius: 10px; /* Optional slight rounding on hover */
+            padding-left: 10px; /* Adjust padding to keep alignment clean */
+            padding-right: 10px;
+            margin-left: -10px; /* Counter margin to keep width */
+            margin-right: -10px;
+        }
+
         .app-icon { width: 62px; height: 62px; border-radius: 14px; margin-right: 15px; border: var(--glass-border); background: #222; object-fit: cover; }
         .app-info { flex-grow: 1; min-width: 0; }
         .app-name { font-weight: 600; font-size: 17px; margin-bottom: 3px; color: #FFF !important; }
         .app-meta { font-size: 13px; color: var(--ios-subtext); }
         .laden-badge { background: #333; color: var(--ios-blue); padding: 6px 18px; border-radius: 20px; font-weight: 800; font-size: 12px; }
+
+        /* ERROR MESSAGE STYLE */
+        .error-message {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--ios-subtext);
+            font-size: 18px;
+            font-weight: 600;
+        }
 
         /* SEARCH BAR */
         .search-bar {
@@ -95,7 +156,8 @@
             display: flex; justify-content: space-evenly; align-items: center;
             z-index: 4000; border: var(--glass-border); box-shadow: 0 20px 50px rgba(0,0,0,0.9);
         }
-        .nav-item { color: rgba(255,255,255,0.4); text-align: center; cursor: pointer; }
+        .nav-item { color: rgba(255,255,255,0.4); text-align: center; cursor: pointer; transition: transform 0.2s; }
+        .nav-item:hover { transform: scale(1.1); color: #fff; }
         .nav-item.active { color: #FFF; }
         .nav-item i { font-size: 24px; display: block; margin-bottom: 4px; }
         .nav-item span { font-size: 10px; font-weight: 600; text-transform: uppercase; }
@@ -121,16 +183,16 @@
 </header>
 
 <div id="content-main">
-    <div id="featured-hero"></div>
+    <div class="animate-entry" id="featured-hero"></div>
 
-    <div class="section-title">Angesagt <i class="fas fa-chevron-right" onclick="viewAll('Angesagt')" style="font-size:14px; opacity:0.3; cursor:pointer;"></i></div>
-    <div class="horizontal-scroll" id="scroll-trending"></div>
+    <div class="section-title animate-entry">Angesagt <i class="fas fa-chevron-right" onclick="viewAll('Angesagt')" style="font-size:14px; opacity:0.3; cursor:pointer;"></i></div>
+    <div class="horizontal-scroll animate-entry" id="scroll-trending"></div>
 
-    <div class="section-title">Top Apps <span class="section-more" onclick="viewAll('Top Apps')">Alle</span></div>
-    <div class="horizontal-scroll" id="scroll-top"></div>
+    <div class="section-title animate-entry">Top Apps <span class="section-more" onclick="viewAll('Top Apps')">Alle</span></div>
+    <div class="horizontal-scroll animate-entry" id="scroll-top"></div>
 
-    <div class="section-title">Neueste Updates</div>
-    <div id="update-feed" class="app-list-container"></div>
+    <div class="section-title animate-entry">Neueste Updates</div>
+    <div id="update-feed" class="app-list-container animate-entry"></div>
 </div>
 
 <nav class="bottom-nav">
@@ -158,11 +220,10 @@
 
     async function loadFDroidApps() {
         try {
-            // Änderung: Abruf über die interne API statt direkt von F-Droid
             const response = await fetch('/api/apps');
-            const data = await response.json();
+            if (!response.ok) throw new Error("API Fehler");
             
-            // Mapping der API-Daten (packageName -> pkg, version -> ver)
+            const data = await response.json();
             const remoteApps = data.map(app => ({
                 name: app.name,
                 author: app.author,
@@ -173,7 +234,16 @@
             
             appDatabase = [...appDatabase, ...remoteApps];
             render(); 
-        } catch (e) { console.log("API konnte nicht geladen werden, verwende interne Liste.", e); }
+        } catch (e) { 
+            console.error("Apps konnten nicht geladen werden:", e);
+            // Fehlerfall: Gesamten Inhalt löschen und Fehlermeldung anzeigen
+            document.getElementById('content-main').innerHTML = `
+                <div class="error-message">
+                    <i class="fas fa-exclamation-triangle" style="font-size:40px; margin-bottom:20px; display:block; opacity:0.5;"></i>
+                    Apps können nicht geladen werden.
+                </div>
+            `;
+        }
     }
 
     function shuffle(array) { return array.sort(() => Math.random() - 0.5); }
@@ -242,6 +312,7 @@
     document.getElementById('search-input').addEventListener('input', (e) => performSearch(e.target.value));
 
     window.onload = () => {
+        // Wir rendern zuerst die Basis-Apps, damit etwas da ist, während geladen wird.
         render();
         loadFDroidApps();
     };
