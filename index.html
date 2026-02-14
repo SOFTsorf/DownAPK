@@ -3,751 +3,507 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AppStore 26</title>
+    <title>DownAPK - iOS 26 Edition</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --ios-bg: #F2F2F7;
-            --ios-card: #FFFFFF;
-            --ios-blue: #007AFF;
-            --ios-text: #000000;
-            --ios-subtext: #8E8E93;
-            --ios-separator: #C6C6C8;
-            --ios-blur: rgba(245, 245, 245, 0.85);
-            --radius-l: 22px;
-            --radius-m: 16px;
-            --radius-s: 10px;
-            --shadow: 0 4px 20px rgba(0,0,0,0.06);
+            --bg-black: #000000;
+            --card-gray: #1c1c1e;
+            --text-white: #ffffff;
+            --text-gray: #8e8e93;
+            --accent-blue: #007aff;
+            --glass: rgba(28, 28, 30, 0.8);
         }
 
-        /* RESET & BASE */
         body { 
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif; 
             margin: 0; 
-            background: var(--ios-bg); 
-            color: var(--ios-text); 
-            padding-bottom: 90px; 
+            background: var(--bg-black); 
+            color: var(--text-white); 
+            padding-bottom: 120px; 
             -webkit-tap-highlight-color: transparent;
-        }
-        a { text-decoration: none; color: inherit; }
-        * { box-sizing: border-box; }
-
-        /* HEADER (Glassmorphism) */
-        header { 
-            background: var(--ios-blur);
-            backdrop-filter: saturate(180%) blur(20px);
-            -webkit-backdrop-filter: saturate(180%) blur(20px);
-            height: auto;
-            min-height: 60px;
-            display: flex; 
-            flex-direction: column;
-            padding: 10px 20px; 
-            position: sticky; 
-            top: 0; 
-            z-index: 1000;
-            border-bottom: 0.5px solid rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
+            overflow-x: hidden;
         }
 
-        .header-top {
+        /* HEADER */
+        header {
+            padding: 60px 20px 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            width: 100%;
-            margin-bottom: 5px;
         }
-        
-        .logo { 
-            font-size: 24px; 
-            font-weight: 800; 
-            letter-spacing: -0.5px;
-            background: linear-gradient(135deg, #000 0%, #333 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+
+        header h1 {
+            font-size: 34px;
+            font-weight: 700;
+            margin: 0;
+            letter-spacing: -1px;
         }
-        
-        .user-avatar {
-            width: 32px;
-            height: 32px;
-            background: linear-gradient(135deg, #007AFF, #5AC8FA);
+
+        .user-profile {
+            width: 35px;
+            height: 35px;
             border-radius: 50%;
+            background: linear-gradient(45deg, #ff8400, #ffb347);
+            overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
-            font-size: 14px;
         }
 
-        /* SEARCH BAR (iOS Style) */
-        .search-trigger-container {
-            width: 100%;
+        /* IMMERSIVE FEATURED BANNER (iOS 26 Style) */
+        #featured-section {
+            padding: 10px 0;
+        }
+
+        .featured-card {
             position: relative;
-        }
-
-        .search-dummy {
-            background: rgba(118, 118, 128, 0.12);
-            border-radius: 10px;
-            padding: 8px 12px;
+            margin: 0 20px;
+            height: 450px;
+            border-radius: 30px;
+            overflow: hidden;
+            background: #111;
             display: flex;
-            align-items: center;
-            color: var(--ios-subtext);
-            font-size: 17px;
-            cursor: pointer;
+            flex-direction: column;
+            justify-content: flex-end;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            transition: transform 0.3s ease;
         }
-        .search-dummy i { margin-right: 8px; font-size: 14px;}
 
-        /* Overlay Search Bar */
-        .search-bar {
+        .featured-card:active { transform: scale(0.97); }
+
+        .featured-img-full {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
-            background: var(--ios-bg);
-            display: flex;
-            align-items: center;
-            padding: 10px 20px;
-            box-sizing: border-box;
-            transform: translateY(-100%);
-            transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-            z-index: 1001;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-        
-        .search-bar.active { transform: translateY(0); }
-        
-        .search-input-wrapper {
-            flex-grow: 1;
-            background: #E3E3E8;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            padding: 0 10px;
-            height: 36px;
-        }
-
-        .search-input {
-            background: transparent;
-            border: none;
-            width: 100%;
             height: 100%;
-            color: #000;
-            font-size: 17px;
-            outline: none;
-            font-family: inherit;
-        }
-        .search-input::placeholder { color: #8E8E93; }
-        
-        .close-search { 
-            color: var(--ios-blue); 
-            font-size: 17px; 
-            padding-left: 15px; 
-            cursor: pointer; 
-            font-weight: 400;
-            white-space: nowrap;
-        }
-
-        /* SECTIONS */
-        .section-title {
-            padding: 25px 20px 10px;
-            font-size: 22px;
-            font-weight: 700;
-            color: #000;
-            letter-spacing: 0.3px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        .section-more { 
-            font-size: 15px; 
-            color: var(--ios-blue); 
-            font-weight: 400; 
-            cursor: pointer; 
-        }
-
-        /* FEATURED BANNER (Today Card Style) */
-        .featured-banner {
-            margin: 20px;
-            background: var(--ios-card);
-            border-radius: var(--radius-l);
-            padding: 0;
-            color: black;
-            display: flex;
-            flex-direction: column;
-            box-shadow: var(--shadow);
-            overflow: hidden;
-            position: relative;
-            height: 320px;
-            transition: transform 0.2s;
-        }
-        .featured-banner:active { transform: scale(0.98); }
-
-        .featured-img-bg {
-            width: 100%;
-            height: 65%;
-            background: linear-gradient(135deg, #a8c0ff, #3f2b96); /* Placeholder for image */
-            position: relative;
-        }
-        /* Icon floating over the background */
-        .featured-img { 
-            width: 80px; 
-            height: 80px; 
-            border-radius: 18px; 
-            position: absolute;
-            bottom: -40px;
-            left: 20px;
-            box-shadow: 0 8px 15px rgba(0,0,0,0.2);
             object-fit: cover;
-            border: 4px solid var(--ios-card);
-            background: white;
+            opacity: 0.7;
         }
 
-        .featured-info { 
-            padding: 50px 20px 20px;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
+        .featured-content {
+            position: relative;
+            padding: 30px;
+            background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 100%);
+            text-align: center;
         }
-        
-        .featured-tag { 
-            text-transform: uppercase;
-            color: #8E8E93;
-            font-size: 11px;
+
+        .featured-tag {
+            font-size: 12px;
             font-weight: 600;
-            margin-bottom: 4px;
+            color: var(--text-gray);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
             display: block;
         }
-        
-        .featured-title { 
-            font-size: 20px; 
-            font-weight: 700; 
-            margin-bottom: 4px;
-            color: #000;
-            white-space: nowrap;
-            overflow: hidden;
-        }
-        
-        .scroll-text { animation: scroll 8s linear infinite alternate; }
-        @keyframes scroll {
-            0% { transform: translateX(0); }
-            20% { transform: translateX(0); } 
-            80% { transform: translateX(calc(-100% + 250px)); } 
-            100% { transform: translateX(calc(-100% + 250px)); }
+
+        .featured-title {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 5px;
         }
 
-        .featured-desc { 
-            font-size: 14px; 
-            color: #8E8E93; 
-            display: -webkit-box; 
-            -webkit-line-clamp: 2; 
-            -webkit-box-orient: vertical; 
-            overflow: hidden; 
-            line-height: 1.4;
+        .featured-subtitle {
+            font-size: 15px;
+            color: var(--text-gray);
+            margin-bottom: 20px;
         }
 
-        /* "Get" Button iOS Style */
-        .get-btn {
-            background: rgba(240, 240, 248, 1);
-            color: var(--ios-blue);
-            padding: 6px 20px;
-            border-radius: 20px;
-            font-size: 14px;
+        .play-btn {
+            background: var(--text-white);
+            color: black;
+            padding: 12px 40px;
+            border-radius: 25px;
             font-weight: 700;
-            text-transform: uppercase;
+            font-size: 16px;
             border: none;
             cursor: pointer;
-            position: absolute;
-            right: 20px;
-            bottom: 25px;
-        }
-        .featured-btn {
-            display: none; /* Hide old button, using the new layout */
-        }
-
-        /* HORIZONTAL SCROLL */
-        .horizontal-scroll {
-            display: flex;
-            overflow-x: auto;
-            padding: 0 20px 20px;
-            gap: 15px;
-            scroll-snap-type: x mandatory;
-            scrollbar-width: none;
-            -webkit-overflow-scrolling: touch;
-        }
-        .horizontal-scroll::-webkit-scrollbar { display: none; }
-
-        .card-item {
-            width: 100px;
-            min-width: 100px;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start; /* Left align for iOS feel */
-            scroll-snap-align: start;
-        }
-        .card-icon { 
-            width: 100px; 
-            height: 100px; 
-            border-radius: 22px; 
-            background: #fff; 
-            margin-bottom: 8px; 
-            object-fit: cover; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-            border: 1px solid rgba(0,0,0,0.04);
-        }
-        
-        .card-name-container { width: 100%; overflow: hidden; white-space: nowrap; }
-        .card-name { 
-            font-size: 13px; 
-            font-weight: 400; 
-            color: #000; 
             display: inline-block;
         }
-        .card-rating { font-size: 12px; color: #8E8E93; margin-top: 2px; }
 
-        /* TAGS */
-        .tags-container { padding: 0 20px 10px; display: flex; flex-wrap: wrap; gap: 10px; }
-        .tag {
-            background: white;
-            padding: 8px 16px;
-            border-radius: 8px; /* Slightly squarer for iOS chips */
-            font-size: 15px;
-            color: var(--ios-blue);
-            box-shadow: 0 2px 5px rgba(0,0,0,0.03);
-            cursor: pointer;
-            transition: background 0.2s;
-            border: none;
-            font-weight: 500;
+        /* SECTION TITLES */
+        .section-header {
+            padding: 30px 20px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        .tag:active { background: #E5E5EA; }
 
-        /* LIST VIEW */
-        .app-list-container { 
-            background: white;
-            margin: 0 20px;
-            border-radius: 14px;
-            padding: 0 16px;
-            display: flex; 
-            flex-direction: column; 
-            box-shadow: var(--shadow);
-        }
-        
-        .app-item { 
-            display: flex; 
-            padding: 16px 0; 
-            border-bottom: 1px solid rgba(0,0,0,0.05); 
-            align-items: center; 
-        }
-        .app-item:last-child { border-bottom: none; }
-        .app-item:active { opacity: 0.6; }
-
-        .app-icon { 
-            width: 58px; 
-            height: 58px; 
-            border-radius: 12px; 
-            margin-right: 15px; 
-            background: #eee; 
-            object-fit: cover;
-            border: 1px solid rgba(0,0,0,0.05);
-        }
-        .app-info { flex-grow: 1; min-width: 0; }
-        .app-name { 
-            font-weight: 500; 
-            font-size: 17px; 
-            color: #000; 
-            margin-bottom: 4px; 
-            white-space: nowrap; 
-            overflow: hidden; 
-            text-overflow: ellipsis; 
-        }
-        .app-meta { font-size: 13px; color: #8E8E93; display: flex; align-items: center; gap: 6px; }
-        
-        /* New Badge Style */
-        .badge { 
-            font-size: 10px; 
-            padding: 3px 6px; 
-            border-radius: 4px; 
-            background: #F2F2F7; 
-            color: #8E8E93; 
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-        .badge-new { background: rgba(0, 122, 255, 0.1); color: var(--ios-blue); }
-
-        /* "LADEN" Button instead of Icon */
-        .d-icon { 
-            background: #F0F0F8;
-            color: var(--ios-blue);
+        .section-header h2 {
+            font-size: 22px;
             font-weight: 700;
+            margin: 0;
+        }
+
+        .section-header i { color: var(--text-gray); font-size: 18px; }
+
+        /* HORIZONTAL LISTS */
+        .h-scroll {
+            display: flex;
+            overflow-x: auto;
+            padding: 0 20px;
+            gap: 15px;
+            scrollbar-width: none;
+        }
+        .h-scroll::-webkit-scrollbar { display: none; }
+
+        .game-card {
+            min-width: 110px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .game-icon {
+            width: 110px;
+            height: 110px;
+            border-radius: 24px;
+            background: var(--card-gray);
+            object-fit: cover;
+            margin-bottom: 8px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .game-title {
             font-size: 13px;
-            padding: 6px 16px;
-            border-radius: 15px;
-            text-transform: uppercase;
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
-        .d-icon i { display: none; } /* Hide the FontAwesome Icon */
-        .d-icon::after { content: 'Laden'; }
 
-        /* LOAD MORE */
-        .load-more-btn {
-            display: block;
-            width: auto;
-            margin: 30px 20px;
-            padding: 14px;
-            text-align: center;
-            background: transparent;
-            border: none;
-            color: var(--ios-blue);
+        /* VERTICAL APP LIST (Fixed Bug) */
+        .app-list {
+            padding: 0 20px;
+        }
+
+        .app-item {
+            display: flex;
+            align-items: center;
+            background: var(--card-gray);
+            margin-bottom: 12px;
+            padding: 12px;
+            border-radius: 20px;
+            text-decoration: none;
+            color: white;
+        }
+
+        .app-icon-small {
+            width: 60px;
+            height: 60px;
+            border-radius: 14px;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .app-details {
+            flex-grow: 1;
+            min-width: 0; /* Verhindert Text-Overflow Bug */
+        }
+
+        .app-name {
             font-weight: 600;
-            font-size: 17px;
-            cursor: pointer;
-            transition: opacity 0.2s;
+            font-size: 16px;
+            margin-bottom: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
-        .load-more-btn:active { opacity: 0.5; }
-        .hidden { display: none; }
-        .loader { padding: 40px; text-align: center; color: #8E8E93; font-size: 14px; }
-        
-        .highlight { color: var(--ios-blue); }
-        .fade-anim { animation: fadein 0.6s cubic-bezier(0.25, 1, 0.5, 1); }
-        @keyframes fadein { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
 
-        /* BOTTOM FAKE NAV for the Look */
-        .bottom-nav {
+        .app-sub {
+            font-size: 12px;
+            color: var(--text-gray);
+        }
+
+        .laden-btn {
+            background: rgba(255,255,255,0.1);
+            color: var(--accent-blue);
+            padding: 6px 18px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 14px;
+            text-transform: uppercase;
+            margin-left: 10px;
+            flex-shrink: 0;
+        }
+
+        /* FLOATING NAV BAR (iOS 26 Style) */
+        .floating-nav {
             position: fixed;
-            bottom: 0;
-            width: 100%;
-            height: 80px;
-            background: var(--ios-blur);
-            backdrop-filter: saturate(180%) blur(20px);
-            -webkit-backdrop-filter: saturate(180%) blur(20px);
-            border-top: 0.5px solid rgba(0,0,0,0.1);
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 400px;
+            background: var(--glass);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            height: 70px;
+            border-radius: 40px;
             display: flex;
             justify-content: space-around;
-            padding-top: 10px;
-            z-index: 999;
+            align-items: center;
+            padding: 0 10px;
+            z-index: 1000;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.1);
         }
-        .nav-item {
+
+        .nav-link {
             display: flex;
             flex-direction: column;
             align-items: center;
-            color: #999;
+            color: var(--text-gray);
+            text-decoration: none;
             font-size: 10px;
-            gap: 5px;
+            font-weight: 500;
+            gap: 4px;
+            transition: 0.2s;
         }
-        .nav-item.active { color: var(--ios-blue); }
-        .nav-item i { font-size: 20px; }
+
+        .nav-link.active { color: var(--text-white); }
+        .nav-link i { font-size: 20px; }
+
+        .nav-search-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+        }
+
+        /* SEARCH OVERLAY */
+        #search-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-black);
+            z-index: 2000;
+            display: none;
+            padding: 60px 20px;
+            box-sizing: border-box;
+        }
+
+        .search-input-box {
+            background: var(--card-gray);
+            border-radius: 15px;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .search-input-box input {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 18px;
+            width: 100%;
+            outline: none;
+        }
+
+        .close-search {
+            margin-top: 20px;
+            color: var(--accent-blue);
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .hidden { display: none; }
+        .fade-in { animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
     </style>
 </head>
 <body>
 
-<div class="search-bar" id="search-bar">
-    <div class="search-input-wrapper">
-        <i class="fas fa-search" style="color:#8E8E93; font-size: 14px; margin-right: 8px;"></i>
-        <input type="text" class="search-input" id="search-input" placeholder="Spiele, Apps, Storys" autocomplete="off">
-    </div>
-    <div class="close-search" onclick="toggleSearch(false)">Abbrechen</div>
-</div>
-
-<header id="header-normal">
-    <div class="header-top">
-        <div class="logo">AppStore</div>
-        <div class="user-avatar"><i class="fas fa-user"></i></div>
-    </div>
-    <div class="search-trigger-container" onclick="toggleSearch(true)">
-        <div class="search-dummy">
-            <i class="fas fa-search"></i> Suchen
-        </div>
+<header>
+    <h1>DownAPK</h1>
+    <div class="user-profile">
+        <i class="fas fa-user" style="color: white; font-size: 16px;"></i>
     </div>
 </header>
 
 <div id="main-content">
     
-    <div class="section-title" style="padding-top:10px;">Heute</div>
     <div id="featured-section"></div>
 
-    <div class="section-title">
-        Angesagt
-        <i class="fas fa-chevron-right" style="font-size: 14px; color: #ccc;"></i>
+    <div class="section-header">
+        <h2>Weiter spielen</h2>
+        <i class="fas fa-chevron-right"></i>
     </div>
-    <div class="horizontal-scroll" id="trending-list">
-        <div class="loader">Lade Trends...</div>
+    <div class="h-scroll" id="continue-playing">
+        </div>
+
+    <div class="section-header">
+        <h2>Neue Spiele, die wir lieben</h2>
+        <i class="fas fa-chevron-right"></i>
     </div>
+    <div class="h-scroll" id="new-games-list"></div>
 
-    <div class="section-title">Entdecken</div>
-    <div class="tags-container">
-        <button class="tag" onclick="autoSearch('WhatsApp')">WhatsApp</button>
-        <button class="tag" onclick="autoSearch('Minecraft')">Minecraft</button>
-        <button class="tag" onclick="autoSearch('Spotify')">Musik</button>
-        <button class="tag" onclick="autoSearch('Vanced')">Video</button>
-        <button class="tag" onclick="autoSearch('VPN')">Tools</button>
-        <button class="tag" onclick="autoSearch('Telegram')">Chat</button>
+    <div class="section-header">
+        <h2>Zuletzt aktualisiert</h2>
     </div>
-
-    <div class="section-title">
-        Top Spiele
-        <span class="section-more" onclick="viewAll('Spiele')">Alle ansehen</span>
+    <div id="feed-list" class="app-list"></div>
+    
+    <div style="text-align:center; padding: 20px;">
+        <div onclick="loadMore()" style="color: var(--accent-blue); font-weight: 600; cursor: pointer;">Mehr anzeigen</div>
     </div>
-    <div class="horizontal-scroll" id="games-list"></div>
-
-    <div class="section-title">Updates</div>
-    <div id="feed-list" class="app-list-container"></div>
-    <button class="load-more-btn" onclick="loadMore()">Mehr anzeigen</button>
-
 </div>
 
-<div id="search-results-container" class="hidden" style="padding-top: 20px;">
-    <div class="section-title">Ergebnisse für <span id="search-term-display" class="highlight"></span> <span class="section-more" onclick="closeViewAll()" style="font-size:24px; padding:0 10px; color:#8E8E93;">&times;</span></div>
-    <div id="search-list" class="app-list-container"></div>
+<div id="search-results-container" class="hidden">
+    <div class="section-header">
+        <h2 id="search-term-display">Suche</h2>
+        <span onclick="closeViewAll()" style="color: var(--accent-blue);">Fertig</span>
+    </div>
+    <div id="search-list" class="app-list"></div>
 </div>
 
-<div class="bottom-nav">
-    <div class="nav-item active">
-        <i class="fas fa-layer-group"></i>
-        <span>Heute</span>
+<div id="search-overlay">
+    <div class="search-input-box">
+        <i class="fas fa-search" style="color: var(--text-gray);"></i>
+        <input type="text" id="search-input" placeholder="Apps und Spiele suchen">
     </div>
-    <div class="nav-item">
+    <div class="close-search" onclick="toggleSearch(false)">Abbrechen</div>
+    <div id="search-suggestions" style="margin-top: 30px;" class="app-list"></div>
+</div>
+
+<nav class="floating-nav">
+    <a href="#" class="nav-link active" onclick="closeViewAll()">
+        <i class="fas fa-home"></i>
+        <span>Home</span>
+    </a>
+    <a href="#" class="nav-link">
         <i class="fas fa-gamepad"></i>
-        <span>Games</span>
-    </div>
-    <div class="nav-item">
-        <i class="fas fa-th-large"></i>
-        <span>Apps</span>
-    </div>
-    <div class="nav-item">
+        <span>Arcade</span>
+    </a>
+    <a href="#" class="nav-link">
+        <i class="fas fa-users"></i>
+        <span>Play</span>
+    </a>
+    <a href="#" class="nav-link">
+        <i class="fas fa-box"></i>
+        <span>Library</span>
+    </a>
+    <div class="nav-search-btn" onclick="toggleSearch(true)">
         <i class="fas fa-search"></i>
-        <span>Suchen</span>
     </div>
-</div>
+</nav>
 
 <script>
     let allApps = [];
     let featuredInterval;
+    let feedAppsShown = 0;
+    const BATCH_SIZE = 8;
 
     // --- UI Logic ---
-    const headerNormal = document.getElementById('header-normal');
-    const searchBar = document.getElementById('search-bar');
-    const searchInput = document.getElementById('search-input');
-    const mainContent = document.getElementById('main-content');
-    const searchResultsContainer = document.getElementById('search-results-container');
-    const searchList = document.getElementById('search-list');
-
     function toggleSearch(show) {
-        if (show) {
-            searchBar.classList.add('active');
-            searchInput.focus();
-        } else {
-            searchBar.classList.remove('active');
-            searchInput.value = '';
-            closeViewAll();
-        }
-    }
-
-    // --- NEU: Auto-Suche beim Klick auf Tag ---
-    function autoSearch(term) {
-        toggleSearch(true);
-        searchInput.value = term;
-        performSearch(term);
-    }
-
-    // --- NEU: Alle ansehen Logik ---
-    function viewAll(category) {
-        mainContent.classList.add('hidden');
-        searchResultsContainer.classList.remove('hidden');
-        document.getElementById('search-term-display').innerText = category;
-        searchList.innerHTML = '<div class="loader">Lade alle ' + category + '...</div>';
-
-        // Simuliere Laden einer Kategorie
-        setTimeout(() => {
-            searchList.innerHTML = '';
-            // Wir nehmen einfach alle Apps und shuffeln sie zur Demo
-            let catApps = [...allApps].sort(() => 0.5 - Math.random());
-            catApps.forEach(app => {
-                const div = document.createElement('div');
-                div.innerHTML = createAppItem(app);
-                searchList.appendChild(div.firstElementChild);
-            });
-        }, 400);
+        const overlay = document.getElementById('search-overlay');
+        overlay.style.display = show ? 'block' : 'none';
+        if(show) document.getElementById('search-input').focus();
     }
 
     function closeViewAll() {
-        mainContent.classList.remove('hidden');
-        searchResultsContainer.classList.add('hidden');
+        document.getElementById('main-content').classList.remove('hidden');
+        document.getElementById('search-results-container').classList.add('hidden');
     }
 
-    // --- Templates (angepasst für neues Design) ---
-    function createAppItem(app, isUpdate = false) {
-        const badge = isUpdate ? '<span class="badge badge-new">Update</span>' : `<span class="badge">${app.version}</span>`;
+    // --- Data Rendering ---
+    function createFeaturedCard(app) {
+        // Generiere ein zufälliges Hintergrundbild (hier Platzhalter mit Verlauf)
+        const hue = Math.floor(Math.random() * 360);
+        return `
+            <div class="featured-card fade-in">
+                <div class="featured-img-full" style="background: linear-gradient(to bottom, hsl(${hue}, 50%, 30%), #000);"></div>
+                <div class="featured-content">
+                    <span class="featured-tag">Special Event</span>
+                    <div class="featured-title">${app.name}</div>
+                    <div class="featured-subtitle">Die neueste Version von ${app.author} ist da.</div>
+                    <button class="play-btn" onclick="location.href='app.html?id=${app.packageName}'">Installieren</button>
+                </div>
+            </div>
+        `;
+    }
+
+    function createGameIcon(app) {
+        return `
+            <a href="app.html?id=${app.packageName}" class="game-card">
+                <img src="${app.icon}" class="game-icon" onerror="this.src='https://via.placeholder.com/110/333/fff?text=App'">
+                <div class="game-title">${app.name}</div>
+            </a>
+        `;
+    }
+
+    function createAppItem(app) {
         return `
             <a href="app.html?id=${app.packageName}" class="app-item">
-                <img src="${app.icon}" class="app-icon" onerror="this.src='https://via.placeholder.com/58'">
-                <div class="app-info">
+                <img src="${app.icon}" class="app-icon-small" onerror="this.src='https://via.placeholder.com/60/333/fff?text=App'">
+                <div class="app-details">
                     <div class="app-name">${app.name}</div>
-                    <div class="app-meta">${badge} • ${app.author}</div>
+                    <div class="app-sub">${app.author} • v${app.version}</div>
                 </div>
-                <div class="d-icon"><i class="fas fa-download"></i></div>
+                <div class="laden-btn">Laden</div>
             </a>
         `;
     }
 
-    function createCardItem(app) {
-        // Prüfen ob Text lang ist für Scroll-Effekt
-        const isLong = app.name.length > 12;
-        const nameClass = isLong ? "card-name scroll-active" : "card-name";
-        
-        return `
-            <a href="app.html?id=${app.packageName}" class="card-item">
-                <img src="${app.icon}" class="card-icon" onerror="this.src='https://via.placeholder.com/100'">
-                <div class="card-name-container">
-                    <div class="${nameClass}">${app.name}</div>
-                </div>
-                <div class="card-rating">${app.author}</div>
-            </a>
-        `;
-    }
-
-    // --- Rotation Logic ---
-    let currentFeaturedIndex = 0;
-
-    function renderFeatured(app) {
-        if(!app) return;
-        
-        // Prüfen ob Titel sehr lang ist
-        const isLongTitle = app.name.length > 20;
-        const titleClass = isLongTitle ? "featured-title scroll-text" : "featured-title";
-        
-        // Style für Animation resetten durch Neu-Einfügen
-        const container = document.getElementById('featured-section');
-        
-        // Generiere einen Pseudo-Hintergrund basierend auf dem Namen für Variation
-        const hue = (app.name.length * 40) % 360;
-        const bgStyle = `background: linear-gradient(135deg, hsl(${hue}, 80%, 80%), hsl(${hue+40}, 60%, 50%));`;
-
-        container.innerHTML = `
-            <a href="app.html?id=${app.packageName}" class="featured-banner fade-anim">
-                <div class="featured-img-bg" style="${bgStyle}"></div>
-                <img src="${app.icon}" class="featured-img" onerror="this.src='https://via.placeholder.com/80'">
-                
-                <div class="featured-info">
-                    <span class="featured-tag">APP DES TAGES</span>
-                    <div class="${titleClass}" style="${isLongTitle ? 'width:fit-content;' : ''}">${app.name}</div>
-                    <div class="featured-desc">Entdecke die neuen Features von Version ${app.version}.</div>
-                </div>
-                <button class="get-btn">Laden</button>
-            </a>
-        `;
-    }
-
-    function startFeaturedRotation() {
-        if(featuredInterval) clearInterval(featuredInterval);
-        featuredInterval = setInterval(() => {
-            currentFeaturedIndex = (currentFeaturedIndex + 1) % Math.min(5, allApps.length); // Rotiere durch die ersten 5
-            renderFeatured(allApps[currentFeaturedIndex]);
-        }, 5000); // Alle 5 Sekunden
-    }
-
-    // --- Daten & Rendering ---
-    let feedAppsShown = 0;
-    let feedAppsCache = [];
-    const BATCH_SIZE = 8;
-
+    // --- Core Functions ---
     async function init() {
-        try {
-            // Simulierte Daten
-            const dummyData = [
-                { name: "Weather Pro Max", author: "Woheller", version: "2.1", icon: "https://via.placeholder.com/80/FFA500/fff?text=Sun", packageName: "pkg1" },
-                { name: "WhatsApp Beta", author: "Meta", version: "2.23", icon: "https://via.placeholder.com/80/25D366/fff?text=WA", packageName: "pkg2" },
-                { name: "Minecraft", author: "Mojang", version: "1.20", icon: "https://via.placeholder.com/80/4CAF50/fff?text=MC", packageName: "pkg3" },
-                { name: "Spotify Music", author: "Spotify", version: "8.8", icon: "https://via.placeholder.com/80/1DB954/fff?text=Sp", packageName: "pkg4" },
-                { name: "YouVanced", author: "Team Vanced", version: "17.03", icon: "https://via.placeholder.com/80/FF0000/fff?text=YT", packageName: "pkg5" },
-                { name: "Telegram X", author: "Telegram", version: "0.25", icon: "https://via.placeholder.com/80/0088cc/fff?text=TG", packageName: "pkg6" },
-                { name: "Subway Surfers", author: "Sybo", version: "3.4", icon: "https://via.placeholder.com/80/FFC107/fff?text=SS", packageName: "pkg7" },
-                { name: "Clash Royale", author: "Supercell", version: "3.5", icon: "https://via.placeholder.com/80/2196F3/fff?text=CR", packageName: "pkg8" },
-            ];
-            
-            try {
-                const res = await fetch('/api/apps');
-                if(res.ok) allApps = await res.json();
-                else allApps = dummyData;
-            } catch(e) {
-                allApps = dummyData;
-                for(let i=0; i<12; i++) allApps.push({...dummyData[i%dummyData.length], name: dummyData[i%dummyData.length].name + " " + (i+2), packageName: "p"+i});
-            }
-            
-            // 1. Featured Starten
-            renderFeatured(allApps[0]);
-            startFeaturedRotation();
+        const dummyData = [
+            { name: "Marvel Snap", author: "Second Dinner", version: "1.2", icon: "https://via.placeholder.com/150/800080/fff?text=MS", packageName: "ms" },
+            { name: "WhatsApp", author: "Meta", version: "2.24", icon: "https://via.placeholder.com/150/25D366/fff?text=WA", packageName: "wa" },
+            { name: "Minecraft", author: "Mojang", version: "1.21", icon: "https://via.placeholder.com/150/4CAF50/fff?text=MC", packageName: "mc" },
+            { name: "Spotify", author: "Spotify AB", version: "8.9", icon: "https://via.placeholder.com/150/1DB954/fff?text=SP", packageName: "sp" },
+            { name: "Telegram", author: "Telegram FZ", version: "10.1", icon: "https://via.placeholder.com/150/0088cc/fff?text=TG", packageName: "tg" },
+            { name: "Vanced Manager", author: "Team Vanced", version: "2.6", icon: "https://via.placeholder.com/150/f00/fff?text=VM", packageName: "vm" }
+        ];
 
-            // 2. Trends
-            const trendingList = document.getElementById('trending-list');
-            trendingList.innerHTML = '';
-            allApps.slice(0, 6).forEach(app => trendingList.innerHTML += createCardItem(app));
+        allApps = dummyData; // In Realität: fetch('/api/apps')
 
-            // 3. Games
-            const gamesList = document.getElementById('games-list');
-            gamesList.innerHTML = '';
-            const gameApps = allApps.length > 6 ? allApps.slice(6, 12) : allApps;
-            gameApps.forEach(app => gamesList.innerHTML += createCardItem(app));
+        // 1. Featured Rotation
+        let featIdx = 0;
+        const renderFeat = () => {
+            document.getElementById('featured-section').innerHTML = createFeaturedCard(allApps[featIdx]);
+            featIdx = (featIdx + 1) % allApps.length;
+        };
+        renderFeat();
+        setInterval(renderFeat, 6000);
 
-            // 4. Feed
-            feedAppsCache = allApps; 
-            loadMore(); 
+        // 2. Continue Playing & New Games
+        const contList = document.getElementById('continue-playing');
+        const newList = document.getElementById('new-games-list');
+        allApps.forEach(app => {
+            contList.innerHTML += createGameIcon(app);
+            newList.innerHTML += createGameIcon(app);
+        });
 
-        } catch (error) {
-            console.error("Fehler:", error);
-            document.getElementById('trending-list').innerHTML = "Fehler beim Laden.";
-        }
+        // 3. Main Feed
+        loadMore();
     }
 
     window.loadMore = function() {
         const container = document.getElementById('feed-list');
-        const total = feedAppsCache.length;
-        const nextBatch = feedAppsCache.slice(feedAppsShown, feedAppsShown + BATCH_SIZE);
-
-        nextBatch.forEach(app => {
-            container.innerHTML += createAppItem(app, true);
-        });
-
+        const nextBatch = allApps.slice(feedAppsShown, feedAppsShown + BATCH_SIZE);
+        nextBatch.forEach(app => container.innerHTML += createAppItem(app));
         feedAppsShown += nextBatch.length;
-
-        if (feedAppsShown >= total) {
-            document.querySelector('.load-more-btn').style.display = 'none';
-        }
     };
 
-    // --- Such Logik ---
-    let debounceTimer;
-
-    function performSearch(query) {
-        mainContent.classList.add('hidden');
-        searchResultsContainer.classList.remove('hidden');
-        document.getElementById('search-term-display').innerText = `"${query}"`;
-        searchList.innerHTML = '<div class="loader"><i class="fas fa-spinner fa-spin"></i> Suche läuft...</div>';
-
-        setTimeout(() => {
-            const results = allApps.filter(app => app.name.toLowerCase().includes(query));
-            
-            searchList.innerHTML = '';
-            if (results.length === 0) {
-                searchList.innerHTML = '<div style="padding:40px; text-align:center; color:#999">Keine Apps gefunden.</div>';
-                return;
-            }
-            results.forEach(app => {
-                const div = document.createElement('div');
-                div.innerHTML = createAppItem(app);
-                searchList.appendChild(div.firstElementChild);
-            });
-        }, 300);
-    }
-
-    searchInput.addEventListener('input', (e) => {
-        const query = e.target.value.toLowerCase().trim();
-        clearTimeout(debounceTimer);
-
-        if (query.length > 0) {
-            debounceTimer = setTimeout(() => {
-                performSearch(query);
-            }, 300);
-        } else {
-            closeViewAll();
+    // Search Logic
+    document.getElementById('search-input').addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase();
+        const suggestions = document.getElementById('search-suggestions');
+        suggestions.innerHTML = '';
+        
+        if(query.length > 1) {
+            const filtered = allApps.filter(a => a.name.toLowerCase().includes(query));
+            filtered.forEach(app => suggestions.innerHTML += createAppItem(app));
         }
     });
 
