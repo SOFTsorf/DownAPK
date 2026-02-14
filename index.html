@@ -21,6 +21,7 @@
             top: 0; 
             z-index: 100;
             overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         
         .header-content {
@@ -45,7 +46,7 @@
             align-items: center;
             padding: 0 10px;
             box-sizing: border-box;
-            transform: translateX(100%); /* Standardmäßig rechts versteckt */
+            transform: translateX(100%);
             transition: transform 0.3s ease;
         }
         
@@ -64,67 +65,95 @@
         .search-input::placeholder { color: rgba(255, 255, 255, 0.7); }
         .close-search { font-size: 20px; padding: 10px; cursor: pointer; margin-left: 5px;}
 
-        /* SECTIONS GENERITIC */
+        /* SECTIONS GENERAL */
         .section-title {
-            padding: 15px 15px 5px;
-            font-size: 18px;
-            font-weight: bold;
-            color: #444;
+            padding: 20px 15px 10px;
+            font-size: 19px;
+            font-weight: 700;
+            color: #222;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
+        .section-more { font-size: 13px; color: #ff8400; font-weight: normal; }
 
-        /* TRENDY APPS (Horizontal Scroll) */
-        .trending-container {
+        /* FEATURED BANNER (NEU) */
+        .featured-banner {
+            margin: 15px;
+            background: linear-gradient(135deg, #ff8400, #ffb347);
+            border-radius: 12px;
+            padding: 20px;
+            color: white;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(255, 132, 0, 0.3);
+        }
+        .featured-info { flex-grow: 1; }
+        .featured-tag { background: rgba(255,255,255,0.3); padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; display: inline-block; margin-bottom: 5px; }
+        .featured-title { font-size: 22px; font-weight: bold; margin-bottom: 5px; }
+        .featured-desc { font-size: 13px; opacity: 0.9; margin-bottom: 10px; }
+        .featured-btn { background: white; color: #ff8400; padding: 8px 15px; border-radius: 20px; font-size: 13px; font-weight: bold; display: inline-block; }
+        .featured-img { width: 80px; height: 80px; border-radius: 12px; margin-left: 15px; background: #fff; object-fit: cover; }
+
+        /* HORIZONTAL SCROLL (Trends & Games) */
+        .horizontal-scroll {
             display: flex;
             overflow-x: auto;
-            padding: 10px 15px;
+            padding: 5px 15px 15px;
             gap: 15px;
-            scrollbar-width: none; /* Firefox */
+            scrollbar-width: none;
         }
-        .trending-container::-webkit-scrollbar { display: none; } /* Chrome/Safari */
+        .horizontal-scroll::-webkit-scrollbar { display: none; }
 
-        .trend-item {
-            min-width: 80px;
+        .card-item {
+            min-width: 90px;
             display: flex;
             flex-direction: column;
             align-items: center;
             text-align: center;
         }
-        .trend-icon { width: 60px; height: 60px; border-radius: 12px; background: #eee; margin-bottom: 5px; object-fit: cover; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .trend-name { font-size: 12px; font-weight: 500; color: #333; max-width: 80px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .card-icon { width: 64px; height: 64px; border-radius: 14px; background: #eee; margin-bottom: 8px; object-fit: cover; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+        .card-name { font-size: 13px; font-weight: 500; color: #333; max-width: 90px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .card-rating { font-size: 11px; color: #777; margin-top: 2px; }
 
         /* SUCHBEGRIFFE (Tags) */
-        .tags-container { padding: 10px 15px; display: flex; flex-wrap: wrap; gap: 8px; }
+        .tags-container { padding: 0 15px 15px; display: flex; flex-wrap: wrap; gap: 8px; }
         .tag {
-            background: #f0f0f0;
-            padding: 6px 12px;
+            background: #f4f4f4;
+            padding: 8px 14px;
             border-radius: 20px;
             font-size: 13px;
             color: #555;
-            border: 1px solid #ddd;
+            border: 1px solid #e0e0e0;
+            cursor: pointer;
+            transition: all 0.2s;
         }
+        .tag:hover { background: #ffe0b2; border-color: #ffcc80; color: #e65100; }
 
         /* APP LIST (Vertical) */
         .app-list-container { display: flex; flex-direction: column; }
-        .app-item { display: flex; padding: 15px; border-bottom: 1px solid #f5f5f5; align-items: center; }
-        .app-item:active { background: #f9f9f9; }
-        .app-icon { width: 48px; height: 48px; border-radius: 8px; margin-right: 15px; background: #eee; object-fit: cover; }
+        .app-item { display: flex; padding: 15px; border-bottom: 1px solid #f5f5f5; align-items: center; transition: background 0.2s; }
+        .app-item:active { background: #fafafa; }
+        .app-icon { width: 50px; height: 50px; border-radius: 10px; margin-right: 15px; background: #eee; object-fit: cover; }
         .app-info { flex-grow: 1; }
-        .app-name { font-weight: bold; font-size: 16px; color: #000; }
-        .app-meta { font-size: 13px; color: #777; margin-top: 2px; }
-        .d-icon { color: #ccc; font-size: 20px; }
+        .app-name { font-weight: bold; font-size: 16px; color: #000; margin-bottom: 4px; }
+        .app-meta { font-size: 13px; color: #888; display: flex; align-items: center; gap: 5px; }
+        .badge { font-size: 10px; padding: 2px 4px; border-radius: 3px; background: #eee; color: #666; }
+        .badge-new { background: #e8f5e9; color: #2e7d32; }
+        .d-icon { color: #ddd; font-size: 22px; padding: 10px;}
 
         /* BUTTON STYLING (Orange Line) */
         .load-more-btn {
             display: block;
             width: calc(100% - 30px);
-            margin: 15px auto;
-            padding: 10px;
+            margin: 20px auto;
+            padding: 12px;
             text-align: center;
             background: #fff;
-            border: 2px solid #ff8400; /* Orangene Linie */
-            color: #ff8400; /* Oranger Text */
+            border: 2px solid #ff8400;
+            color: #ff8400;
             font-weight: bold;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
             font-size: 14px;
             transition: background 0.2s;
@@ -133,6 +162,9 @@
         .hidden { display: none; }
 
         .loader { padding: 20px; text-align: center; color: #777; }
+        
+        /* Helper für Suche */
+        .highlight { color: #ff8400; }
     </style>
 </head>
 <body>
@@ -144,44 +176,56 @@
     </div>
     
     <div class="search-bar" id="search-bar">
-        <input type="text" class="search-input" id="search-input" placeholder="Suche..." autocomplete="off">
+        <input type="text" class="search-input" id="search-input" placeholder="Apps oder Spiele suchen..." autocomplete="off">
         <i class="fas fa-times close-search" onclick="toggleSearch(false)"></i>
     </div>
 </header>
 
 <div id="main-content">
     
-    <div class="section-title">Angesagt <i class="fas fa-fire" style="color: #ff8400;"></i></div>
-    <div class="trending-container" id="trending-list">
+    <div id="featured-section">
+        </div>
+
+    <div class="section-title">
+        Angesagt <i class="fas fa-fire" style="color: #ff8400;"></i>
+    </div>
+    <div class="horizontal-scroll" id="trending-list">
         <div class="loader">Lade Trends...</div>
     </div>
 
-    <div class="section-title">Beliebte Suchen</div>
+    <div class="section-title">Schnellsuche</div>
     <div class="tags-container">
-        <a href="#" class="tag">WhatsApp</a>
-        <a href="#" class="tag">Minecraft</a>
-        <a href="#" class="tag">Spotify</a>
-        <a href="#" class="tag">Vanced</a>
-        <a href="#" class="tag">Instagram</a>
-        <a href="#" class="tag">VPN</a>
+        <div class="tag" onclick="autoSearch('WhatsApp')">WhatsApp</div>
+        <div class="tag" onclick="autoSearch('Minecraft')">Minecraft</div>
+        <div class="tag" onclick="autoSearch('Spotify')">Spotify</div>
+        <div class="tag" onclick="autoSearch('Vanced')">Vanced</div>
+        <div class="tag" onclick="autoSearch('VPN')">VPN</div>
+        <div class="tag" onclick="autoSearch('Telegram')">Telegram</div>
     </div>
 
-    <div class="section-title">Social Media & Messenger</div>
-    <div id="social-list" class="app-list-container">
+    <div class="section-title">
+        Top Spiele
+        <span class="section-more">Alle ansehen</span>
+    </div>
+    <div class="horizontal-scroll" id="games-list">
         </div>
-    <button class="load-more-btn" onclick="loadMore('social')">Mehr laden</button>
+
+    <div class="section-title">Frisch aktualisiert</div>
+    <div id="feed-list" class="app-list-container">
+        </div>
+    <button class="load-more-btn" onclick="loadMore()">Mehr laden</button>
 
 </div>
 
 <div id="search-results-container" class="hidden">
-    <div class="section-title">Suchergebnisse</div>
-    <div id="search-list"></div>
+    <div class="section-title">Suchergebnisse <span id="search-term-display" class="highlight"></span></div>
+    <div id="search-list" class="app-list-container"></div>
 </div>
 
 <script>
     let allApps = [];
 
-    // --- UI Logic: Suche ein/ausblenden ---
+    // --- UI Logic ---
     const headerNormal = document.getElementById('header-normal');
     const searchBar = document.getElementById('search-bar');
     const searchInput = document.getElementById('search-input');
@@ -196,123 +240,152 @@
         } else {
             searchBar.classList.remove('active');
             searchInput.value = '';
-            // Ansicht zurücksetzen
             mainContent.classList.remove('hidden');
             searchResultsContainer.classList.add('hidden');
         }
     }
 
-    // --- Helper: App Item HTML generieren ---
-    function createAppItem(app) {
+    // --- NEU: Auto-Suche beim Klick auf Tag ---
+    function autoSearch(term) {
+        toggleSearch(true);       // Suchleiste öffnen
+        searchInput.value = term; // Begriff eintragen
+        performSearch(term);      // Suche sofort auslösen
+    }
+
+    // --- Templates ---
+    function createAppItem(app, isUpdate = false) {
+        const badge = isUpdate ? '<span class="badge badge-new">Update</span>' : `<span class="badge">${app.version}</span>`;
         return `
             <a href="app.html?id=${app.packageName}" class="app-item">
-                <img src="${app.icon}" class="app-icon" onerror="this.src='https://via.placeholder.com/48'">
+                <img src="${app.icon}" class="app-icon" onerror="this.src='https://via.placeholder.com/50'">
                 <div class="app-info">
                     <div class="app-name">${app.name}</div>
-                    <div class="app-meta">${app.version} • ${app.author}</div>
+                    <div class="app-meta">${badge} • ${app.author}</div>
                 </div>
                 <div class="d-icon"><i class="fas fa-download"></i></div>
             </a>
         `;
     }
 
-    function createTrendItem(app) {
+    function createCardItem(app) {
         return `
-            <a href="app.html?id=${app.packageName}" class="trend-item">
-                <img src="${app.icon}" class="trend-icon" onerror="this.src='https://via.placeholder.com/60'">
-                <div class="trend-name">${app.name}</div>
+            <a href="app.html?id=${app.packageName}" class="card-item">
+                <img src="${app.icon}" class="card-icon" onerror="this.src='https://via.placeholder.com/64'">
+                <div class="card-name">${app.name}</div>
+                <div class="card-rating"><i class="fas fa-star" style="color:#ffc107; font-size:10px;"></i> 4.8</div>
             </a>
         `;
     }
 
-    // --- Daten Laden ---
+    function renderFeatured(app) {
+        if(!app) return;
+        document.getElementById('featured-section').innerHTML = `
+            <a href="app.html?id=${app.packageName}" class="featured-banner">
+                <div class="featured-info">
+                    <span class="featured-tag">Empfehlung</span>
+                    <div class="featured-title">${app.name}</div>
+                    <div class="featured-desc">Die neueste Version ist jetzt verfügbar. Lade es dir direkt herunter.</div>
+                    <div class="featured-btn">Jetzt installieren</div>
+                </div>
+                <img src="${app.icon}" class="featured-img" onerror="this.src='https://via.placeholder.com/80'">
+            </a>
+        `;
+    }
+
+    // --- Daten & Rendering ---
+    let feedAppsShown = 0;
+    let feedAppsCache = [];
+    const BATCH_SIZE = 8;
+
     async function init() {
         try {
-            // Wir laden einmalig alle Apps (oder eine Initiale Menge)
-            // Hinweis: In einer echten großen App würdest du separate Endpoints nutzen
+            // Simulierte API Anfrage
             const res = await fetch('/api/apps');
             allApps = await res.json();
             
-            renderHomepage(allApps);
+            // 1. Featured App (Zufällig oder die erste)
+            renderFeatured(allApps[0]);
+
+            // 2. Trends (Horizontal) - App 1 bis 6
+            const trendingList = document.getElementById('trending-list');
+            trendingList.innerHTML = '';
+            allApps.slice(0, 6).forEach(app => trendingList.innerHTML += createCardItem(app));
+
+            // 3. Games (Horizontal) - Wir simulieren Games, indem wir App 6 bis 12 nehmen
+            const gamesList = document.getElementById('games-list');
+            gamesList.innerHTML = '';
+            // Falls nicht genug Apps da sind, nehmen wir einfach nochmal die gleichen
+            const gameApps = allApps.length > 6 ? allApps.slice(6, 12) : allApps;
+            gameApps.forEach(app => gamesList.innerHTML += createCardItem(app));
+
+            // 4. Feed Liste (Vertikal) - Rest der Apps
+            feedAppsCache = allApps; 
+            loadMore(); // Initial laden
 
         } catch (error) {
-            console.error("Fehler beim Laden:", error);
+            console.error("Fehler:", error);
+            document.getElementById('trending-list').innerHTML = "Fehler beim Laden.";
         }
     }
 
-    // --- Rendering der Startseite ---
-    let socialAppsShown = 0;
-    let socialAppsCache = [];
-    const BATCH_SIZE = 5; // Wie viele Apps pro "Mehr laden"
+    window.loadMore = function() {
+        const container = document.getElementById('feed-list');
+        const total = feedAppsCache.length;
+        const nextBatch = feedAppsCache.slice(feedAppsShown, feedAppsShown + BATCH_SIZE);
 
-    function renderHomepage(apps) {
-        // 1. Trendy: Wir nehmen einfach die ersten 5 Apps als "Trendy" (Simuliert)
-        const trendingList = document.getElementById('trending-list');
-        trendingList.innerHTML = '';
-        apps.slice(0, 6).forEach(app => {
-            trendingList.innerHTML += createTrendItem(app);
+        nextBatch.forEach(app => {
+            // true parameter für "isUpdate" Flag (nur optisch)
+            container.innerHTML += createAppItem(app, true);
         });
 
-        // 2. Kategorie Social: Wir filtern (simuliert) oder nehmen den Rest
-        // Hier simulieren wir eine Kategorie, indem wir alle Apps nehmen
-        socialAppsCache = apps; 
-        loadMore('social'); // Initial laden
-    }
+        feedAppsShown += nextBatch.length;
 
-    // --- "Mehr laden" Funktion ---
-    window.loadMore = function(category) {
-        if (category === 'social') {
-            const container = document.getElementById('social-list');
-            const total = socialAppsCache.length;
-            const nextBatch = socialAppsCache.slice(socialAppsShown, socialAppsShown + BATCH_SIZE);
-
-            nextBatch.forEach(app => {
-                container.innerHTML += createAppItem(app);
-            });
-
-            socialAppsShown += nextBatch.length;
-
-            // Button ausblenden, wenn alle geladen sind
-            if (socialAppsShown >= total) {
-                document.querySelector('.load-more-btn').style.display = 'none';
-            }
+        if (feedAppsShown >= total) {
+            document.querySelector('.load-more-btn').style.display = 'none';
         }
     };
 
     // --- Such Logik ---
     let debounceTimer;
+
+    function performSearch(query) {
+        mainContent.classList.add('hidden');
+        searchResultsContainer.classList.remove('hidden');
+        document.getElementById('search-term-display').innerText = `"${query}"`;
+        searchList.innerHTML = '<div class="loader"><i class="fas fa-spinner fa-spin"></i> Suche läuft...</div>';
+
+        // Fake Delay für Feeling oder echte API Request
+        setTimeout(async () => {
+            try {
+                const res = await fetch(`/api/apps?search=${encodeURIComponent(query)}`);
+                const results = await res.json();
+                
+                searchList.innerHTML = '';
+                if (results.length === 0) {
+                    searchList.innerHTML = '<div style="padding:40px; text-align:center; color:#999">Keine Apps gefunden.</div>';
+                    return;
+                }
+                results.forEach(app => {
+                    const div = document.createElement('div');
+                    div.innerHTML = createAppItem(app);
+                    searchList.appendChild(div.firstElementChild);
+                });
+            } catch(e) {
+                searchList.innerHTML = 'Fehler bei der Suche.';
+            }
+        }, 300); // Kleines Debounce simulieren
+    }
+
     searchInput.addEventListener('input', (e) => {
         const query = e.target.value.toLowerCase().trim();
         clearTimeout(debounceTimer);
 
         if (query.length > 0) {
-            mainContent.classList.add('hidden');
-            searchResultsContainer.classList.remove('hidden');
-            searchList.innerHTML = '<div class="loader"><i class="fas fa-spinner fa-spin"></i></div>';
-
-            debounceTimer = setTimeout(async () => {
-                // Hier Anfrage an API schicken für echte Suche
-                try {
-                    const res = await fetch(`/api/apps?search=${encodeURIComponent(query)}`);
-                    const results = await res.json();
-                    
-                    searchList.innerHTML = '';
-                    if (results.length === 0) {
-                        searchList.innerHTML = '<div style="padding:20px; text-align:center; color:#999">Keine Ergebnisse</div>';
-                        return;
-                    }
-                    results.forEach(app => {
-                        // Einfach anhängen
-                        const div = document.createElement('div');
-                        div.innerHTML = createAppItem(app);
-                        searchList.appendChild(div.firstElementChild);
-                    });
-                } catch(e) {
-                    searchList.innerHTML = 'Fehler bei der Suche.';
-                }
+            debounceTimer = setTimeout(() => {
+                performSearch(query);
             }, 300);
         } else {
-            // Wenn Suche leer, zeige wieder Startseite
+            // Zurück zur Startseite wenn leer
             mainContent.classList.remove('hidden');
             searchResultsContainer.classList.add('hidden');
         }
