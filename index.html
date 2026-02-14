@@ -27,24 +27,31 @@
 
         a { text-decoration: none !important; color: inherit !important; -webkit-tap-highlight-color: transparent; }
 
-        header { padding: 50px 20px 10px; display: flex; justify-content: flex-start; align-items: center; }
-        .logo { font-size: 34px; font-weight: 800; letter-spacing: -1px; }
-
-        /* --- ANIMATIONS (NEU) --- */
+        /* ANIMATIONS */
         @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
+            from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .animate-in {
+        @keyframes scrollText {
+            0% { transform: translateX(0); }
+            20% { transform: translateX(0); } /* Kurze Pause am Anfang */
+            100% { transform: translateX(-100%); }
+        }
+
+        .animate-entry {
             opacity: 0; /* Start invisible */
             animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
         }
-
+        
+        /* Stagger delays for nice effect */
         .delay-1 { animation-delay: 0.1s; }
         .delay-2 { animation-delay: 0.2s; }
         .delay-3 { animation-delay: 0.3s; }
         .delay-4 { animation-delay: 0.4s; }
+
+        header { padding: 50px 20px 10px; display: flex; justify-content: flex-start; align-items: center; }
+        .logo { font-size: 34px; font-weight: 800; letter-spacing: -1px; }
 
         /* FEATURED BANNER */
         .featured-banner {
@@ -52,112 +59,132 @@
             height: 420px; position: relative; overflow: hidden; display: flex;
             flex-direction: column; justify-content: flex-end; border: var(--glass-border);
             box-shadow: 0 20px 40px rgba(0,0,0,0.6);
-            /* Hover Effekt (NEU) */
-            transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.4s ease;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
         .featured-banner:hover {
             transform: scale(1.02);
             box-shadow: 0 30px 60px rgba(0,0,0,0.8);
-            cursor: pointer;
         }
 
         .featured-img-bg {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background-size: cover !important; background-position: center !important;
-            filter: brightness(0.5); z-index: 1;
-            transition: transform 1s ease;
+            filter: brightness(0.5); z-index: 1; transition: transform 5s ease;
         }
-        .featured-banner:hover .featured-img-bg { transform: scale(1.05); } /* Parallax Zoom im Hintergrund */
+        .featured-banner:hover .featured-img-bg { transform: scale(1.1); }
 
         .featured-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.95) 100%);
             z-index: 2;
         }
-        .featured-info { position: relative; z-index: 3; padding: 30px; text-align: center; display: flex; flex-direction: column; align-items: center; }
+        .featured-info { position: relative; z-index: 3; padding: 30px; text-align: center; display: flex; flex-direction: column; align-items: center; width: 100%; box-sizing: border-box; }
         .featured-tag { color: #bf55ec; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
-        .featured-title { font-size: 28px; font-weight: 800; margin-bottom: 5px; color: white !important; }
+        
+        /* SCROLLING TITLE LOGIC FOR FEATURED */
+        .featured-title-wrap {
+            width: 100%;
+            overflow: hidden;
+            white-space: nowrap;
+            margin-bottom: 5px;
+        }
+        .featured-title { 
+            font-size: 28px; font-weight: 800; color: white !important; 
+            display: inline-block;
+        }
+        .featured-banner:hover .featured-title {
+            animation: scrollText 4s linear infinite; 
+            /* Note: Animation only effective if text is actually wider than container */
+        }
+
         .featured-desc { font-size: 15px; color: var(--ios-subtext); margin-bottom: 20px; }
-        .get-btn { background: #FFFFFF; color: #000; padding: 12px 50px; border-radius: 25px; font-weight: 700; font-size: 16px; border: none; transition: transform 0.2s; }
-        .get-btn:active { transform: scale(0.95); }
+        .get-btn { 
+            background: #FFFFFF; color: #000; padding: 12px 50px; border-radius: 25px; 
+            font-weight: 700; font-size: 16px; border: none; transition: transform 0.2s; cursor: pointer;
+        }
+        .get-btn:hover { transform: scale(1.05); background: #eee; }
 
         /* SECTIONS */
         .section-title { padding: 20px 20px 15px; font-size: 22px; font-weight: 700; display: flex; justify-content: space-between; align-items: center; }
-        .section-more { color: var(--ios-blue); font-size: 16px; font-weight: 400; cursor: pointer; }
+        .section-more { color: var(--ios-blue); font-size: 16px; font-weight: 400; cursor: pointer; transition: opacity 0.2s; }
+        .section-more:hover { opacity: 0.7; }
 
         .horizontal-scroll { display: flex; overflow-x: auto; padding: 0 20px 25px; gap: 18px; scrollbar-width: none; }
         .horizontal-scroll::-webkit-scrollbar { display: none; }
 
-        /* CARD ITEMS & SCROLLING TEXT */
+        /* CARD ITEMS */
         .card-item { 
             width: 120px; min-width: 120px; cursor: pointer; 
-            transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
-        .card-item:hover { transform: scale(1.08); z-index: 10; } /* Hover Scale (NEU) */
+        .card-item:hover { transform: translateY(-5px) scale(1.03); }
         
-        .card-icon { width: 120px; height: 120px; border-radius: 26px; object-fit: cover; border: var(--glass-border); margin-bottom: 10px; background: #222; }
-        
-        .card-name-wrapper {
-            width: 100%; overflow: hidden; white-space: nowrap; position: relative;
-        }
+        .card-icon { width: 120px; height: 120px; border-radius: 26px; object-fit: cover; border: var(--glass-border); margin-bottom: 10px; background: #222; transition: filter 0.3s; }
+        .card-item:hover .card-icon { filter: brightness(1.2); }
 
-        .card-name { 
-            font-size: 14px; font-weight: 500; margin-bottom: 2px; 
-            display: inline-block;
-            color: white !important; 
+        /* SCROLLING TEXT LOGIC FOR CARDS */
+        .card-name-wrap {
+            width: 100%;
+            overflow: hidden;
             white-space: nowrap;
+            margin-bottom: 2px;
+            mask-image: linear-gradient(to right, black 90%, transparent 100%);
         }
-
-        /* Marquee Animation Definition */
-        @keyframes marqueeScroll {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-100%); } /* Scrollt komplett nach links */
+        .card-name { 
+            font-size: 14px; font-weight: 500; color: white !important; 
+            display: inline-block;
+            text-overflow: ellipsis; /* Fallback */
         }
-
-        /* Marquee Trigger beim Hover */
+        /* Wenn man über die Karte hovert, soll der Name scrollen */
         .card-item:hover .card-name {
-            animation: marqueeScroll 3s linear infinite; 
-            /* Hinweis: Einfaches Scrolling. Für nahtloses Looping müsste man den Text duplizieren, 
-               aber für diesen Zweck reicht das Scrollen aus dem Bild. */
+            text-overflow: clip; /* Ellipsis entfernen für Animation */
+            animation: scrollText 3s linear infinite;
+            padding-right: 20px; /* Platz am Ende für Loop-Illusion */
         }
 
-        .card-author { font-size: 12px; color: var(--ios-subtext); display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;}
+        .card-author { font-size: 12px; color: var(--ios-subtext); }
 
         /* LIST STYLE */
         .app-list-container { background: var(--ios-card); margin: 0 20px; border-radius: var(--radius-m); padding: 0 16px; border: var(--glass-border); }
-        
         .app-item { 
             display: flex; padding: 15px 0; border-bottom: 0.5px solid var(--ios-separator); align-items: center; cursor: pointer; 
-            transition: transform 0.3s ease, background-color 0.3s;
+            transition: background 0.2s, transform 0.2s;
         }
-        .app-item:hover { transform: scale(1.02); background-color: rgba(255,255,255,0.05); } /* Hover Scale List (NEU) */
-
         .app-item:last-child { border-bottom: none; }
+        .app-item:hover { background: rgba(255,255,255,0.05); transform: scale(1.01); }
+
         .app-icon { width: 62px; height: 62px; border-radius: 14px; margin-right: 15px; border: var(--glass-border); background: #222; object-fit: cover; }
         .app-info { flex-grow: 1; min-width: 0; overflow: hidden; }
         
-        .app-name { 
-            font-weight: 600; font-size: 17px; margin-bottom: 3px; color: #FFF !important; 
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block;
+        /* SCROLLING TEXT LOGIC FOR LIST */
+        .app-name-wrap {
+            width: 100%;
+            overflow: hidden;
+            white-space: nowrap;
+            margin-bottom: 3px;
+             mask-image: linear-gradient(to right, black 90%, transparent 100%);
         }
-        /* Marquee für Listenansicht */
-        .app-item:hover .app-name {
-            text-overflow: unset;
-            animation: marqueeScroll 4s linear infinite;
+        .app-name { 
+            font-weight: 600; font-size: 17px; color: #FFF !important; 
             display: inline-block;
+            text-overflow: ellipsis;
+        }
+        .app-item:hover .app-name {
+            text-overflow: clip;
+            animation: scrollText 4s linear infinite;
+            padding-right: 30px;
         }
 
         .app-meta { font-size: 13px; color: var(--ios-subtext); }
-        .laden-badge { background: #333; color: var(--ios-blue); padding: 6px 18px; border-radius: 20px; font-weight: 800; font-size: 12px; transition: 0.2s; }
-        .app-item:hover .laden-badge { background: var(--ios-blue); color: white; }
+        .laden-badge { background: #333; color: var(--ios-blue); padding: 6px 18px; border-radius: 20px; font-weight: 800; font-size: 12px; transition: background 0.2s; }
+        .app-item:hover .laden-badge { background: #444; color: #fff; }
 
-        /* ERROR MESSAGE STYLE */
-        .error-message-container {
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            padding: 50px 20px; text-align: center; color: var(--ios-subtext);
-            animation: fadeInUp 0.5s ease;
+        /* ERROR MESSAGE */
+        .error-msg {
+            text-align: center; padding: 50px 20px; color: var(--ios-subtext);
+            font-size: 16px; font-weight: 500;
         }
-        .error-icon { font-size: 40px; margin-bottom: 15px; opacity: 0.5; }
+        .error-icon { font-size: 40px; margin-bottom: 15px; opacity: 0.5; display: block; }
 
         /* SEARCH BAR */
         .search-bar {
@@ -178,12 +205,13 @@
             backdrop-filter: blur(35px) saturate(160%); border-radius: 37px;
             display: flex; justify-content: space-evenly; align-items: center;
             z-index: 4000; border: var(--glass-border); box-shadow: 0 20px 50px rgba(0,0,0,0.9);
-            animation: fadeInUp 1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-            animation-delay: 0.5s; opacity: 0;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        .nav-item { color: rgba(255,255,255,0.4); text-align: center; cursor: pointer; transition: transform 0.2s; }
-        .nav-item:active { transform: scale(0.9); }
+        .animate-nav { animation: fadeInUp 0.8s 0.6s backwards; }
+
+        .nav-item { color: rgba(255,255,255,0.4); text-align: center; cursor: pointer; transition: color 0.3s, transform 0.2s; }
         .nav-item.active { color: #FFF; }
+        .nav-item:hover { transform: scale(1.1); color: #fff; }
         .nav-item i { font-size: 24px; display: block; margin-bottom: 4px; }
         .nav-item span { font-size: 10px; font-weight: 600; text-transform: uppercase; }
 
@@ -203,24 +231,24 @@
     <div id="search-results" class="app-list-container" style="margin-top:20px; max-height: 75vh; overflow-y: auto;"></div>
 </div>
 
-<header class="animate-in">
+<header class="animate-entry">
     <div class="logo">Home</div>
 </header>
 
 <div id="content-main">
-    <div id="featured-hero" class="animate-in delay-1"></div>
+    <div id="featured-hero" class="animate-entry delay-1"></div>
 
-    <div class="section-title animate-in delay-2">Angesagt <i class="fas fa-chevron-right" onclick="viewAll('Angesagt')" style="font-size:14px; opacity:0.3; cursor:pointer;"></i></div>
-    <div class="horizontal-scroll animate-in delay-2" id="scroll-trending"></div>
+    <div class="section-title animate-entry delay-2">Angesagt <i class="fas fa-chevron-right" onclick="viewAll('Angesagt')" style="font-size:14px; opacity:0.3; cursor:pointer;"></i></div>
+    <div class="horizontal-scroll animate-entry delay-2" id="scroll-trending"></div>
 
-    <div class="section-title animate-in delay-3">Top Apps <span class="section-more" onclick="viewAll('Top Apps')">Alle</span></div>
-    <div class="horizontal-scroll animate-in delay-3" id="scroll-top"></div>
+    <div class="section-title animate-entry delay-3">Top Apps <span class="section-more" onclick="viewAll('Top Apps')">Alle</span></div>
+    <div class="horizontal-scroll animate-entry delay-3" id="scroll-top"></div>
 
-    <div class="section-title animate-in delay-4">Neueste Updates</div>
-    <div id="update-feed" class="app-list-container animate-in delay-4"></div>
+    <div class="section-title animate-entry delay-4">Neueste Updates</div>
+    <div id="update-feed" class="app-list-container animate-entry delay-4"></div>
 </div>
 
-<nav class="bottom-nav">
+<nav class="bottom-nav animate-nav">
     <div class="nav-item active" id="btn-home" onclick="toggleSearch(false)">
         <i class="fas fa-house"></i>
         <span>Home</span>
@@ -243,12 +271,14 @@
         { name: "VLC", author: "VideoLAN", pkg: "org.videolan.vlc", icon: "https://f-droid.org/repo/org.videolan.vlc/en-US/icon.png", ver: "3.5.4" }
     ];
 
+    // Simuliere einen leeren Array, um die Fehlermeldung zu testen:
+    // appDatabase = []; 
+
     async function loadFDroidApps() {
         try {
             const response = await fetch('/api/apps');
-            if (!response.ok) throw new Error("Netzwerkfehler");
-            
             const data = await response.json();
+            
             const remoteApps = data.map(app => ({
                 name: app.name,
                 author: app.author,
@@ -258,11 +288,10 @@
             }));
             
             appDatabase = [...appDatabase, ...remoteApps];
-            render(); 
         } catch (e) { 
-            console.log("API konnte nicht geladen werden, verwende interne Liste.", e);
-            // Wir rufen render() trotzdem auf, um die interne Liste zu zeigen.
-            // Falls die interne Liste auch leer wäre, wird der Fehler in render() angezeigt.
+            console.log("API konnte nicht geladen werden, verwende interne Liste.", e); 
+        } finally {
+            // Render wird jetzt hier aufgerufen, um sicherzustellen, dass die Datenlogik abgeschlossen ist
             render();
         }
     }
@@ -282,32 +311,42 @@
         performSearch(""); 
     }
 
+    function renderError() {
+        const errorHTML = `
+            <div class="error-msg animate-entry">
+                <i class="fas fa-wifi error-icon"></i>
+                Apps können nicht geladen werden.<br>
+                <span style="font-size:13px; font-weight:400; opacity:0.7;">Bitte überprüfen Sie Ihre Verbindung.</span>
+            </div>
+        `;
+        document.getElementById('featured-hero').innerHTML = "";
+        document.getElementById('scroll-trending').innerHTML = errorHTML;
+        document.getElementById('scroll-top').innerHTML = "";
+        document.getElementById('update-feed').innerHTML = "";
+    }
+
     function render() {
-        // ERROR HANDLING (NEU): Wenn keine Apps da sind, zeige Fehlermeldung
+        // PRÜFUNG: Wenn keine Apps da sind, Fehler anzeigen
         if (!appDatabase || appDatabase.length === 0) {
-            document.getElementById('content-main').innerHTML = `
-                <div class="error-message-container">
-                    <i class="fas fa-wifi error-icon"></i>
-                    <div style="font-weight:700; font-size:18px; margin-bottom:8px;">Fehler</div>
-                    <div>Apps können nicht geladen werden.</div>
-                </div>
-            `;
+            renderError();
             return;
         }
 
         const shuffled = shuffle([...appDatabase]);
         const feat = shuffled[0];
-        
-        // Featured Hero
+
+        // Featured Hero mit Scrolling Title Wrap
         document.getElementById('featured-hero').innerHTML = `
             <div class="featured-banner" onclick="window.location.href='app.html?id=${feat.pkg}'">
                 <div class="featured-img-bg" style="background: url('${feat.icon}') center/cover"></div>
                 <div class="featured-overlay"></div>
                 <div class="featured-info">
                     <span class="featured-tag">DownAPK Empfehlung</span>
-                    <div class="featured-title">${feat.name}</div>
+                    <div class="featured-title-wrap">
+                        <span class="featured-title">${feat.name}</span>
+                    </div>
                     <div class="featured-desc">Von ${feat.author} • Jetzt laden</div>
-                    <div class="get-btn">Laden</div>
+                    <button class="get-btn">Laden</button>
                 </div>
             </div>
         `;
@@ -317,39 +356,39 @@
         const feed = document.getElementById('update-feed');
         trending.innerHTML = ""; top.innerHTML = ""; feed.innerHTML = "";
         
-        // Rendering der Karten mit Marquee-fähigen Namen
+        // Helper für Cards mit Scroll-Effekt
+        const createCard = (app) => `
+            <div class="card-item" onclick="window.location.href='app.html?id=${app.pkg}'">
+                <img src="${app.icon}" class="card-icon" onerror="this.src='https://f-droid.org/repo/${app.pkg}/en-US/icon.png'">
+                <div class="card-name-wrap">
+                    <span class="card-name">${app.name}</span>
+                </div>
+                <span class="card-author">${app.author}</span>
+            </div>
+        `;
+
         shuffled.slice(0, 8).forEach(app => {
-            trending.innerHTML += `
-                <div class="card-item" onclick="window.location.href='app.html?id=${app.pkg}'">
-                    <img src="${app.icon}" class="card-icon" onerror="this.src='https://f-droid.org/repo/${app.pkg}/en-US/icon.png'">
-                    <div class="card-name-wrapper">
-                        <span class="card-name">${app.name}</span>
-                    </div>
-                    <span class="card-author">${app.author}</span>
-                </div>`;
+            trending.innerHTML += createCard(app);
         });
 
         [...shuffled].reverse().slice(0, 8).forEach(app => {
-            top.innerHTML += `
-                <div class="card-item" onclick="window.location.href='app.html?id=${app.pkg}'">
-                    <img src="${app.icon}" class="card-icon" onerror="this.src='https://f-droid.org/repo/${app.pkg}/en-US/icon.png'">
-                    <div class="card-name-wrapper">
-                        <span class="card-name">${app.name}</span>
-                    </div>
-                    <span class="card-author">${app.author}</span>
-                </div>`;
+            top.innerHTML += createCard(app);
         });
 
+        // Update Feed Liste
         shuffled.slice(0, 15).forEach(app => {
             feed.innerHTML += `
                 <div class="app-item" onclick="window.location.href='app.html?id=${app.pkg}'">
                     <img src="${app.icon}" class="app-icon">
                     <div class="app-info">
-                        <div class="app-name">${app.name}</div>
+                        <div class="app-name-wrap">
+                            <span class="app-name">${app.name}</span>
+                        </div>
                         <div class="app-meta">Version ${app.ver} • ${app.author}</div>
                     </div>
                     <div class="laden-badge">LADEN</div>
-                </div>`;
+                </div>
+            `;
         });
     }
 
@@ -362,7 +401,17 @@
             resultsBox.innerHTML = "<div style='padding:40px; color:#888; text-align:center;'>Keine Apps gefunden.</div>";
         } else {
             filtered.forEach(app => {
-                resultsBox.innerHTML += `<div class="app-item" onclick="window.location.href='app.html?id=${app.pkg}'"><img src="${app.icon}" class="app-icon"><div class="app-info"><div class="app-name">${app.name}</div><div class="app-meta">${app.pkg}</div></div><div class="laden-badge">LADEN</div></div>`;
+                resultsBox.innerHTML += `
+                    <div class="app-item" onclick="window.location.href='app.html?id=${app.pkg}'">
+                        <img src="${app.icon}" class="app-icon">
+                        <div class="app-info">
+                            <div class="app-name-wrap">
+                                <span class="app-name">${app.name}</span>
+                            </div>
+                            <div class="app-meta">${app.pkg}</div>
+                        </div>
+                        <div class="laden-badge">LADEN</div>
+                    </div>`;
             });
         }
     }
@@ -370,8 +419,7 @@
     document.getElementById('search-input').addEventListener('input', (e) => performSearch(e.target.value));
 
     window.onload = () => {
-        // Versuchen zu rendern (mit Startdaten), dann API laden
-        render();
+        // Initialer Aufruf startet den Prozess
         loadFDroidApps();
     };
 </script>
