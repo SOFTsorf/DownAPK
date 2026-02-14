@@ -149,19 +149,10 @@
             justify-content: center;
             box-shadow: 0 4px 12px rgba(10, 132, 255, 0.3);
             transition: transform 0.2s, filter 0.2s;
-            cursor: pointer; /* Added cursor pointer */
+            cursor: pointer;
         }
         .download-btn:active { transform: scale(0.96); filter: brightness(0.8); }
         .download-btn i { margin-right: 6px; }
-
-        /* Share Button Specific Style Override */
-        .share-btn-style {
-            background: rgba(255,255,255,0.1); 
-            width: 40px; /* Slightly wider for better touch */
-            padding: 0;
-            box-shadow: none;
-        }
-        .share-btn-style i { margin: 0; }
 
         /* STATS BAR (Version, Size etc) */
         .stats-bar {
@@ -180,29 +171,6 @@
         .stat-item:last-child { border-right: none; }
         .stat-label { font-size: 11px; color: var(--ios-subtext); text-transform: uppercase; margin-bottom: 5px; font-weight: 600; }
         .stat-value { font-size: 15px; font-weight: 700; color: #dbdbdb; }
-
-        /* SCREENSHOTS SCROLL AREA - NEU */
-        .screenshot-scroll {
-            display: flex;
-            gap: 15px;
-            overflow-x: auto;
-            padding-bottom: 10px;
-            margin-bottom: 30px;
-            scroll-snap-type: x mandatory;
-            -webkit-overflow-scrolling: touch;
-        }
-        .screenshot-scroll::-webkit-scrollbar { display: none; } /* Hide Scrollbar */
-        
-        .screenshot-item {
-            height: 300px;
-            width: auto;
-            border-radius: 14px;
-            scroll-snap-align: start;
-            border: var(--glass-border);
-            background: #222;
-            flex-shrink: 0;
-            object-fit: cover;
-        }
 
         /* DESCRIPTION */
         .section-header {
@@ -303,11 +271,11 @@
         else title.classList.remove('visible');
     });
 
-    // Neue Teilen Funktion
+    // NEUE TEILEN FUNKTION
     async function shareApp(appName) {
         const shareData = {
-            title: 'DownAPK - ' + appName,
-            text: `Schau dir diese App auf DownAPK von Nexus an: ${window.location.href}`,
+            title: appName,
+            text: `Schau dir diese App auf DownAPK von Nexus an:`,
             url: window.location.href
         };
 
@@ -315,12 +283,12 @@
             if (navigator.share) {
                 await navigator.share(shareData);
             } else {
-                // Fallback für Browser ohne Share API (z.B. Desktop)
-                await navigator.clipboard.writeText(shareData.text);
-                alert('Link in die Zwischenablage kopiert!');
+                // Fallback für Browser, die kein navigator.share unterstützen
+                await navigator.clipboard.writeText(`${shareData.text} ${shareData.url}`);
+                alert("Link in Zwischenablage kopiert!");
             }
         } catch (err) {
-            console.log('Teilen abgebrochen oder Fehler:', err);
+            console.log("Teilen abgebrochen oder fehlgeschlagen", err);
         }
     }
 
@@ -338,7 +306,6 @@
         }
 
         try {
-            // Simulation eines Fetches (in echter Umgebung einfach fetch nutzen)
             const res = await fetch(`/api/details?id=${id}`);
             const app = await res.json();
 
@@ -347,34 +314,9 @@
                 container.innerHTML = '<div class="description-box" style="text-align:center; padding-top:50px;">App nicht gefunden.</div>';
                 return;
             }
-            
-            // --- DEMO DATEN SIMULATION --- 
-            // Falls deine API noch keine "screenshots" liefert, fügen wir hier welche hinzu, damit du es siehst.
-            // Lösche diesen Block, wenn deine API echte Screenshots liefert.
-            if(!app.screenshots) {
-                app.screenshots = [
-                    "https://via.placeholder.com/150x300/333/fff?text=Screen+1",
-                    "https://via.placeholder.com/150x300/333/fff?text=Screen+2",
-                    "https://via.placeholder.com/150x300/333/fff?text=Screen+3"
-                ];
-            }
-            // -----------------------------
 
-            // Update Breadcrumb / Title Logic
             document.getElementById('scroll-title').innerText = app.name;
 
-            // Screenshot HTML Generator
-            let screenshotsHtml = '';
-            if (app.screenshots && app.screenshots.length > 0) {
-                screenshotsHtml = `
-                    <div class="section-header animate-entry" style="animation-delay: 0.25s;">Vorschau</div>
-                    <div class="screenshot-scroll animate-entry" style="animation-delay: 0.25s;">
-                        ${app.screenshots.map(src => `<img src="${src}" class="screenshot-item" loading="lazy" alt="Screenshot">`).join('')}
-                    </div>
-                `;
-            }
-
-            // HTML Generierung im neuen Design
             const html = `
                 <div class="app-hero animate-entry">
                     <img src="${app.icon}" class="big-icon" onerror="this.src='https://via.placeholder.com/110'">
@@ -386,9 +328,9 @@
                             <a href="${app.downloadUrl}" class="download-btn">
                                 LADEN
                             </a>
-                            <button onclick="shareApp('${app.name.replace(/'/g, "\\'")}')" class="download-btn share-btn-style">
-                                <i class="fas fa-share"></i>
-                            </button>
+                            <div onclick="shareApp('${app.name}')" class="download-btn" style="background: rgba(255,255,255,0.1); width: 20px; padding: 8px;">
+                                <i class="fas fa-share" style="margin:0;"></i>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -412,8 +354,6 @@
                     ADVERTISEMENT
                 </div>
 
-                ${screenshotsHtml}
-
                 <div class="section-header animate-entry" style="animation-delay: 0.3s;">Über diese App</div>
                 <div class="description-box animate-entry" style="animation-delay: 0.3s;">
                     ${app.description}
@@ -421,7 +361,6 @@
             `;
 
             loader.style.display = 'none';
-            // Wir fügen das HTML *vor* dem Footer ein
             const contentDiv = document.createElement('div');
             contentDiv.innerHTML = html;
             container.appendChild(contentDiv);
@@ -429,7 +368,6 @@
             container.appendChild(footer);
 
         } catch (e) {
-            console.error(e);
             loader.style.display = 'none';
             container.innerHTML = `<div class="description-box" style="text-align:center; margin-top:50px;"><i class="fas fa-exclamation-triangle"></i><br>Fehler beim Laden der Daten.</div>`;
         }
