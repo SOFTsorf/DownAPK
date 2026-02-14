@@ -11,6 +11,7 @@
     <title>DownAPK</title>
 
 <link rel="icon" type="image/png" href="https://lh3.googleusercontent.com/d/1K8g5EPJgvE0-RbGiyJVGWFaCBc9s27gM">
+
 <link rel="apple-touch-icon" href="https://lh3.googleusercontent.com/d/1K8g5EPJgvE0-RbGiyJVGWFaCBc9s27gM">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -19,7 +20,6 @@
             --ios-bg: #000000;
             --ios-card: #1C1C1E;
             --ios-blue: #0A84FF;
-            --ios-red: #FF453A;
             --ios-text: #FFFFFF;
             --ios-subtext: #8E8E93;
             --ios-separator: #38383A;
@@ -34,8 +34,8 @@
             font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif; 
             margin: 0; background: var(--ios-bg); color: var(--ios-text); 
             padding-bottom: 120px; overflow-x: hidden; -webkit-font-smoothing: antialiased;
-            user-select: none; /* Wichtig für Long-Press */
-            -webkit-user-select: none;
+            -webkit-touch-callout: none; /* Wichtig für Custom Context Menu */
+            user-select: none;
         }
 
         a { text-decoration: none !important; color: inherit !important; -webkit-tap-highlight-color: transparent; }
@@ -63,10 +63,11 @@
             40% { transform: scale(1.3); }
             100% { transform: scale(1); }
         }
-        
-        @keyframes menuPop {
-            0% { opacity: 0; transform: scale(0.9) translateY(10px); }
-            100% { opacity: 1; transform: scale(1) translateY(0); }
+
+        /* NEU: Context Menu Animationen */
+        @keyframes contextIn {
+            from { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+            to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
         }
 
         .animate-entry {
@@ -230,9 +231,9 @@
         .horizontal-scroll::-webkit-scrollbar { display: none; }
 
         /* CARDS & ITEMS */
-        .card-item { width: 120px; min-width: 120px; cursor: pointer; transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); user-select: none; }
+        .card-item { width: 120px; min-width: 120px; cursor: pointer; transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
         .card-item:hover { transform: translateY(-5px) scale(1.03); }
-        .card-icon { width: 120px; height: 120px; border-radius: 26px; object-fit: cover; border: var(--glass-border); margin-bottom: 10px; background: #222; transition: filter 0.3s; pointer-events: none; }
+        .card-icon { width: 120px; height: 120px; border-radius: 26px; object-fit: cover; border: var(--glass-border); margin-bottom: 10px; background: #222; transition: filter 0.3s; }
         .card-item:hover .card-icon { filter: brightness(1.2); }
         .card-name-wrap { width: 100%; overflow: hidden; white-space: nowrap; margin-bottom: 2px; mask-image: linear-gradient(to right, black 90%, transparent 100%); }
         .card-name { font-size: 14px; font-weight: 500; color: white !important; display: inline-block; text-overflow: ellipsis; }
@@ -240,10 +241,10 @@
         .card-author { font-size: 12px; color: var(--ios-subtext); }
 
         .app-list-container { background: var(--ios-card); margin: 0 20px; border-radius: var(--radius-m); padding: 0 16px; border: var(--glass-border); }
-        .app-item { display: flex; padding: 15px 0; border-bottom: 0.5px solid var(--ios-separator); align-items: center; cursor: pointer; transition: background 0.2s, transform 0.2s; user-select: none; }
+        .app-item { display: flex; padding: 15px 0; border-bottom: 0.5px solid var(--ios-separator); align-items: center; cursor: pointer; transition: background 0.2s, transform 0.2s; }
         .app-item:last-child { border-bottom: none; }
         .app-item:hover { background: rgba(255,255,255,0.05); transform: scale(1.01); }
-        .app-icon { width: 62px; height: 62px; border-radius: 14px; margin-right: 15px; border: var(--glass-border); background: #222; object-fit: cover; pointer-events: none; }
+        .app-icon { width: 62px; height: 62px; border-radius: 14px; margin-right: 15px; border: var(--glass-border); background: #222; object-fit: cover; }
         .app-info { flex-grow: 1; min-width: 0; overflow: hidden; }
         .app-name-wrap { width: 100%; overflow: hidden; white-space: nowrap; margin-bottom: 3px; mask-image: linear-gradient(to right, black 90%, transparent 100%); }
         .app-name { font-weight: 600; font-size: 17px; color: #FFF !important; display: inline-block; text-overflow: ellipsis; }
@@ -287,17 +288,50 @@
         .input-wrap input { background: transparent; border: none; color: white; font-size: 17px; width: 100%; outline: none; margin-left: 10px; font-weight: 500; }
         .input-wrap input::placeholder { color: rgba(255,255,255,0.4); }
 
-        /* SEARCH HISTORY STYLE */
+        /* NEW: SEARCH HISTORY */
         .search-history-header {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 15px 20px 5px; color: var(--ios-subtext); font-size: 14px; font-weight: 600;
+            padding: 20px 20px 10px;
+            font-size: 14px; color: var(--ios-subtext); font-weight: 600; text-transform: uppercase;
+            display: flex; justify-content: space-between;
         }
-        .search-history-item {
-            display: flex; align-items: center; padding: 12px 20px;
-            color: var(--ios-blue); font-size: 17px; cursor: pointer;
+        .search-history-clear { color: var(--ios-blue); cursor: pointer; font-size: 12px; }
+        .history-item {
+            padding: 12px 20px; border-bottom: 0.5px solid var(--ios-separator);
+            color: var(--ios-blue); font-size: 17px; display: flex; align-items: center; cursor: pointer;
         }
-        .search-history-item i { margin-right: 15px; color: var(--ios-subtext); font-size: 14px; }
-        .search-history-item:hover { background: rgba(255,255,255,0.05); }
+        .history-item i { margin-right: 15px; color: var(--ios-subtext); font-size: 14px; }
+        .history-item:active { background: rgba(255,255,255,0.1); }
+
+        /* --- CONTEXT MENU STYLES --- */
+        .ios-context-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.4); backdrop-filter: blur(8px);
+            z-index: 9999; display: none; opacity: 0; transition: opacity 0.2s;
+        }
+        .ios-context-overlay.active { display: flex; opacity: 1; align-items: center; justify-content: center; }
+        
+        .ios-context-menu {
+            width: 250px;
+            display: flex; flex-direction: column;
+            animation: contextIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        .ios-ctx-group {
+            background: rgba(30, 30, 30, 0.85); backdrop-filter: blur(20px);
+            border-radius: 14px; overflow: hidden; margin-bottom: 15px;
+        }
+        .ios-ctx-btn {
+            padding: 18px; text-align: center; font-size: 17px; color: var(--ios-blue);
+            border-bottom: 0.5px solid rgba(255,255,255,0.15); cursor: pointer;
+            background: transparent; border-left: none; border-right: none; border-top: none;
+            width: 100%; display: block;
+        }
+        .ios-ctx-btn:active { background: rgba(255,255,255,0.15); }
+        .ios-ctx-btn:last-child { border-bottom: none; }
+        .ios-ctx-cancel-btn {
+            background: #fff; color: #000; border-radius: 14px; font-weight: 600;
+            padding: 18px; text-align: center; cursor: pointer; font-size: 17px;
+        }
 
         /* --- UPDATED: NOBLE NAV --- */
         .bottom-nav {
@@ -314,6 +348,7 @@
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
+        /* NEUE KLASSE FÜR SCROLL-STATE */
         .bottom-nav.nav-scrolled {
             width: 140px;
             height: 52px;
@@ -325,6 +360,7 @@
         .nav-item { color: rgba(255,255,255,0.5); text-align: center; cursor: pointer; transition: color 0.3s, transform 0.2s; }
         .nav-item.active { color: #FFF; text-shadow: 0 0 15px rgba(255,255,255,0.3); }
         
+        /* NEU: Icon Animation wenn aktiv */
         .nav-item.active i {
             animation: popBounce 0.4s ease forwards;
             color: var(--ios-blue);
@@ -339,6 +375,7 @@
             transition: opacity 0.3s ease, height 0.3s ease, margin 0.3s ease;
         }
 
+        /* NEU: Text verstecken wenn gescrollt */
         .bottom-nav.nav-scrolled .nav-item span {
             opacity: 0;
             height: 0;
@@ -350,87 +387,38 @@
             margin-bottom: 0;
         }
 
-        /* --- CONTEXT MENU OVERLAY (NEU) --- */
-        .ctx-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(15px);
-            z-index: 6000;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            opacity: 0; pointer-events: none;
-            transition: opacity 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
-        }
-        .ctx-overlay.active { opacity: 1; pointer-events: auto; }
-        
-        .ctx-preview {
-            width: 140px; text-align: center; margin-bottom: 20px;
-            transform: scale(0.8); transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        .ctx-overlay.active .ctx-preview { transform: scale(1); }
-        .ctx-icon { width: 120px; height: 120px; border-radius: 26px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); margin-bottom: 10px; background: #222; }
-        .ctx-title { font-size: 18px; font-weight: 600; color: white; text-shadow: 0 2px 5px rgba(0,0,0,0.5); }
-
-        .ctx-menu {
-            width: 250px; background: rgba(30,30,30,0.85);
-            backdrop-filter: blur(20px);
-            border-radius: 14px;
-            overflow: hidden;
-            animation: menuPop 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-        }
-        .ctx-item {
-            padding: 14px 20px; font-size: 16px; 
-            display: flex; justify-content: space-between; align-items: center;
-            border-bottom: 0.5px solid rgba(255,255,255,0.1);
-            color: #fff; cursor: pointer; transition: background 0.2s;
-        }
-        .ctx-item:last-child { border-bottom: none; }
-        .ctx-item:active { background: rgba(255,255,255,0.2); }
-        .ctx-item.danger { color: var(--ios-red); }
-
         .hidden { display: none; }
     </style>
 </head>
 <body>
 
+<div class="ios-context-overlay" id="ctx-overlay" onclick="closeContext()">
+    <div class="ios-context-menu" onclick="event.stopPropagation()">
+        <div class="ios-ctx-group">
+            <div class="ios-ctx-btn" id="ctx-details-btn">Details ansehen</div>
+        </div>
+        <div class="ios-ctx-cancel-btn" onclick="closeContext()">Abbrechen</div>
+    </div>
+</div>
+
 <div class="search-bar" id="search-overlay">
     <div class="search-box">
         <div class="input-wrap">
             <i class="fas fa-search" style="color:rgba(255,255,255,0.5)"></i>
-            <input type="text" id="search-input" placeholder="Apps, Spiele und Tools..." autocomplete="off">
+            <input type="text" id="search-input" placeholder="Apps, Spiele und Tools...">
         </div>
         <span onclick="toggleSearch(false)" style="color:var(--ios-blue); font-size:17px; cursor:pointer; font-weight:500;">Abbrechen</span>
     </div>
     
-    <div id="search-history-container" style="margin-top:20px; display:none;">
+    <div id="search-history-container" style="display:none; margin-top:20px;">
         <div class="search-history-header">
-            <span>ZULETZT GESUCHT</span>
-            <span onclick="clearHistory()" style="color:var(--ios-blue); cursor:pointer; font-size:13px;">Löschen</span>
+            <span>Zuletzt gesucht</span>
+            <span class="search-history-clear" onclick="clearHistory()">Löschen</span>
         </div>
         <div id="search-history-list"></div>
     </div>
 
-    <div id="search-results" class="app-list-container animate-entry" style="margin-top:15px; max-height: 75vh; overflow-y: auto; background: transparent; border: none; padding: 0;"></div>
-</div>
-
-<div class="ctx-overlay" id="ctx-overlay" onclick="closeContextMenu()">
-    <div class="ctx-preview" id="ctx-preview" onclick="event.stopPropagation()">
-        <img id="ctx-img" class="ctx-icon" src="">
-        <div id="ctx-name" class="ctx-title">App Name</div>
-    </div>
-    <div class="ctx-menu" onclick="event.stopPropagation()">
-        <div class="ctx-item" id="ctx-btn-open">
-            <span>Details ansehen</span>
-            <i class="fas fa-info-circle"></i>
-        </div>
-        <div class="ctx-item" onclick="shareApp()">
-            <span>Teilen</span>
-            <i class="fas fa-share-nodes"></i>
-        </div>
-        <div class="ctx-item danger" onclick="closeContextMenu()">
-            <span>Abbrechen</span>
-            <i class="fas fa-xmark"></i>
-        </div>
-    </div>
+    <div id="search-results" class="app-list-container animate-entry" style="margin-top:25px; max-height: 75vh; overflow-y: auto; background: transparent; border: none; padding: 0;"></div>
 </div>
 
 <header id="main-header" class="animate-entry">
@@ -513,7 +501,7 @@
 </nav>
 
 <script>
-    // --- DATENBANK & VARIABLEN ---
+    // Kategorien hinzugefügt für Filter-Logik
     let appDatabase = [
         { name: "PhotoSwooper", author: "krille-chan", pkg: "com.github.krille_chan.photoswooper", icon: "https://f-droid.org/repo/com.github.krille_chan.photoswooper/en-US/icon.png", ver: "2.1.0", cat: "Tools" },
         { name: "OmWeather", author: "woheller69", pkg: "org.woheller69.omweather", icon: "https://f-droid.org/repo/org.woheller69.omweather/en-US/icon.png", ver: "1.5.2", cat: "Tools" },
@@ -526,9 +514,78 @@
         { name: "SuperTuxKart", author: "Tux", pkg: "org.supertuxkart", icon: "https://f-droid.org/repo/org.supertuxkart.stk/en-US/icon.png", ver: "1.4", cat: "Spiele" } 
     ];
 
-    // --- INITIALISIERUNG ---
+    // SUCHVERLAUF LOGIK
+    let searchHistory = JSON.parse(localStorage.getItem('downApkSearchHistory') || '[]');
+
+    function saveHistory(term) {
+        if(!term) return;
+        term = term.trim();
+        // Remove duplicate
+        searchHistory = searchHistory.filter(item => item !== term);
+        // Add to top
+        searchHistory.unshift(term);
+        // Limit to 5
+        if(searchHistory.length > 5) searchHistory.pop();
+        localStorage.setItem('downApkSearchHistory', JSON.stringify(searchHistory));
+    }
+
+    function clearHistory() {
+        searchHistory = [];
+        localStorage.removeItem('downApkSearchHistory');
+        renderHistory();
+    }
+
+    function renderHistory() {
+        const histContainer = document.getElementById('search-history-container');
+        const histList = document.getElementById('search-history-list');
+        const inputVal = document.getElementById('search-input').value;
+
+        if (inputVal === "" && searchHistory.length > 0) {
+            histContainer.style.display = 'block';
+            histList.innerHTML = '';
+            searchHistory.forEach(term => {
+                histList.innerHTML += `
+                    <div class="history-item" onclick="useHistory('${term}')">
+                        <i class="far fa-clock"></i> ${term}
+                    </div>
+                `;
+            });
+        } else {
+            histContainer.style.display = 'none';
+        }
+    }
+
+    function useHistory(term) {
+        document.getElementById('search-input').value = term;
+        performSearch(term);
+    }
+
+    // CONTEXT MENU LOGIK
+    function openContext(e, pkg) {
+        e.preventDefault(); // Standard Menü verhindern
+        
+        // Haptic Feedback
+        if(navigator.vibrate) navigator.vibrate(50);
+        
+        const overlay = document.getElementById('ctx-overlay');
+        const detailsBtn = document.getElementById('ctx-details-btn');
+        
+        // Action setzen
+        detailsBtn.onclick = function() {
+            window.location.href = `app.html?id=${pkg}`;
+        };
+        
+        overlay.classList.add('active');
+        return false;
+    }
+
+    function closeContext() {
+        document.getElementById('ctx-overlay').classList.remove('active');
+    }
+
     async function loadFDroidApps() {
-        await new Promise(r => setTimeout(r, 600)); // Delay für Skeleton
+        // Kurzer Delay für Skeleton-Demo
+        await new Promise(r => setTimeout(r, 600));
 
         try {
             const response = await fetch('/api/apps');
@@ -539,7 +596,7 @@
                 pkg: app.packageName,
                 icon: app.icon,
                 ver: app.version,
-                cat: "Tools"
+                cat: "Tools" // Default cat für API items
             }));
             appDatabase = [...appDatabase, ...remoteApps];
         } catch (e) { console.log("Verwende Offline DB"); } 
@@ -548,158 +605,39 @@
 
     function shuffle(array) { return array.sort(() => Math.random() - 0.5); }
 
-    // --- CONTEXT MENU (LONG PRESS LOGIK) ---
-    let pressTimer;
-    let isScrolling = false;
-    let currentCtxApp = null;
-
-    function attachContextListeners(element, app) {
-        // Touch (Mobile)
-        element.addEventListener('touchstart', (e) => {
-            isScrolling = false;
-            pressTimer = setTimeout(() => openContextMenu(app), 600); // 600ms Long Press
-        }, {passive: true});
-
-        element.addEventListener('touchmove', () => {
-            isScrolling = true;
-            clearTimeout(pressTimer);
-        }, {passive: true});
-
-        element.addEventListener('touchend', () => clearTimeout(pressTimer));
-        element.addEventListener('touchcancel', () => clearTimeout(pressTimer));
-
-        // Mouse (Desktop/Testing)
-        element.addEventListener('mousedown', () => {
-            pressTimer = setTimeout(() => openContextMenu(app), 600);
-        });
-        element.addEventListener('mouseup', () => clearTimeout(pressTimer));
-        element.addEventListener('mouseleave', () => clearTimeout(pressTimer));
-
-        // Prevent Default Menu
-        element.addEventListener('contextmenu', (e) => {
-            e.preventDefault();
-            openContextMenu(app);
-            return false;
-        });
-    }
-
-    function openContextMenu(app) {
-        // Haptic Feedback simulieren
-        if (navigator.vibrate) navigator.vibrate(50);
-        
-        currentCtxApp = app;
-        const overlay = document.getElementById('ctx-overlay');
-        document.getElementById('ctx-name').innerText = app.name;
-        document.getElementById('ctx-img').src = app.icon;
-        
-        // Button Aktionen setzen
-        document.getElementById('ctx-btn-open').onclick = () => {
-            window.location.href = `app.html?id=${app.pkg}`;
-        };
-        
-        overlay.classList.add('active');
-    }
-
-    function closeContextMenu() {
-        document.getElementById('ctx-overlay').classList.remove('active');
-    }
-
-    function shareApp() {
-        if(navigator.share && currentCtxApp) {
-            navigator.share({
-                title: currentCtxApp.name,
-                text: `Schau dir ${currentCtxApp.name} auf DownAPK an!`,
-                url: window.location.href
-            });
-        }
-        closeContextMenu();
-    }
-
-    // --- SEARCH HISTORY LOGIK ---
-    const SEARCH_HISTORY_KEY = 'downapk_search_history';
-
-    function getHistory() {
-        return JSON.parse(localStorage.getItem(SEARCH_HISTORY_KEY) || '[]');
-    }
-
-    function addToHistory(term) {
-        if (!term || term.trim() === '') return;
-        let history = getHistory();
-        // Duplikate entfernen und an den Anfang setzen
-        history = history.filter(item => item.toLowerCase() !== term.toLowerCase());
-        history.unshift(term);
-        // Limit auf 5
-        if (history.length > 5) history.pop();
-        localStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify(history));
-    }
-
-    function clearHistory() {
-        localStorage.removeItem(SEARCH_HISTORY_KEY);
-        renderSearchHistory();
-    }
-
-    function renderSearchHistory() {
-        const history = getHistory();
-        const container = document.getElementById('search-history-container');
-        const list = document.getElementById('search-history-list');
-        const resultsBox = document.getElementById('search-results');
-        const inputVal = document.getElementById('search-input').value;
-
-        // Zeige History nur wenn Input leer ist und History existiert
-        if (inputVal === "" && history.length > 0) {
-            container.style.display = 'block';
-            resultsBox.style.display = 'none'; // Verstecke normale Ergebnisse
-            list.innerHTML = "";
-            
-            history.forEach(term => {
-                list.innerHTML += `
-                    <div class="search-history-item" onclick="useHistorySearch('${term}')">
-                        <i class="fas fa-clock"></i>
-                        <span>${term}</span>
-                    </div>
-                `;
-            });
-        } else {
-            container.style.display = 'none';
-            resultsBox.style.display = 'block';
-        }
-    }
-
-    function useHistorySearch(term) {
-        document.getElementById('search-input').value = term;
-        performSearch(term);
-        // Fokus behalten oder entfernen nach Wahl -> hier lassen wir es für UX
-    }
-
-    // --- SEARCH UI ---
     function toggleSearch(show) {
         const overlay = document.getElementById('search-overlay');
         const btnSearch = document.getElementById('btn-search');
         const btnHome = document.getElementById('btn-home');
-        const input = document.getElementById('search-input');
         
         if(show) {
             overlay.classList.add('active');
             btnSearch.classList.add('active');
             btnHome.classList.remove('active');
             setTimeout(() => {
-                input.focus();
-                renderSearchHistory(); // History beim Öffnen zeigen
+                document.getElementById('search-input').focus();
+                renderHistory(); // Verlauf anzeigen
             }, 100);
         } else {
             overlay.classList.remove('active');
             btnSearch.classList.remove('active');
             btnHome.classList.add('active');
-            input.blur();
+            document.getElementById('search-input').blur();
+            setTimeout(() => {
+                document.getElementById('search-input').value = "";
+                document.getElementById('search-results').innerHTML = "";
+                document.getElementById('search-history-container').style.display = 'none';
+            }, 300);
         }
     }
 
     function viewAll(title) {
         toggleSearch(true);
         document.getElementById('search-input').value = ""; 
-        renderSearchHistory();
+        performSearch(""); 
     }
 
+    // Filter-Funktion für Kategorien
     function selectCat(el, category) {
         document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
         el.classList.add('active');
@@ -713,18 +651,21 @@
         document.getElementById('scroll-trending').innerHTML = errorHTML;
     }
 
+    // Render akzeptiert jetzt Filter
     function render(filterCat) {
         document.getElementById('skeleton-loader').style.display = 'none';
         document.getElementById('content-main').style.display = 'block';
 
         if (!appDatabase || appDatabase.length === 0) { renderError(); return; }
 
+        // Filtern
         let filteredApps = appDatabase;
         if (filterCat && filterCat !== 'Alle') {
             filteredApps = appDatabase.filter(app => app.cat === filterCat);
         }
 
         if(filteredApps.length === 0) {
+             // Fallback falls Kategorie leer
              document.getElementById('scroll-trending').innerHTML = `<div style="padding:20px; color:#666;">Keine Apps in "${filterCat}"</div>`;
              document.getElementById('scroll-top').innerHTML = "";
              document.getElementById('update-feed').innerHTML = "";
@@ -734,14 +675,15 @@
         const shuffled = shuffle([...filteredApps]);
         const feat = shuffled[0];
 
-        // Header Update
+        // Header Update (nur wenn "Alle" oder wenn gefiltert)
         document.getElementById('header-blur').style.backgroundImage = `url('${feat.icon}')`;
         document.getElementById('sticky-icon').src = feat.icon;
         document.getElementById('sticky-name').innerText = feat.name;
         document.getElementById('sticky-bar').onclick = () => window.location.href = `app.html?id=${feat.pkg}`;
 
+        // Featured nur anzeigen wenn "Alle" ausgewählt ist (optional, hier zeigen wir es immer based auf filter)
         document.getElementById('featured-hero').innerHTML = `
-            <div class="featured-banner" id="feat-banner">
+            <div class="featured-banner" onclick="window.location.href='app.html?id=${feat.pkg}'" oncontextmenu="openContext(event, '${feat.pkg}'); return false;">
                 <div class="featured-img-bg" style="background: url('${feat.icon}') center/cover"></div>
                 <div class="featured-overlay"></div>
                 <div class="featured-info">
@@ -752,134 +694,100 @@
                 </div>
             </div>
         `;
-        
-        // Context Menu für Featured Banner hinzufügen (Optional)
-        attachContextListeners(document.getElementById('feat-banner'), feat);
-        // Normaler Click
-        document.getElementById('feat-banner').addEventListener('click', () => {
-           if(!pressTimer) window.location.href=`app.html?id=${feat.pkg}`;
-        });
-
 
         const trending = document.getElementById('scroll-trending');
         const top = document.getElementById('scroll-top');
         const feed = document.getElementById('update-feed');
         trending.innerHTML = ""; top.innerHTML = ""; feed.innerHTML = "";
         
-        // Helper um Elemente zu erzeugen und Listener anzuhängen
-        const appendCard = (container, app) => {
-            const card = document.createElement('div');
-            card.className = "card-item animate-entry";
-            card.innerHTML = `
+        // HIER WURDE CONTEXTMENU EVENT HINZUGEFÜGT
+        const createCard = (app) => `
+            <div class="card-item animate-entry" onclick="window.location.href='app.html?id=${app.pkg}'" oncontextmenu="openContext(event, '${app.pkg}'); return false;">
                 <img src="${app.icon}" class="card-icon" onerror="this.src='https://f-droid.org/repo/${app.pkg}/en-US/icon.png'">
                 <div class="card-name-wrap"><span class="card-name">${app.name}</span></div>
                 <span class="card-author">${app.author}</span>
-            `;
-            // Klick Event (nur wenn kein Longpress war)
-            card.onclick = () => window.location.href = `app.html?id=${app.pkg}`;
-            // Context Menu Listener
-            attachContextListeners(card, app);
-            container.appendChild(card);
-        };
+            </div>
+        `;
 
-        const appendList = (container, app) => {
-            const item = document.createElement('div');
-            item.className = "app-item animate-entry";
-            item.innerHTML = `
-                <img src="${app.icon}" class="app-icon">
-                <div class="app-info">
-                    <div class="app-name-wrap"><span class="app-name">${app.name}</span></div>
-                    <div class="app-meta">${app.cat} • v${app.ver}</div>
+        shuffled.slice(0, 8).forEach(app => trending.innerHTML += createCard(app));
+        [...shuffled].reverse().slice(0, 8).forEach(app => top.innerHTML += createCard(app));
+        shuffled.slice(0, 15).forEach(app => {
+            // AUCH HIER CONTEXTMENU EVENT
+            feed.innerHTML += `
+                <div class="app-item animate-entry" onclick="window.location.href='app.html?id=${app.pkg}'" oncontextmenu="openContext(event, '${app.pkg}'); return false;">
+                    <img src="${app.icon}" class="app-icon">
+                    <div class="app-info">
+                        <div class="app-name-wrap"><span class="app-name">${app.name}</span></div>
+                        <div class="app-meta">${app.cat} • v${app.ver}</div>
+                    </div>
+                    <div class="laden-badge">LADEN</div>
                 </div>
-                <div class="laden-badge">LADEN</div>
             `;
-            item.onclick = () => window.location.href = `app.html?id=${app.pkg}`;
-            attachContextListeners(item, app);
-            container.appendChild(item);
-        };
-
-        shuffled.slice(0, 8).forEach(app => appendCard(trending, app));
-        [...shuffled].reverse().slice(0, 8).forEach(app => appendCard(top, app));
-        shuffled.slice(0, 15).forEach(app => appendList(feed, app));
+        });
     }
 
     function performSearch(query) {
         const resultsBox = document.getElementById('search-results');
-        const historyContainer = document.getElementById('search-history-container');
+        renderHistory(); // Check history display based on empty query
         
         if (query === "") {
-            renderSearchHistory();
+            resultsBox.innerHTML = "";
             return;
         }
-
-        // Wenn wir tippen, History verstecken und Ergebnisse zeigen
-        historyContainer.style.display = 'none';
-        resultsBox.style.display = 'block';
 
         resultsBox.innerHTML = "";
         const filtered = appDatabase.filter(a => a.name.toLowerCase().includes(query.toLowerCase()) || a.pkg.toLowerCase().includes(query.toLowerCase())).slice(0, 50);
         
-        if (filtered.length === 0) {
+        if(filtered.length === 0) {
             resultsBox.innerHTML = "<div style='padding:40px; color:#888; text-align:center;'>Keine Treffer.</div>";
         } else {
             filtered.forEach(app => {
-                // Bei Klick auf Ergebnis -> Zur History hinzufügen
-                const item = document.createElement('div');
-                item.className = "app-item";
-                item.style.padding = "10px 16px";
-                item.style.background = "rgba(255,255,255,0.05)";
-                item.style.marginBottom = "1px";
-                item.innerHTML = `
-                    <img src="${app.icon}" class="app-icon" style="width:48px; height:48px;">
-                    <div class="app-info">
-                        <div class="app-name-wrap"><span class="app-name" style="font-size:16px;">${app.name}</span></div>
-                        <div class="app-meta">${app.cat}</div>
-                    </div>
-                    <i class="fas fa-chevron-right" style="opacity:0.3; font-size:12px;"></i>
-                `;
-                item.onclick = () => {
-                    addToHistory(query); // Speichern bei Auswahl
-                    window.location.href = `app.html?id=${app.pkg}`;
-                };
-                attachContextListeners(item, app); // Auch in der Suche Context Menu!
-                resultsBox.appendChild(item);
+                // Wrapper click speichert History
+                resultsBox.innerHTML += `
+                    <div class="app-item" style="padding: 10px 16px; background: rgba(255,255,255,0.05); margin-bottom: 1px;" 
+                         onclick="saveHistory('${app.name}'); window.location.href='app.html?id=${app.pkg}'">
+                        <img src="${app.icon}" class="app-icon" style="width:48px; height:48px;">
+                        <div class="app-info">
+                            <div class="app-name-wrap"><span class="app-name" style="font-size:16px;">${app.name}</span></div>
+                            <div class="app-meta">${app.cat}</div>
+                        </div>
+                        <i class="fas fa-chevron-right" style="opacity:0.3; font-size:12px;"></i>
+                    </div>`;
             });
         }
     }
 
-    // SCROLL LOGIK
+    // SCROLL LOGIK ERWEITERT
     let lastScrollTop = 0;
     const bottomNav = document.querySelector('.bottom-nav');
 
     window.addEventListener('scroll', () => {
+        // Header Logik (Bestehend)
         const header = document.getElementById('main-header');
         if (window.scrollY > 40) header.classList.add('scrolled');
         else header.classList.remove('scrolled');
 
+        // NAV BAR LOGIK (NEU)
         let st = window.scrollY || document.documentElement.scrollTop;
-        if (st > lastScrollTop && st > 50) bottomNav.classList.add('nav-scrolled');
-        else if (st < lastScrollTop) bottomNav.classList.remove('nav-scrolled');
-        lastScrollTop = st <= 0 ? 0 : st;
-    });
-
-    // Input Listeners
-    const searchInput = document.getElementById('search-input');
-    searchInput.addEventListener('input', (e) => performSearch(e.target.value));
-    searchInput.addEventListener('focus', (e) => performSearch(e.target.value)); // Check history on focus
-    
-    // Suche speichern beim Drücken von Enter
-    searchInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            addToHistory(searchInput.value);
-            searchInput.blur();
+        
+        // Wenn man nach unten scrollt (mehr als 50px)
+        if (st > lastScrollTop && st > 50) {
+            bottomNav.classList.add('nav-scrolled');
+        } 
+        // Wenn man nach oben scrollt
+        else if (st < lastScrollTop) {
+            bottomNav.classList.remove('nav-scrolled');
         }
+        
+        lastScrollTop = st <= 0 ? 0 : st; // Verhindert negative Werte
     });
 
+    document.getElementById('search-input').addEventListener('input', (e) => performSearch(e.target.value));
     window.onload = () => { loadFDroidApps(); };
 </script>
 
 <div style="text-align: center; margin-top: 20px; padding: 10px;">
-    <p style="color: #888888; font-size: 12px; margin: 0;">Version 19.50</p>
+    <p style="color: #888888; font-size: 12px; margin: 0;">Version 18.45</p>
     <p style="color: #666666; font-size: 10px; margin-top: 5px; opacity: 0.7;">By Nexus with ❤️</p>
     <div style="width: 100%; text-align: center; margin-top: 15px;">
         <a href="https://nexus-ashy.vercel.app/" style="color: #00ff00; text-decoration: none; font-size: 12px; font-weight: bold;">Mehr von uns</a>
