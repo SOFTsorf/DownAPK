@@ -11,6 +11,7 @@
     <title>DownAPK</title>
 
 <link rel="icon" type="image/png" href="https://lh3.googleusercontent.com/d/1K8g5EPJgvE0-RbGiyJVGWFaCBc9s27gM">
+
 <link rel="apple-touch-icon" href="https://lh3.googleusercontent.com/d/1K8g5EPJgvE0-RbGiyJVGWFaCBc9s27gM">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -19,7 +20,6 @@
             --ios-bg: #000000;
             --ios-card: #1C1C1E;
             --ios-blue: #0A84FF;
-            --ios-red: #FF453A;
             --ios-text: #FFFFFF;
             --ios-subtext: #8E8E93;
             --ios-separator: #38383A;
@@ -34,7 +34,7 @@
             font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif; 
             margin: 0; background: var(--ios-bg); color: var(--ios-text); 
             padding-bottom: 120px; overflow-x: hidden; -webkit-font-smoothing: antialiased;
-            user-select: none; -webkit-user-select: none;
+            -webkit-user-select: none; user-select: none; /* Verhindert Standard-Browser-Menüs */
         }
 
         a { text-decoration: none !important; color: inherit !important; -webkit-tap-highlight-color: transparent; }
@@ -44,86 +44,134 @@
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        @keyframes scaleIn {
-            from { opacity: 0; transform: scale(0.9); }
-            to { opacity: 1; transform: scale(1); }
-        }
+
         @keyframes scrollText {
             0% { transform: translateX(0); }
             20% { transform: translateX(0); }
             100% { transform: translateX(-100%); }
         }
+
         @keyframes pulse {
             0% { opacity: 1; }
             50% { opacity: 0.4; }
             100% { opacity: 1; }
         }
+        
+        /* NEU: Icon Animation */
         @keyframes popBounce {
             0% { transform: scale(1); }
             40% { transform: scale(1.3); }
             100% { transform: scale(1); }
         }
 
-        .animate-entry { opacity: 0; animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+        .animate-entry {
+            opacity: 0; 
+            animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+        
         .delay-1 { animation-delay: 0.1s; }
         .delay-2 { animation-delay: 0.2s; }
         .delay-3 { animation-delay: 0.3s; }
         .delay-4 { animation-delay: 0.4s; }
 
-        /* HEADER */
+        /* --- HEADER & STICKY LOGIC START --- */
         header { 
-            position: fixed; top: 0; left: 0; width: 100%; height: var(--header-height);
-            z-index: 1000; display: flex; align-items: center; justify-content: flex-start;
+            position: fixed; top: 0; left: 0; width: 100%; 
+            height: var(--header-height);
+            z-index: 1000;
+            display: flex; align-items: center; justify-content: flex-start;
             padding: 0 20px; box-sizing: border-box;
             transition: height 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), background 0.4s;
             overflow: hidden;
         }
+
         .header-spacer { height: var(--header-height); width: 100%; }
+
         .header-blur-bg {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background-size: cover !important; background-position: center !important;
-            filter: blur(25px) brightness(0.4); opacity: 0; transition: opacity 0.5s ease; z-index: 1;
+            filter: blur(25px) brightness(0.4);
+            opacity: 0; transition: opacity 0.5s ease;
+            z-index: 1;
         }
+
         .logo { 
             font-size: 34px; font-weight: 800; letter-spacing: -1px; 
-            position: relative; z-index: 2; transform-origin: left center;
+            position: relative; z-index: 2;
+            transform-origin: left center;
             transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
-        header.scrolled { height: var(--header-collapsed); background: rgba(0,0,0,0.3); border-bottom: var(--glass-border); }
-        header.scrolled .header-blur-bg { opacity: 1; }
-        header.scrolled .logo { opacity: 0; transform: translateY(-20px) scale(0.8); }
 
-        /* STICKY BAR */
         .sticky-app-bar {
             position: absolute; left: 0; top: 0; width: 100%; height: 100%;
             display: flex; align-items: center; justify-content: space-between;
-            padding: 0 20px; box-sizing: border-box; z-index: 3; opacity: 0;
-            transform: translateY(20px); transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+            padding: 0 20px; box-sizing: border-box;
+            z-index: 3;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
             pointer-events: none;
         }
-        header.scrolled .sticky-app-bar { opacity: 1; transform: translateY(0); pointer-events: auto; }
+        
         .sticky-left { display: flex; align-items: center; overflow: hidden; }
-        .sticky-icon { width: 38px; height: 38px; border-radius: 8px; margin-right: 12px; background: #333; }
+        .sticky-icon { width: 38px; height: 38px; border-radius: 8px; margin-right: 12px; background: #333; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
         .sticky-info-text { display: flex; flex-direction: column; overflow: hidden; }
         .sticky-name { font-weight: 600; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px; }
         .sticky-sub { font-size: 11px; opacity: 0.7; }
+        
         .sticky-btn {
-            background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3);
-            backdrop-filter: blur(10px); padding: 6px 16px; border-radius: 20px;
-            font-weight: 700; font-size: 12px; cursor: pointer; transition: background 0.2s; white-space: nowrap;
+            background: rgba(255,255,255,0.2); color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+            backdrop-filter: blur(10px);
+            padding: 6px 16px; border-radius: 20px;
+            font-weight: 700; font-size: 12px;
+            cursor: pointer; transition: background 0.2s;
+            white-space: nowrap;
+        }
+        .sticky-btn:hover { background: rgba(255,255,255,0.3); }
+
+        header.scrolled {
+            height: var(--header-collapsed);
+            background: rgba(0,0,0,0.3);
+            border-bottom: var(--glass-border);
+        }
+        header.scrolled .header-blur-bg { opacity: 1; }
+        header.scrolled .logo { opacity: 0; transform: translateY(-20px) scale(0.8); }
+        header.scrolled .sticky-app-bar { 
+            opacity: 1; transform: translateY(0); pointer-events: auto; 
         }
 
-        /* CATEGORY PILLS */
-        .category-scroll { display: flex; overflow-x: auto; padding: 10px 20px; gap: 10px; scrollbar-width: none; margin-bottom: 5px; }
+        /* --- CATEGORY PILLS --- */
+        .category-scroll {
+            display: flex;
+            overflow-x: auto;
+            padding: 10px 20px;
+            gap: 10px;
+            scrollbar-width: none;
+            margin-bottom: 5px;
+        }
         .category-scroll::-webkit-scrollbar { display: none; }
+        
         .cat-pill {
-            background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.8); padding: 8px 18px;
-            border-radius: 20px; font-size: 14px; font-weight: 600; white-space: nowrap; cursor: pointer;
-            transition: all 0.3s ease; border: 1px solid transparent;
+            background: rgba(255,255,255,0.08);
+            color: rgba(255,255,255,0.8);
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
         }
-        .cat-pill.active { background: var(--ios-blue); color: white; box-shadow: 0 4px 15px rgba(10, 132, 255, 0.4); }
+        .cat-pill:hover { background: rgba(255,255,255,0.15); color: #fff; }
+        .cat-pill.active {
+            background: var(--ios-blue);
+            color: white;
+            box-shadow: 0 4px 15px rgba(10, 132, 255, 0.4);
+        }
 
-        /* SKELETON */
+        /* --- SKELETON SCREENS --- */
         .skeleton-loader { padding: 20px; }
         .skeleton { background: #2C2C2E; border-radius: 8px; animation: pulse 1.5s infinite ease-in-out; }
         .sk-hero { height: 420px; border-radius: var(--radius-l); margin-bottom: 30px; width: 100%; }
@@ -134,154 +182,176 @@
         .sk-icon { width: 62px; height: 62px; border-radius: 14px; margin-right: 15px; }
         .sk-text-lines { flex: 1; }
         .sk-line { height: 10px; border-radius: 4px; margin-bottom: 8px; }
-        .sk-line.long { width: 70%; } .sk-line.short { width: 40%; }
+        .sk-line.short { width: 40%; }
+        .sk-line.long { width: 70%; }
 
         /* FEATURED BANNER */
         .featured-banner {
             margin: 15px 20px 30px; background: #111; border-radius: var(--radius-l);
             height: 420px; position: relative; overflow: hidden; display: flex;
             flex-direction: column; justify-content: flex-end; border: var(--glass-border);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.6); transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
-        .featured-banner:active { transform: scale(0.96); }
+        .featured-banner:hover { transform: scale(1.02); box-shadow: 0 30px 60px rgba(0,0,0,0.8); }
         .featured-img-bg {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background-size: cover !important; background-position: center !important;
-            filter: brightness(0.5); z-index: 1;
+            filter: brightness(0.5); z-index: 1; transition: transform 5s ease;
         }
+        .featured-banner:hover .featured-img-bg { transform: scale(1.1); }
         .featured-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.95) 100%); z-index: 2;
+            background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.95) 100%);
+            z-index: 2;
         }
         .featured-info { position: relative; z-index: 3; padding: 30px; text-align: center; display: flex; flex-direction: column; align-items: center; width: 100%; box-sizing: border-box; }
         .featured-tag { color: #bf55ec; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
         .featured-title-wrap { width: 100%; overflow: hidden; white-space: nowrap; margin-bottom: 5px; }
         .featured-title { font-size: 28px; font-weight: 800; color: white !important; display: inline-block; }
-        .featured-banner:active .featured-title { animation: scrollText 4s linear infinite; }
+        .featured-banner:hover .featured-title { animation: scrollText 4s linear infinite; }
         .featured-desc { font-size: 15px; color: var(--ios-subtext); margin-bottom: 20px; }
         .get-btn { 
             background: #FFFFFF; color: #000; padding: 12px 50px; border-radius: 25px; 
             font-weight: 700; font-size: 16px; border: none; transition: transform 0.2s; cursor: pointer;
         }
+        .get-btn:hover { transform: scale(1.05); background: #eee; }
 
-        /* SECTIONS & CARDS */
+        /* SECTIONS */
         .section-title { padding: 20px 20px 15px; font-size: 22px; font-weight: 700; display: flex; justify-content: space-between; align-items: center; }
-        .section-more { color: var(--ios-blue); font-size: 16px; font-weight: 400; cursor: pointer; }
+        .section-more { color: var(--ios-blue); font-size: 16px; font-weight: 400; cursor: pointer; transition: opacity 0.2s; }
+        .section-more:hover { opacity: 0.7; }
         .horizontal-scroll { display: flex; overflow-x: auto; padding: 0 20px 25px; gap: 18px; scrollbar-width: none; }
         .horizontal-scroll::-webkit-scrollbar { display: none; }
 
+        /* CARDS & ITEMS */
         .card-item { width: 120px; min-width: 120px; cursor: pointer; transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); -webkit-touch-callout: none; }
-        .card-item:active { transform: scale(0.9); filter: brightness(0.8); }
-        .card-icon { width: 120px; height: 120px; border-radius: 26px; object-fit: cover; border: var(--glass-border); margin-bottom: 10px; background: #222; pointer-events: none; }
-        .card-name-wrap { width: 100%; overflow: hidden; white-space: nowrap; margin-bottom: 2px; mask-image: linear-gradient(to right, black 90%, transparent 100%); pointer-events: none; }
-        .card-name { font-size: 14px; font-weight: 500; color: white !important; display: inline-block; }
-        .card-author { font-size: 12px; color: var(--ios-subtext); pointer-events: none; }
+        .card-item:hover { transform: translateY(-5px) scale(1.03); }
+        .card-icon { width: 120px; height: 120px; border-radius: 26px; object-fit: cover; border: var(--glass-border); margin-bottom: 10px; background: #222; transition: filter 0.3s; }
+        .card-item:hover .card-icon { filter: brightness(1.2); }
+        .card-name-wrap { width: 100%; overflow: hidden; white-space: nowrap; margin-bottom: 2px; mask-image: linear-gradient(to right, black 90%, transparent 100%); }
+        .card-name { font-size: 14px; font-weight: 500; color: white !important; display: inline-block; text-overflow: ellipsis; }
+        .card-item:hover .card-name { text-overflow: clip; animation: scrollText 3s linear infinite; padding-right: 20px; }
+        .card-author { font-size: 12px; color: var(--ios-subtext); }
 
         .app-list-container { background: var(--ios-card); margin: 0 20px; border-radius: var(--radius-m); padding: 0 16px; border: var(--glass-border); }
-        .app-item { display: flex; padding: 15px 0; border-bottom: 0.5px solid var(--ios-separator); align-items: center; cursor: pointer; transition: transform 0.2s; -webkit-touch-callout: none; }
+        .app-item { display: flex; padding: 15px 0; border-bottom: 0.5px solid var(--ios-separator); align-items: center; cursor: pointer; transition: background 0.2s, transform 0.2s; -webkit-touch-callout: none; }
         .app-item:last-child { border-bottom: none; }
-        .app-item:active { background: rgba(255,255,255,0.05); }
-        .app-icon { width: 62px; height: 62px; border-radius: 14px; margin-right: 15px; border: var(--glass-border); background: #222; object-fit: cover; pointer-events: none; }
-        .app-info { flex-grow: 1; min-width: 0; overflow: hidden; pointer-events: none; }
-        .app-name { font-weight: 600; font-size: 17px; color: #FFF !important; display: inline-block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
+        .app-item:hover { background: rgba(255,255,255,0.05); transform: scale(1.01); }
+        .app-icon { width: 62px; height: 62px; border-radius: 14px; margin-right: 15px; border: var(--glass-border); background: #222; object-fit: cover; }
+        .app-info { flex-grow: 1; min-width: 0; overflow: hidden; }
+        .app-name-wrap { width: 100%; overflow: hidden; white-space: nowrap; margin-bottom: 3px; mask-image: linear-gradient(to right, black 90%, transparent 100%); }
+        .app-name { font-weight: 600; font-size: 17px; color: #FFF !important; display: inline-block; text-overflow: ellipsis; }
+        .app-item:hover .app-name { text-overflow: clip; animation: scrollText 4s linear infinite; padding-right: 30px; }
         .app-meta { font-size: 13px; color: var(--ios-subtext); }
-        .laden-badge { background: #333; color: var(--ios-blue); padding: 6px 18px; border-radius: 20px; font-weight: 800; font-size: 12px; pointer-events: none; }
+        .laden-badge { background: #333; color: var(--ios-blue); padding: 6px 18px; border-radius: 20px; font-weight: 800; font-size: 12px; transition: background 0.2s; }
+        .app-item:hover .laden-badge { background: #444; color: #fff; }
 
-        /* SEARCH */
+        /* ERROR & SEARCH */
+        .error-msg { text-align: center; padding: 50px 20px; color: var(--ios-subtext); font-size: 16px; font-weight: 500; }
+        .error-icon { font-size: 40px; margin-bottom: 15px; opacity: 0.5; display: block; }
+
+        /* --- SEARCH & HISTORY --- */
         .search-bar {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(10, 10, 10, 0.7); backdrop-filter: blur(40px) saturate(180%);
-            z-index: 5000; opacity: 0; pointer-events: none;
-            transition: opacity 0.3s ease; padding-top: 60px;
+            background: rgba(10, 10, 10, 0.7); 
+            backdrop-filter: blur(40px) saturate(180%);
+            z-index: 5000; 
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.3s ease, backdrop-filter 0.3s ease;
+            padding-top: 60px;
         }
         .search-bar.active { opacity: 1; pointer-events: auto; }
-        .search-box { display: flex; align-items: center; padding: 0 20px; gap: 15px; transform: translateY(-10px); transition: transform 0.4s; }
+        
+        .search-box { 
+            display: flex; align-items: center; padding: 0 20px; gap: 15px; 
+            transform: translateY(-10px); transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
         .search-bar.active .search-box { transform: translateY(0); }
-        .input-wrap { flex: 1; background: rgba(255, 255, 255, 0.12); border-radius: 12px; display: flex; align-items: center; padding: 12px 15px; border: 1px solid rgba(255,255,255,0.05); }
+
+        .input-wrap { 
+            flex: 1; 
+            background: rgba(255, 255, 255, 0.12);
+            border-radius: 12px; 
+            display: flex; align-items: center; padding: 12px 15px; 
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: background 0.2s;
+        }
+        .input-wrap:focus-within { background: rgba(255, 255, 255, 0.18); }
         .input-wrap input { background: transparent; border: none; color: white; font-size: 17px; width: 100%; outline: none; margin-left: 10px; font-weight: 500; }
         .input-wrap input::placeholder { color: rgba(255,255,255,0.4); }
 
-        /* --- NEW: ELEGANT SEARCH HISTORY --- */
-        .search-history-item {
-            display: flex; align-items: center; padding: 12px 0; border-bottom: 0.5px solid var(--ios-separator);
-            color: var(--ios-blue); font-size: 16px; cursor: pointer;
-        }
-        .search-history-item i { margin-right: 15px; color: var(--ios-subtext); font-size: 14px; }
-        .search-history-item span { flex: 1; color: white; }
-        .search-history-clear { font-size: 12px; color: var(--ios-subtext); text-align: center; padding: 10px; cursor: pointer; }
+        .search-history-container { padding: 20px; }
+        .history-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; color: #888; font-size: 13px; font-weight: 600; text-transform: uppercase; }
+        .history-item { display: flex; align-items: center; padding: 12px 0; border-bottom: 0.5px solid var(--ios-separator); color: var(--ios-blue); font-size: 16px; cursor: pointer; }
+        .history-item i { margin-right: 15px; color: #555; font-size: 14px; }
 
-        /* NAV */
+        /* --- CONTEXT MENU --- */
+        .cm-overlay {
+            position: fixed; top:0; left:0; width:100%; height:100%;
+            background: rgba(0,0,0,0.4); backdrop-filter: blur(10px);
+            z-index: 9000; opacity: 0; pointer-events: none;
+            transition: opacity 0.3s ease;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .cm-overlay.active { opacity: 1; pointer-events: auto; }
+        .cm-menu {
+            width: 250px; background: rgba(44, 44, 46, 0.95);
+            backdrop-filter: blur(20px); border-radius: 14px;
+            overflow: hidden; transform: scale(0.8); opacity: 0;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+        }
+        .cm-overlay.active .cm-menu { transform: scale(1); opacity: 1; }
+        .cm-item {
+            padding: 14px 18px; display: flex; justify-content: space-between; align-items: center;
+            color: white; font-size: 16px; border-bottom: 0.5px solid rgba(255,255,255,0.1);
+            cursor: pointer; transition: background 0.2s;
+        }
+        .cm-item:active { background: rgba(255,255,255,0.1); }
+        .cm-item:last-child { border-bottom: none; }
+        .cm-item.danger { color: #FF453A; }
+
+        /* --- NAV --- */
         .bottom-nav {
             position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
-            width: 280px; height: 74px; 
-            background: rgba(20, 20, 20, 0.5); backdrop-filter: blur(50px) saturate(160%); -webkit-backdrop-filter: blur(50px) saturate(160%);
-            border-radius: 37px; display: flex; justify-content: space-evenly; align-items: center;
-            z-index: 4000; border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            width: 240px; height: 74px; 
+            background: rgba(20, 20, 20, 0.5); 
+            backdrop-filter: blur(50px) saturate(160%);
+            -webkit-backdrop-filter: blur(50px) saturate(160%);
+            border-radius: 37px;
+            display: flex; justify-content: space-evenly; align-items: center;
+            z-index: 4000; 
+            border: 1px solid rgba(255,255,255,0.15);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        .bottom-nav.nav-scrolled { width: 180px; height: 52px; bottom: 20px; }
+        .bottom-nav.nav-scrolled { width: 140px; height: 52px; bottom: 20px; }
         .animate-nav { animation: fadeInUp 0.8s 0.6s backwards; }
-        .nav-item { color: rgba(255,255,255,0.5); text-align: center; cursor: pointer; transition: color 0.3s, transform 0.2s; position: relative; }
-        .nav-item.active { color: #FFF; text-shadow: 0 0 15px rgba(255,255,255,0.3); }
+        .nav-item { color: rgba(255,255,255,0.5); text-align: center; cursor: pointer; transition: color 0.3s, transform 0.2s; }
+        .nav-item.active { color: #FFF; }
         .nav-item.active i { animation: popBounce 0.4s ease forwards; color: var(--ios-blue); }
-        .nav-item:active { transform: scale(0.9); }
-        .nav-item i { font-size: 22px; display: block; margin-bottom: 4px; transition: margin 0.3s ease; }
-        .nav-item span { 
-            font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; 
-            display: block; opacity: 1; height: auto; transition: opacity 0.3s ease, height 0.3s ease;
-        }
-        .bottom-nav.nav-scrolled .nav-item span { opacity: 0; height: 0; overflow: hidden; }
+        .nav-item:hover { transform: scale(1.1); color: #fff; }
+        .nav-item i { font-size: 24px; display: block; margin-bottom: 4px; transition: margin 0.3s ease; }
+        .nav-item span { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; transition: all 0.3s ease; }
+        .bottom-nav.nav-scrolled .nav-item span { opacity: 0; height: 0; margin: 0; overflow: hidden; }
         .bottom-nav.nav-scrolled .nav-item i { margin-bottom: 0; }
 
-        /* --- NEW: CONTEXT MENU (HAPTIC TOUCH) --- */
-        .context-menu-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.4); backdrop-filter: blur(8px);
-            z-index: 9999; opacity: 0; pointer-events: none;
-            transition: opacity 0.2s ease; display: flex; align-items: center; justify-content: center;
-        }
-        .context-menu-overlay.active { opacity: 1; pointer-events: auto; }
-        
-        .context-menu {
-            width: 250px; background: rgba(30, 30, 30, 0.85);
-            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border-radius: 14px; overflow: hidden; transform: scale(0.8);
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-        }
-        .context-menu-overlay.active .context-menu { transform: scale(1); }
-        
-        .ctx-header {
-            padding: 15px; text-align: center; border-bottom: 0.5px solid rgba(255,255,255,0.1);
-        }
-        .ctx-img { width: 60px; height: 60px; border-radius: 14px; margin-bottom: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-        .ctx-title { font-size: 15px; font-weight: 600; color: white; }
-        .ctx-sub { font-size: 12px; color: var(--ios-subtext); }
-
-        .ctx-actions { display: flex; flex-direction: column; }
-        .ctx-btn {
-            padding: 14px; text-align: center; color: var(--ios-blue); font-size: 16px; 
-            border-bottom: 0.5px solid rgba(255,255,255,0.1); cursor: pointer; background: transparent;
-        }
-        .ctx-btn:last-child { border-bottom: none; }
-        .ctx-btn:active { background: rgba(255,255,255,0.1); }
-        .ctx-btn.destructive { color: var(--ios-red); }
-
- 
+        .hidden { display: none; }
     </style>
 </head>
 <body>
 
-<div class="context-menu-overlay" id="ctx-overlay" onclick="closeContextMenu()">
-    <div class="context-menu" id="ctx-menu" onclick="event.stopPropagation()">
-        <div class="ctx-header">
-            <img id="ctx-img" src="" class="ctx-img">
-            <div class="ctx-title" id="ctx-name">App Name</div>
-            <div class="ctx-sub" id="ctx-auth">Author</div>
+<div class="cm-overlay" id="cm-overlay" onclick="closeCM()">
+    <div class="cm-menu" id="cm-menu" onclick="event.stopPropagation()">
+        <div class="cm-item" onclick="handleCMAction('details')">
+            Details ansehen <i class="fas fa-info-circle"></i>
         </div>
-        <div class="ctx-actions">
-            <div class="ctx-btn" id="ctx-btn-details">Details ansehen</div>
-            <div class="ctx-btn destructive" onclick="closeContextMenu()">Abbrechen</div>
+        <div class="cm-item" onclick="handleCMAction('share')">
+            Teilen <i class="fas fa-share-nodes"></i>
+        </div>
+        <div class="cm-item danger" onclick="closeCM()">
+            Abbrechen <i class="fas fa-xmark"></i>
         </div>
     </div>
 </div>
@@ -290,25 +360,17 @@
     <div class="search-box">
         <div class="input-wrap">
             <i class="fas fa-search" style="color:rgba(255,255,255,0.5)"></i>
-            <input type="text" id="search-input" placeholder="Apps, Spiele und Tools..." autocomplete="off">
+            <input type="text" id="search-input" placeholder="Apps, Spiele und Tools...">
         </div>
         <span onclick="toggleSearch(false)" style="color:var(--ios-blue); font-size:17px; cursor:pointer; font-weight:500;">Abbrechen</span>
     </div>
-    
-    <div id="search-content" class="app-list-container animate-entry" style="margin-top:25px; max-height: 75vh; overflow-y: auto; background: transparent; border: none; padding: 0;">
-        <div id="search-history-container" style="display:none;">
-            <div style="padding: 0 10px 10px; font-size: 13px; color: var(--ios-subtext); font-weight:600;">LETZTE SUCHE</div>
-            <div id="search-history-list" style="background: var(--ios-card); border-radius: 14px; padding: 0 16px; margin-bottom: 20px;"></div>
-            <div class="search-history-clear" onclick="clearHistory()">Verlauf löschen</div>
-        </div>
-        <div id="search-results"></div>
-    </div>
+    <div id="search-history" class="search-history-container"></div>
+    <div id="search-results" class="app-list-container animate-entry" style="margin-top:25px; max-height: 75vh; overflow-y: auto; background: transparent; border: none; padding: 0;"></div>
 </div>
 
 <header id="main-header" class="animate-entry">
     <div class="header-blur-bg" id="header-blur"></div>
-    <div class="logo" id="header-title">DownAPK</div>
-    
+    <div class="logo">DownAPK</div>
     <div class="sticky-app-bar" id="sticky-bar">
         <div class="sticky-left">
             <img id="sticky-icon" src="" class="sticky-icon">
@@ -323,53 +385,40 @@
 
 <div class="header-spacer"></div>
 
+<div id="skeleton-loader" class="skeleton-loader">
+    <div class="skeleton sk-hero"></div>
+    <div class="sk-row"><div class="skeleton sk-card"></div><div class="skeleton sk-card"></div><div class="skeleton sk-card"></div></div>
+</div>
 
-<div id="home-view">
-    <div id="skeleton-loader" class="skeleton-loader">
-        <div class="skeleton sk-hero"></div>
-        <div class="sk-row">
-            <div class="skeleton sk-card"></div><div class="skeleton sk-card"></div><div class="skeleton sk-card"></div>
-        </div>
-        <div class="sk-list">
-            <div class="sk-item"><div class="skeleton sk-icon"></div><div class="sk-text-lines"><div class="skeleton sk-line long"></div><div class="skeleton sk-line short"></div></div></div>
-            <div class="sk-item"><div class="skeleton sk-icon"></div><div class="sk-text-lines"><div class="skeleton sk-line long"></div><div class="skeleton sk-line short"></div></div></div>
-        </div>
+<div id="content-main" style="display: none;">
+    <div class="category-scroll animate-entry">
+        <div class="cat-pill active" onclick="selectCat(this, 'Alle')">Alle</div>
+        <div class="cat-pill" onclick="selectCat(this, 'Spiele')">Spiele</div>
+        <div class="cat-pill" onclick="selectCat(this, 'Tools')">Tools</div>
+        <div class="cat-pill" onclick="selectCat(this, 'Social Media')">Social Media</div>
+        <div class="cat-pill" onclick="selectCat(this, 'Media')">Media</div>
     </div>
-
-    <div id="content-main" style="display: none;">
-        <div class="category-scroll animate-entry">
-            <div class="cat-pill active" onclick="selectCat(this, 'Alle')">Alle</div>
-            <div class="cat-pill" onclick="selectCat(this, 'Spiele')">Spiele</div>
-            <div class="cat-pill" onclick="selectCat(this, 'Tools')">Tools</div>
-            <div class="cat-pill" onclick="selectCat(this, 'Social Media')">Social</div>
-            <div class="cat-pill" onclick="selectCat(this, 'Privacy')">Privacy</div>
-            <div class="cat-pill" onclick="selectCat(this, 'Media')">Media</div>
-        </div>
-
-        <div id="featured-hero" class="animate-entry delay-1"></div>
-
-        <div class="section-title animate-entry delay-2">Angesagt <i class="fas fa-chevron-right" onclick="viewAll('Angesagt')" style="font-size:14px; opacity:0.3; cursor:pointer;"></i></div>
-        <div class="horizontal-scroll animate-entry delay-2" id="scroll-trending"></div>
-
-        <div class="section-title animate-entry delay-3">Top Apps <span class="section-more" onclick="viewAll('Top Apps')">Alle</span></div>
-        <div class="horizontal-scroll animate-entry delay-3" id="scroll-top"></div>
-
-        <div class="section-title animate-entry delay-4">Neueste Updates</div>
-        <div id="update-feed" class="app-list-container animate-entry delay-4"></div>
-    </div>
+    <div id="featured-hero" class="animate-entry delay-1"></div>
+    <div class="section-title animate-entry delay-2">Angesagt <i class="fas fa-chevron-right" style="font-size:14px; opacity:0.3;"></i></div>
+    <div class="horizontal-scroll animate-entry delay-2" id="scroll-trending"></div>
+    <div class="section-title animate-entry delay-3">Top Apps <span class="section-more">Alle</span></div>
+    <div class="horizontal-scroll animate-entry delay-3" id="scroll-top"></div>
+    <div class="section-title animate-entry delay-4">Neueste Updates</div>
+    <div id="update-feed" class="app-list-container animate-entry delay-4"></div>
 </div>
 
 <nav class="bottom-nav animate-nav">
-    <div class="nav-item active" id="btn-home" onclick="switchTab('home')">
-        <i class="fas fa-house"></i><span>Home</span>
+    <div class="nav-item active" id="btn-home" onclick="toggleSearch(false)">
+        <i class="fas fa-house"></i>
+        <span>Home</span>
     </div>
     <div class="nav-item" id="btn-search" onclick="toggleSearch(true)">
-        <i class="fas fa-magnifying-glass"></i><span>Suche</span>
+        <i class="fas fa-magnifying-glass"></i>
+        <span>Suche</span>
     </div>
 </nav>
 
 <script>
-    // --- DATEN & SETUP ---
     let appDatabase = [
         { name: "PhotoSwooper", author: "krille-chan", pkg: "com.github.krille_chan.photoswooper", icon: "https://f-droid.org/repo/com.github.krille_chan.photoswooper/en-US/icon.png", ver: "2.1.0", cat: "Tools" },
         { name: "OmWeather", author: "woheller69", pkg: "org.woheller69.omweather", icon: "https://f-droid.org/repo/org.woheller69.omweather/en-US/icon.png", ver: "1.5.2", cat: "Tools" },
@@ -382,166 +431,102 @@
         { name: "SuperTuxKart", author: "Tux", pkg: "org.supertuxkart", icon: "https://f-droid.org/repo/org.supertuxkart.stk/en-US/icon.png", ver: "1.4", cat: "Spiele" } 
     ];
 
-    // --- LOCAL STORAGE HELPERS ---
-    function getSavedApps() { return JSON.parse(localStorage.getItem('downapk_saved') || '[]'); }
-    function isAppSaved(pkg) { return getSavedApps().some(a => a.pkg === pkg); }
-    
-    function saveApp(app) {
-        let saved = getSavedApps();
-        if(!saved.some(a => a.pkg === app.pkg)) {
-            saved.push(app);
-            localStorage.setItem('downapk_saved', JSON.stringify(saved));
+    let currentCMApp = null;
+    let longPressTimer;
+
+    // --- CONTEXT MENU LOGIC ---
+    function initLongPress(element, app) {
+        const start = (e) => {
+            longPressTimer = setTimeout(() => {
+                if ('vibrate' in navigator) navigator.vibrate(50);
+                openCM(app);
+            }, 600);
+        };
+        const end = () => clearTimeout(longPressTimer);
+        
+        element.addEventListener('touchstart', start);
+        element.addEventListener('touchend', end);
+        element.addEventListener('mousedown', start);
+        element.addEventListener('mouseup', end);
+        element.addEventListener('mouseleave', end);
+    }
+
+    function openCM(app) {
+        currentCMApp = app;
+        document.getElementById('cm-overlay').classList.add('active');
+    }
+
+    function closeCM() {
+        document.getElementById('cm-overlay').classList.remove('active');
+    }
+
+    function handleCMAction(action) {
+        if(action === 'details' && currentCMApp) {
+            window.location.href = `app.html?id=${currentCMApp.pkg}`;
+        } else if(action === 'share') {
+            alert("Link kopiert: " + currentCMApp.name);
         }
+        closeCM();
     }
 
-    function getSearchHistory() { return JSON.parse(localStorage.getItem('downapk_history') || '[]'); }
-    function addToHistory(term) {
-        if(!term) return;
-        let hist = getSearchHistory();
-        hist = hist.filter(t => t !== term); // Duplikate entfernen
-        hist.unshift(term); // Neu nach oben
-        if(hist.length > 5) hist.pop(); // Max 5 Einträge
-        localStorage.setItem('downapk_history', JSON.stringify(hist));
-    }
-    function clearHistory() { localStorage.removeItem('downapk_history'); renderSearchHistory(); }
-
-    // --- CONTEXT MENU LOGIC (LONG PRESS) ---
-    let pressTimer;
-    let selectedAppForMenu = null;
-
-    function handleTouchStart(e, app) {
-        // Starte Timer bei Berührung
-        pressTimer = setTimeout(() => {
-            openContextMenu(app);
-            if(navigator.vibrate) navigator.vibrate(15); // Haptic Feedback
-        }, 500); // 500ms Long Press
+    // --- SEARCH HISTORY LOGIC ---
+    function getHistory() {
+        return JSON.parse(localStorage.getItem('search_history') || '[]');
     }
 
-    function handleTouchEnd() { clearTimeout(pressTimer); }
+    function saveToHistory(query) {
+        if (!query || query.trim() === "") return;
+        let history = getHistory();
+        history = [query, ...history.filter(h => h !== query)].slice(0, 5);
+        localStorage.setItem('search_history', JSON.stringify(history));
+    }
 
-    function openContextMenu(app) {
-        selectedAppForMenu = app;
-        document.getElementById('ctx-img').src = app.icon;
-        document.getElementById('ctx-name').innerText = app.name;
-        document.getElementById('ctx-auth').innerText = app.author;
+    function renderHistory() {
+        const container = document.getElementById('search-history');
+        const history = getHistory();
+        if (history.length === 0) { container.innerHTML = ""; return; }
         
-        const saveBtn = document.getElementById('ctx-btn-save');
-        if(isAppSaved(app.pkg)) {
-            saveBtn.innerText = "Von Merkliste entfernen";
-            saveBtn.onclick = () => { removeApp(app.pkg); closeContextMenu(); };
-        } else {
-            saveBtn.innerText = "Merken";
-            saveBtn.onclick = () => { saveApp(app); closeContextMenu(); };
-        }
-        
-        document.getElementById('ctx-btn-details').onclick = () => window.location.href = `app.html?id=${app.pkg}`;
-        
-        document.getElementById('ctx-overlay').classList.add('active');
+        let html = `<div class="history-header"><span>Zuletzt gesucht</span> <span style="color:var(--ios-blue); cursor:pointer;" onclick="clearHistory()">Leeren</span></div>`;
+        history.forEach(item => {
+            html += `<div class="history-item" onclick="useHistory('${item}')"><i class="fas fa-clock-rotate-left"></i> ${item}</div>`;
+        });
+        container.innerHTML = html;
     }
 
-    function closeContextMenu() {
-        document.getElementById('ctx-overlay').classList.remove('active');
+    function clearHistory() {
+        localStorage.removeItem('search_history');
+        renderHistory();
     }
 
-    // --- NAVIGATION ---
-    function switchTab(tab) {
-        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-        document.getElementById('home-view').style.display = 'none';
-        
-        if (tab === 'home') {
-            document.getElementById('btn-home').classList.add('active');
-            document.getElementById('home-view').style.display = 'block';
-            document.getElementById('header-title').innerText = "DownAPK";
-        }
-    }
-        window.scrollTo(0, 0);
+    function useHistory(query) {
+        document.getElementById('search-input').value = query;
+        performSearch(query);
     }
 
-    // --- MAIN RENDER LOGIC ---
+    // --- CORE FUNCTIONS ---
     async function loadFDroidApps() {
-        await new Promise(r => setTimeout(r, 600)); // Simulierter Load
+        await new Promise(r => setTimeout(r, 600));
         render('Alle');
     }
 
-    function shuffle(array) { return array.sort(() => Math.random() - 0.5); }
-
-    // Generiert Event Listener HTML Attribute ist unsauber, daher machen wir das beim Einfügen
-    // Hilfsfunktion, um Elemente mit Events zu erstellen
-    function attachLongPress(element, app) {
-        element.addEventListener('touchstart', (e) => handleTouchStart(e, app), {passive: true});
-        element.addEventListener('touchend', handleTouchEnd);
-        element.addEventListener('touchmove', handleTouchEnd); // Cancel on scroll
-        element.addEventListener('contextmenu', (e) => { e.preventDefault(); }); // Disable system menu
-        return element;
-    }
-
-    function render(filterCat) {
-        document.getElementById('skeleton-loader').style.display = 'none';
-        document.getElementById('content-main').style.display = 'block';
-
-        let filteredApps = appDatabase;
-        if (filterCat && filterCat !== 'Alle') filteredApps = appDatabase.filter(app => app.cat === filterCat);
-        if(filteredApps.length === 0) return;
-
-        const shuffled = shuffle([...filteredApps]);
-        const feat = shuffled[0];
-
-        // Featured Update
-        document.getElementById('header-blur').style.backgroundImage = `url('${feat.icon}')`;
-        document.getElementById('sticky-icon').src = feat.icon;
-        document.getElementById('sticky-name').innerText = feat.name;
-        document.getElementById('featured-hero').innerHTML = `
-            <div class="featured-banner" onclick="window.location.href='app.html?id=${feat.pkg}'">
-                <div class="featured-img-bg" style="background: url('${feat.icon}') center/cover"></div>
-                <div class="featured-overlay"></div>
-                <div class="featured-info">
-                    <span class="featured-tag">Highlights</span>
-                    <div class="featured-title-wrap"><span class="featured-title">${feat.name}</span></div>
-                    <div class="featured-desc">${feat.author} • ${feat.cat}</div>
-                    <button class="get-btn">Laden</button>
-                </div>
-            </div>`;
-
-        // Render Lists
-        const trending = document.getElementById('scroll-trending');
-        const top = document.getElementById('scroll-top');
-        const feed = document.getElementById('update-feed');
-        trending.innerHTML = ""; top.innerHTML = ""; feed.innerHTML = "";
-
-        // Helper to create card and attach events
-        const appendCard = (container, app) => {
-            let div = document.createElement('div');
-            div.className = 'card-item animate-entry';
-            div.onclick = () => window.location.href=`app.html?id=${app.pkg}`;
-            div.innerHTML = `
-                <img src="${app.icon}" class="card-icon">
-                <div class="card-name-wrap"><span class="card-name">${app.name}</span></div>
-                <span class="card-author">${app.author}</span>
-            `;
-            attachLongPress(div, app);
-            container.appendChild(div);
-        };
-
-        // Helper for List Item
-        const appendRow = (container, app) => {
-            let div = document.createElement('div');
-            div.className = 'app-item animate-entry';
-            div.onclick = () => window.location.href=`app.html?id=${app.pkg}`;
-            div.innerHTML = `
-                <img src="${app.icon}" class="app-icon">
-                <div class="app-info">
-                    <div class="app-name-wrap"><span class="app-name">${app.name}</span></div>
-                    <div class="app-meta">${app.cat} • v${app.ver}</div>
-                </div>
-                <div class="laden-badge">LADEN</div>
-            `;
-            attachLongPress(div, app);
-            container.appendChild(div);
+    function toggleSearch(show) {
+        const overlay = document.getElementById('search-overlay');
+        const btnSearch = document.getElementById('btn-search');
+        const btnHome = document.getElementById('btn-home');
+        
+        if(show) {
+            overlay.classList.add('active');
+            btnSearch.classList.add('active');
+            btnHome.classList.remove('active');
+            renderHistory();
+            setTimeout(() => document.getElementById('search-input').focus(), 100);
+        } else {
+            overlay.classList.remove('active');
+            btnSearch.classList.remove('active');
+            btnHome.classList.add('active');
+            document.getElementById('search-input').value = "";
+            document.getElementById('search-results').innerHTML = "";
         }
-
-        shuffled.slice(0, 8).forEach(app => appendCard(trending, app));
-        [...shuffled].reverse().slice(0, 8).forEach(app => appendCard(top, app));
-        shuffled.slice(0, 15).forEach(app => appendRow(feed, app));
     }
 
     function selectCat(el, category) {
@@ -550,79 +535,84 @@
         render(category);
     }
 
-    // --- SEARCH LOGIC ---
-    function toggleSearch(show) {
-        const overlay = document.getElementById('search-overlay');
-        const btnSearch = document.getElementById('btn-search');
+    function render(filterCat) {
+        document.getElementById('skeleton-loader').style.display = 'none';
+        document.getElementById('content-main').style.display = 'block';
         
-        if(show) {
-            overlay.classList.add('active');
-            btnSearch.classList.add('active');
-            document.getElementById('btn-home').classList.remove('active');
-            document.getElementById('btn-saved').classList.remove('active');
-            setTimeout(() => document.getElementById('search-input').focus(), 100);
-            renderSearchHistory();
-        } else {
-            overlay.classList.remove('active');
-            // Reset active state based on current view
-            if(document.getElementById('home-view').style.display !== 'none') {
-                document.getElementById('btn-home').classList.add('active');
-            } else {
-                document.getElementById('btn-saved').classList.add('active');
-            }
-            btnSearch.classList.remove('active');
-            document.getElementById('search-input').blur();
-        }
-    }
+        let filteredApps = filterCat === 'Alle' ? appDatabase : appDatabase.filter(app => app.cat === filterCat);
+        const shuffled = [...filteredApps].sort(() => Math.random() - 0.5);
+        const feat = shuffled[0];
 
-    function renderSearchHistory() {
-        const histContainer = document.getElementById('search-history-container');
-        const histList = document.getElementById('search-history-list');
-        const history = getSearchHistory();
-        const inputVal = document.getElementById('search-input').value;
-
-        if(inputVal !== "" || history.length === 0) {
-            histContainer.style.display = 'none';
-            return;
-        }
-
-        histContainer.style.display = 'block';
-        histList.innerHTML = "";
-        history.forEach(term => {
-            histList.innerHTML += `
-                <div class="search-history-item" onclick="document.getElementById('search-input').value='${term}'; performSearch('${term}')">
-                    <i class="fas fa-clock"></i>
-                    <span>${term}</span>
+        if (feat) {
+            document.getElementById('header-blur').style.backgroundImage = `url('${feat.icon}')`;
+            document.getElementById('sticky-icon').src = feat.icon;
+            document.getElementById('sticky-name').innerText = feat.name;
+            
+            document.getElementById('featured-hero').innerHTML = `
+                <div class="featured-banner" id="feat-card">
+                    <div class="featured-img-bg" style="background: url('${feat.icon}') center/cover"></div>
+                    <div class="featured-overlay"></div>
+                    <div class="featured-info">
+                        <span class="featured-tag">Highlights</span>
+                        <div class="featured-title-wrap"><span class="featured-title">${feat.name}</span></div>
+                        <div class="featured-desc">Von ${feat.author}</div>
+                        <button class="get-btn" onclick="window.location.href='app.html?id=${feat.pkg}'">Laden</button>
+                    </div>
                 </div>`;
+            initLongPress(document.getElementById('feat-card'), feat);
+        }
+
+        const trending = document.getElementById('scroll-trending');
+        const top = document.getElementById('scroll-top');
+        const feed = document.getElementById('update-feed');
+        trending.innerHTML = ""; top.innerHTML = ""; feed.innerHTML = "";
+        
+        shuffled.slice(0, 8).forEach(app => {
+            const div = document.createElement('div');
+            div.className = "card-item animate-entry";
+            div.innerHTML = `
+                <img src="${app.icon}" class="card-icon" onclick="window.location.href='app.html?id=${app.pkg}'">
+                <div class="card-name-wrap"><span class="card-name">${app.name}</span></div>
+                <span class="card-author">${app.author}</span>`;
+            initLongPress(div, app);
+            trending.appendChild(div);
+        });
+
+        shuffled.slice(0, 15).forEach(app => {
+            const div = document.createElement('div');
+            div.className = "app-item animate-entry";
+            div.innerHTML = `
+                <img src="${app.icon}" class="app-icon" onclick="window.location.href='app.html?id=${app.pkg}'">
+                <div class="app-info" onclick="window.location.href='app.html?id=${app.pkg}'">
+                    <div class="app-name-wrap"><span class="app-name">${app.name}</span></div>
+                    <div class="app-meta">${app.cat} • v${app.ver}</div>
+                </div>
+                <div class="laden-badge">LADEN</div>`;
+            initLongPress(div, app);
+            feed.appendChild(div);
         });
     }
 
     function performSearch(query) {
         const resultsBox = document.getElementById('search-results');
-        const histContainer = document.getElementById('search-history-container');
-        
-        if(query === "") {
-            resultsBox.innerHTML = "";
-            renderSearchHistory();
-            return;
-        }
-
-        histContainer.style.display = 'none'; // Hide history when typing
+        const historyBox = document.getElementById('search-history');
         resultsBox.innerHTML = "";
         
-        const filtered = appDatabase.filter(a => a.name.toLowerCase().includes(query.toLowerCase()) || a.pkg.toLowerCase().includes(query.toLowerCase()));
+        if(query === "") {
+            historyBox.style.display = "block";
+            renderHistory();
+            return;
+        }
         
-        if(filtered.length === 0) {
-            resultsBox.innerHTML = "<div style='padding:40px; color:#888; text-align:center;'>Keine Treffer.</div>";
-        } else {
+        historyBox.style.display = "none";
+        const filtered = appDatabase.filter(a => a.name.toLowerCase().includes(query.toLowerCase()));
+        
+        if(filtered.length > 0) {
             filtered.forEach(app => {
-                let div = document.createElement('div');
-                div.className = 'app-item';
-                div.style.cssText = "padding: 10px 16px; background: rgba(255,255,255,0.05); margin-bottom: 1px;";
-                div.onclick = () => { 
-                    addToHistory(query); 
-                    window.location.href=`app.html?id=${app.pkg}`; 
-                };
+                const div = document.createElement('div');
+                div.className = "app-item";
+                div.style.background = "rgba(255,255,255,0.05)";
+                div.style.marginBottom = "1px";
                 div.innerHTML = `
                     <img src="${app.icon}" class="app-icon" style="width:48px; height:48px;">
                     <div class="app-info">
@@ -630,46 +620,33 @@
                         <div class="app-meta">${app.cat}</div>
                     </div>
                     <i class="fas fa-chevron-right" style="opacity:0.3; font-size:12px;"></i>`;
-                attachLongPress(div, app);
+                div.onclick = () => { saveToHistory(query); window.location.href=`app.html?id=${app.pkg}`; };
                 resultsBox.appendChild(div);
             });
         }
     }
 
-    function viewAll(title) {
-        toggleSearch(true);
-        document.getElementById('search-input').value = ""; 
-    }
-
     // Scroll Logic
     let lastScrollTop = 0;
-    const bottomNav = document.querySelector('.bottom-nav');
     window.addEventListener('scroll', () => {
         const header = document.getElementById('main-header');
-        if (window.scrollY > 40) header.classList.add('scrolled'); else header.classList.remove('scrolled');
-        
-        let st = window.scrollY || document.documentElement.scrollTop;
-        if (st > lastScrollTop && st > 50) bottomNav.classList.add('nav-scrolled');
-        else if (st < lastScrollTop) bottomNav.classList.remove('nav-scrolled');
-        lastScrollTop = st <= 0 ? 0 : st;
+        const bNav = document.querySelector('.bottom-nav');
+        if (window.scrollY > 40) header.classList.add('scrolled');
+        else header.classList.remove('scrolled');
+
+        let st = window.scrollY;
+        if (st > lastScrollTop && st > 50) bNav.classList.add('nav-scrolled');
+        else bNav.classList.remove('nav-scrolled');
+        lastScrollTop = st;
     });
 
     document.getElementById('search-input').addEventListener('input', (e) => performSearch(e.target.value));
-    
-    // Enter speichert Suche
-    document.getElementById('search-input').addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') addToHistory(e.target.value);
-    });
-
-    window.onload = () => { loadFDroidApps(); };
+    window.onload = loadFDroidApps;
 </script>
 
 <div style="text-align: center; margin-top: 20px; padding: 10px;">
-    <p style="color: #888888; font-size: 12px; margin: 0;">Version 18.50</p>
+    <p style="color: #888888; font-size: 12px; margin: 0;">Version 19.45</p>
     <p style="color: #666666; font-size: 10px; margin-top: 5px; opacity: 0.7;">By Nexus with ❤️</p>
-    <div style="width: 100%; text-align: center; margin-top: 15px;">
-        <a href="https://nexus-ashy.vercel.app/" style="color: #00ff00; text-decoration: none; font-size: 12px; font-weight: bold;">Mehr von uns</a>
-    </div>
 </div>
 </body>
 </html>
