@@ -267,22 +267,7 @@
         .ctx-btn:active { background: rgba(255,255,255,0.1); }
         .ctx-btn.destructive { color: var(--ios-red); }
 
-        /* --- NEW: MERKLISTE VIEW --- */
-        #watchlist-view { display: none; padding-top: var(--header-height); padding-bottom: 120px; animation: fadeInUp 0.4s ease; }
-        .watchlist-container { margin: 20px; }
-        .wl-item {
-            display: flex; align-items: center; background: var(--ios-card);
-            padding: 15px; border-radius: 16px; margin-bottom: 12px;
-            border: var(--glass-border); justify-content: space-between;
-        }
-        .wl-left { display: flex; align-items: center; }
-        .wl-icon { width: 48px; height: 48px; border-radius: 10px; margin-right: 12px; }
-        .wl-name { font-weight: 600; font-size: 16px; color: white; }
-        .wl-actions { display: flex; align-items: center; gap: 15px; }
-        .wl-trash { color: var(--ios-subtext); font-size: 18px; cursor: pointer; padding: 5px; }
-        .wl-trash:hover { color: var(--ios-red); }
-
-        .hidden { display: none !important; }
+ 
     </style>
 </head>
 <body>
@@ -296,7 +281,6 @@
         </div>
         <div class="ctx-actions">
             <div class="ctx-btn" id="ctx-btn-details">Details ansehen</div>
-            <div class="ctx-btn" id="ctx-btn-save">Merken</div>
             <div class="ctx-btn destructive" onclick="closeContextMenu()">Abbrechen</div>
         </div>
     </div>
@@ -339,15 +323,6 @@
 
 <div class="header-spacer"></div>
 
-<div id="watchlist-view">
-    <div class="section-title">Merkliste</div>
-    <div class="watchlist-container" id="watchlist-items">
-        </div>
-    <div id="watchlist-empty" class="error-msg hidden">
-        <i class="far fa-bookmark error-icon"></i>
-        Noch keine Apps gemerkt.
-    </div>
-</div>
 
 <div id="home-view">
     <div id="skeleton-loader" class="skeleton-loader">
@@ -421,12 +396,6 @@
             localStorage.setItem('downapk_saved', JSON.stringify(saved));
         }
     }
-    
-    function removeApp(pkg) {
-        let saved = getSavedApps().filter(a => a.pkg !== pkg);
-        localStorage.setItem('downapk_saved', JSON.stringify(saved));
-        renderWatchlist(); // UI Update
-    }
 
     function getSearchHistory() { return JSON.parse(localStorage.getItem('downapk_history') || '[]'); }
     function addToHistory(term) {
@@ -481,7 +450,6 @@
     function switchTab(tab) {
         document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
         document.getElementById('home-view').style.display = 'none';
-        document.getElementById('watchlist-view').style.display = 'none';
         
         if (tab === 'home') {
             document.getElementById('btn-home').classList.add('active');
@@ -494,34 +462,6 @@
             renderWatchlist();
         }
         window.scrollTo(0, 0);
-    }
-
-    // --- RENDER WATCHLIST ---
-    function renderWatchlist() {
-        const list = document.getElementById('watchlist-items');
-        const emptyMsg = document.getElementById('watchlist-empty');
-        const apps = getSavedApps();
-
-        list.innerHTML = "";
-        
-        if(apps.length === 0) {
-            emptyMsg.classList.remove('hidden');
-        } else {
-            emptyMsg.classList.add('hidden');
-            apps.forEach(app => {
-                list.innerHTML += `
-                <div class="wl-item animate-entry">
-                    <div class="wl-left" onclick="window.location.href='app.html?id=${app.pkg}'">
-                        <img src="${app.icon}" class="wl-icon" onerror="this.src='about:blank'">
-                        <span class="wl-name">${app.name}</span>
-                    </div>
-                    <div class="wl-actions">
-                        <i class="fas fa-trash wl-trash" onclick="removeApp('${app.pkg}')"></i>
-                        <div class="laden-badge" onclick="window.location.href='app.html?id=${app.pkg}'">LADEN</div>
-                    </div>
-                </div>`;
-            });
-        }
     }
 
     // --- MAIN RENDER LOGIC ---
