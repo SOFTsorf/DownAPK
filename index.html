@@ -366,9 +366,6 @@
     <div class="nav-item" id="btn-search" onclick="toggleSearch(true)">
         <i class="fas fa-magnifying-glass"></i><span>Suche</span>
     </div>
-    <div class="nav-item" id="btn-saved" onclick="switchTab('saved')">
-        <i class="fas fa-bookmark"></i><span>Gespeichert</span>
-    </div>
 </nav>
 
 <script>
@@ -455,12 +452,8 @@
             document.getElementById('btn-home').classList.add('active');
             document.getElementById('home-view').style.display = 'block';
             document.getElementById('header-title').innerText = "DownAPK";
-        } else if (tab === 'saved') {
-            document.getElementById('btn-saved').classList.add('active');
-            document.getElementById('watchlist-view').style.display = 'block';
-            document.getElementById('header-title').innerText = "Gespeichert";
-            renderWatchlist();
         }
+    }
         window.scrollTo(0, 0);
     }
 
