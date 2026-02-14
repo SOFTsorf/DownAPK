@@ -45,6 +45,13 @@
             50% { opacity: 0.4; }
             100% { opacity: 1; }
         }
+        
+        /* NEU: Icon Animation */
+        @keyframes popBounce {
+            0% { transform: scale(1); }
+            40% { transform: scale(1.3); }
+            100% { transform: scale(1); }
+        }
 
         .animate-entry {
             opacity: 0; 
@@ -236,8 +243,8 @@
         /* --- UPDATED: ELEGANT SEARCH --- */
         .search-bar {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(10, 10, 10, 0.7); /* Viel transparenter */
-            backdrop-filter: blur(40px) saturate(180%); /* Starker Blur */
+            background: rgba(10, 10, 10, 0.7); 
+            backdrop-filter: blur(40px) saturate(180%);
             z-index: 5000; 
             opacity: 0; pointer-events: none;
             transition: opacity 0.3s ease, backdrop-filter 0.3s ease;
@@ -253,7 +260,7 @@
 
         .input-wrap { 
             flex: 1; 
-            background: rgba(255, 255, 255, 0.12); /* Milchiger */
+            background: rgba(255, 255, 255, 0.12);
             border-radius: 12px; 
             display: flex; align-items: center; padding: 12px 15px; 
             border: 1px solid rgba(255,255,255,0.05);
@@ -268,7 +275,6 @@
         .bottom-nav {
             position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
             width: 240px; height: 74px; 
-            /* Neuer edler Blur-Look ohne grauen Layer */
             background: rgba(20, 20, 20, 0.5); 
             backdrop-filter: blur(50px) saturate(160%);
             -webkit-backdrop-filter: blur(50px) saturate(160%);
@@ -277,15 +283,47 @@
             z-index: 4000; 
             border: 1px solid rgba(255,255,255,0.15);
             box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
+
+        /* NEUE KLASSE FÜR SCROLL-STATE */
+        .bottom-nav.nav-scrolled {
+            width: 140px;
+            height: 52px;
+            bottom: 20px;
+        }
+
         .animate-nav { animation: fadeInUp 0.8s 0.6s backwards; }
 
         .nav-item { color: rgba(255,255,255,0.5); text-align: center; cursor: pointer; transition: color 0.3s, transform 0.2s; }
         .nav-item.active { color: #FFF; text-shadow: 0 0 15px rgba(255,255,255,0.3); }
+        
+        /* NEU: Icon Animation wenn aktiv */
+        .nav-item.active i {
+            animation: popBounce 0.4s ease forwards;
+            color: var(--ios-blue);
+        }
+
         .nav-item:hover { transform: scale(1.1); color: #fff; }
-        .nav-item i { font-size: 24px; display: block; margin-bottom: 4px; }
-        .nav-item span { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+        .nav-item i { font-size: 24px; display: block; margin-bottom: 4px; transition: margin 0.3s ease; }
+        
+        .nav-item span { 
+            font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; 
+            display: block; opacity: 1; height: auto;
+            transition: opacity 0.3s ease, height 0.3s ease, margin 0.3s ease;
+        }
+
+        /* NEU: Text verstecken wenn gescrollt */
+        .bottom-nav.nav-scrolled .nav-item span {
+            opacity: 0;
+            height: 0;
+            margin: 0;
+            overflow: hidden;
+        }
+        
+        .bottom-nav.nav-scrolled .nav-item i {
+            margin-bottom: 0;
+        }
 
         .hidden { display: none; }
     </style>
@@ -551,10 +589,29 @@
         }
     }
 
+    // SCROLL LOGIK ERWEITERT
+    let lastScrollTop = 0;
+    const bottomNav = document.querySelector('.bottom-nav');
+
     window.addEventListener('scroll', () => {
+        // Header Logik (Bestehend)
         const header = document.getElementById('main-header');
         if (window.scrollY > 40) header.classList.add('scrolled');
         else header.classList.remove('scrolled');
+
+        // NAV BAR LOGIK (NEU)
+        let st = window.scrollY || document.documentElement.scrollTop;
+        
+        // Wenn man nach unten scrollt (mehr als 50px)
+        if (st > lastScrollTop && st > 50) {
+            bottomNav.classList.add('nav-scrolled');
+        } 
+        // Wenn man nach oben scrollt
+        else if (st < lastScrollTop) {
+            bottomNav.classList.remove('nav-scrolled');
+        }
+        
+        lastScrollTop = st <= 0 ? 0 : st; // Verhindert negative Werte
     });
 
     document.getElementById('search-input').addEventListener('input', (e) => performSearch(e.target.value));
@@ -562,7 +619,7 @@
 </script>
 
 <div style="text-align: center; margin-top: 20px; padding: 10px;">
-    <p style="color: #888888; font-size: 12px; margin: 0;">Version 16.8</p>
+    <p style="color: #888888; font-size: 12px; margin: 0;">Version 18.45</p>
     <p style="color: #666666; font-size: 10px; margin-top: 5px; opacity: 0.7;">By Nexus with ❤️</p>
     <div style="width: 100%; text-align: center; margin-top: 15px;">
         <a href="https://nexus-ashy.vercel.app/" style="color: #00ff00; text-decoration: none; font-size: 12px; font-weight: bold;">Mehr von uns</a>
