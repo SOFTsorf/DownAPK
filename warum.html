@@ -3,40 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Optimierte Webseite</title>
+    <title>Optimiert-Meldung</title>
     <style>
-        /* Hier stellen wir die Schriftart für die gesamte Seite ein */
+        /* 1. Schriftart global oder für den Body festlegen */
         body {
-            /* 'Inter' oder 'Arial' für einen modernen Look, 'sans-serif' als Backup */
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-            line-height: 1.6;
-            margin: 40px auto;
-            max-width: 800px;
-            padding: 20px;
-            background-color: #ffffff;
-            color: #1a1a1a;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
         }
 
-        /* Styling für deine Überschrift */
+        /* 2. Spezifische Anpassung für die H1-Meldung */
         h1 {
-            color: #d32f2f; /* Ein kräftiges Rot für die Fehlermeldung */
-            font-size: 2rem;
-            border-bottom: 2px solid #eee;
-            padding-bottom: 10px;
+            font-family: 'Arial Black', sans-serif; /* Hier deine Wunsch-Schriftart */
+            color: #333;
+            font-size: 1.5rem;
+            text-align: center;
         }
 
-        /* Styling für den Punkt-Paragraphen */
+        /* 3. Spezifische Anpassung für Textblöcke (p-Tags) */
         p {
-            font-size: 1.2rem;
-            color: #555;
+            font-family: 'Courier New', Courier, monospace; /* Beispiel für eine Monospace-Schrift */
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* Optional: Container für die Meldung */
+        .message-box {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
     </style>
 </head>
 <body>
 
-    <h1>Warum erscheint dei Meldung "Ooops! Diese Webseite ist für dein Handy optimiert."?</h1>
-
-    <p>.</p>
+    <div class="message-box">
+        <h1>Ooops! Diese Webseite ist für dein Handy optimiert.</h1>
+        <p>Bitte besuche uns auf deinem Smartphone für das beste Erlebnis oder skaliere dein Browserfenster.</p>
+    </div>
 
 </body>
 </html>
