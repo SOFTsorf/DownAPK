@@ -6,17 +6,41 @@
     <title>DownAPK - Home</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { font-family: 'Roboto', sans-serif; margin: 0; background: #fff; color: #333; padding-bottom: 50px; }
+        /* THEME VARIABLEN */
+        :root {
+            --accent-color: #ff8400;
+            --bg-color: #ffffff;
+            --text-color: #333333;
+            --card-bg: #f4f4f4;
+            --border-color: #e0e0e0;
+            --header-text: #ffffff;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #121212;
+            --text-color: #eeeeee;
+            --card-bg: #1e1e1e;
+            --border-color: #333333;
+        }
+
+        body { 
+            font-family: 'Roboto', sans-serif; 
+            margin: 0; 
+            background: var(--bg-color); 
+            color: var(--text-color); 
+            padding-bottom: 50px; 
+            transition: background 0.3s, color 0.3s;
+        }
         a { text-decoration: none; color: inherit; }
         
         /* HEADER STYLE */
         header { 
-            background: #ff8400; 
+            background: var(--accent-color); 
             height: 60px; 
             display: flex; 
             align-items: center; 
             padding: 0 15px; 
-            color: white; 
+            color: var(--header-text); 
             position: sticky; 
             top: 0; 
             z-index: 100;
@@ -32,7 +56,8 @@
         }
         
         .logo { font-size: 20px; font-weight: bold; flex-grow: 1; }
-        .search-trigger { font-size: 20px; cursor: pointer; padding: 10px; }
+        .header-icons { display: flex; align-items: center; gap: 5px; }
+        .icon-btn { font-size: 20px; cursor: pointer; padding: 10px; }
 
         /* Versteckte Suchleiste */
         .search-bar {
@@ -41,7 +66,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: #ff8400;
+            background: var(--accent-color);
             display: flex;
             align-items: center;
             padding: 0 10px;
@@ -63,178 +88,113 @@
             outline: none;
         }
         .search-input::placeholder { color: rgba(255, 255, 255, 0.7); }
-        .close-search { font-size: 20px; padding: 10px; cursor: pointer; margin-left: 5px;}
 
         /* SECTIONS GENERAL */
         .section-title {
             padding: 20px 15px 10px;
             font-size: 19px;
             font-weight: 700;
-            color: #222;
+            color: var(--text-color);
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
         .section-more { 
             font-size: 13px; 
-            color: #ff8400; 
+            color: var(--accent-color); 
             font-weight: normal; 
-            cursor: pointer; /* Zeigt an, dass es klickbar ist */
+            cursor: pointer; 
         }
-        .section-more:active { opacity: 0.7; }
 
-        /* FEATURED BANNER (NEU & FIX) */
+        /* FEATURED BANNER */
         .featured-banner {
             margin: 15px;
-            background: linear-gradient(135deg, #ff8400, #ffb347);
+            background: linear-gradient(135deg, var(--accent-color), #ffb347);
             border-radius: 12px;
             padding: 20px;
             color: white;
             display: flex;
             align-items: center;
-            box-shadow: 0 4px 10px rgba(255, 132, 0, 0.3);
-            overflow: hidden; /* Wichtig damit nichts rausragt */
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
             position: relative;
         }
-        /* Fix für das Text-Overflow Problem */
-        .featured-info { 
-            flex: 1; 
-            min-width: 0; /* Zwingt Flexbox, den Text abzuschneiden */
-            margin-right: 10px;
-        }
+        .featured-info { flex: 1; min-width: 0; margin-right: 10px; }
         .featured-tag { background: rgba(255,255,255,0.3); padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; display: inline-block; margin-bottom: 5px; }
-        
-        .featured-title { 
-            font-size: 22px; 
-            font-weight: bold; 
-            margin-bottom: 5px;
-            white-space: nowrap; /* Kein Umbruch */
-            overflow: hidden;
-            /* Scroll Effekt Logik */
-            display: block;
-        }
-        
-        /* Animation für scrollenden Text */
-        .scroll-text {
-            animation: scroll 8s linear infinite alternate;
-        }
-
+        .featured-title { font-size: 22px; font-weight: bold; margin-bottom: 5px; white-space: nowrap; overflow: hidden; display: block; }
+        .scroll-text { animation: scroll 8s linear infinite alternate; }
         @keyframes scroll {
             0% { transform: translateX(0); }
-            20% { transform: translateX(0); } /* Kurze Pause am Anfang */
-            80% { transform: translateX(calc(-100% + 200px)); } /* Scrollt rüber */
+            20% { transform: translateX(0); }
+            80% { transform: translateX(calc(-100% + 200px)); }
             100% { transform: translateX(calc(-100% + 200px)); }
         }
-
         .featured-desc { font-size: 13px; opacity: 0.9; margin-bottom: 10px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        .featured-btn { background: white; color: #ff8400; padding: 8px 15px; border-radius: 20px; font-size: 13px; font-weight: bold; display: inline-block; }
-        
-        .featured-img { 
-            width: 80px; 
-            height: 80px; 
-            border-radius: 12px; 
-            background: #fff; 
-            object-fit: cover; 
-            flex-shrink: 0; /* Verhindert das Quetschen des Bildes */
-        }
+        .featured-btn { background: white; color: var(--accent-color); padding: 8px 15px; border-radius: 20px; font-size: 13px; font-weight: bold; display: inline-block; }
+        .featured-img { width: 80px; height: 80px; border-radius: 12px; background: #fff; object-fit: cover; flex-shrink: 0; }
 
-        /* HORIZONTAL SCROLL (Trends & Games) */
-        .horizontal-scroll {
-            display: flex;
-            overflow-x: auto;
-            padding: 5px 15px 15px;
-            gap: 15px;
-            scrollbar-width: none;
-        }
+        /* HORIZONTAL SCROLL */
+        .horizontal-scroll { display: flex; overflow-x: auto; padding: 5px 15px 15px; gap: 15px; scrollbar-width: none; }
         .horizontal-scroll::-webkit-scrollbar { display: none; }
+        .card-item { width: 90px; min-width: 90px; display: flex; flex-direction: column; align-items: center; text-align: center; }
+        .card-icon { width: 64px; height: 64px; border-radius: 14px; background: var(--card-bg); margin-bottom: 8px; object-fit: cover; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+        .card-name-container { width: 100%; overflow: hidden; white-space: nowrap; }
+        .card-name { font-size: 13px; font-weight: 500; display: inline-block; }
+        .card-item:hover .card-name { animation: scroll-short 3s linear infinite alternate; }
+        @keyframes scroll-short { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
-        .card-item {
-            width: 90px; /* Feste Breite für besseres Layout */
-            min-width: 90px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-        }
-        .card-icon { width: 64px; height: 64px; border-radius: 14px; background: #eee; margin-bottom: 8px; object-fit: cover; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
-        
-        /* Scrollender Text auch in Karten */
-        .card-name-container {
-            width: 100%;
-            overflow: hidden;
-            white-space: nowrap;
-        }
-        .card-name { 
-            font-size: 13px; 
-            font-weight: 500; 
-            color: #333; 
-            display: inline-block;
-        }
-        /* Scrollt nur wenn Hover oder durch Klasse */
-        .card-item:hover .card-name {
-            animation: scroll-short 3s linear infinite alternate;
-        }
-        @keyframes scroll-short {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-        }
-
-        .card-rating { font-size: 11px; color: #777; margin-top: 2px; }
-
-        /* SUCHBEGRIFFE (Tags) */
+        /* TAGS */
         .tags-container { padding: 0 15px 15px; display: flex; flex-wrap: wrap; gap: 8px; }
         .tag {
-            background: #f4f4f4;
+            background: var(--card-bg);
             padding: 8px 14px;
             border-radius: 20px;
             font-size: 13px;
-            color: #555;
-            border: 1px solid #e0e0e0;
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
             cursor: pointer;
-            transition: all 0.2s;
         }
-        .tag:hover { background: #ffe0b2; border-color: #ffcc80; color: #e65100; }
+        .tag:hover { border-color: var(--accent-color); color: var(--accent-color); }
 
-        /* APP LIST (Vertical) */
-        .app-list-container { display: flex; flex-direction: column; }
-        .app-item { display: flex; padding: 15px; border-bottom: 1px solid #f5f5f5; align-items: center; transition: background 0.2s; }
-        .app-item:active { background: #fafafa; }
-        .app-icon { width: 50px; height: 50px; border-radius: 10px; margin-right: 15px; background: #eee; object-fit: cover; }
-        .app-info { flex-grow: 1; min-width: 0; /* Wichtig für Text-Overflow */ }
-        .app-name { 
-            font-weight: bold; font-size: 16px; color: #000; margin-bottom: 4px; 
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
-        }
+        /* APP LIST */
+        .app-item { display: flex; padding: 15px; border-bottom: 1px solid var(--border-color); align-items: center; }
+        .app-icon { width: 50px; height: 50px; border-radius: 10px; margin-right: 15px; background: var(--card-bg); object-fit: cover; }
+        .app-info { flex-grow: 1; min-width: 0; }
+        .app-name { font-weight: bold; font-size: 16px; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .app-meta { font-size: 13px; color: #888; display: flex; align-items: center; gap: 5px; }
-        .badge { font-size: 10px; padding: 2px 4px; border-radius: 3px; background: #eee; color: #666; }
+        .badge { font-size: 10px; padding: 2px 4px; border-radius: 3px; background: var(--card-bg); color: #888; }
         .badge-new { background: #e8f5e9; color: #2e7d32; }
-        .d-icon { color: #ddd; font-size: 22px; padding: 10px;}
+        .d-icon { color: var(--border-color); font-size: 22px; padding: 10px;}
 
-        /* BUTTON STYLING (Orange Line) */
+        /* BUTTON */
         .load-more-btn {
-            display: block;
-            width: calc(100% - 30px);
-            margin: 20px auto;
-            padding: 12px;
-            text-align: center;
-            background: #fff;
-            border: 2px solid #ff8400;
-            color: #ff8400;
-            font-weight: bold;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: background 0.2s;
+            display: block; width: calc(100% - 30px); margin: 20px auto; padding: 12px; text-align: center;
+            background: transparent; border: 2px solid var(--accent-color); color: var(--accent-color);
+            font-weight: bold; border-radius: 8px; cursor: pointer;
         }
-        .load-more-btn:hover { background: #fff5e6; }
-        .hidden { display: none; }
 
-        .loader { padding: 20px; text-align: center; color: #777; }
-        
-        /* Helper für Suche */
-        .highlight { color: #ff8400; }
-        
-        /* Fade Effekt für Banner Wechsel */
+        /* SETTINGS PAGE */
+        .settings-container { padding: 20px; }
+        .settings-item { 
+            background: var(--card-bg); padding: 15px; border-radius: 12px; margin-bottom: 15px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .color-picker { border: none; width: 40px; height: 40px; cursor: pointer; background: none; }
+        .switch { position: relative; display: inline-block; width: 50px; height: 24px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { 
+            position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; 
+            background-color: #ccc; transition: .4s; border-radius: 24px; 
+        }
+        .slider:before { 
+            position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; 
+            background-color: white; transition: .4s; border-radius: 50%; 
+        }
+        input:checked + .slider { background-color: var(--accent-color); }
+        input:checked + .slider:before { transform: translateX(26px); }
+
+        .hidden { display: none; }
+        .highlight { color: var(--accent-color); }
         .fade-anim { animation: fadein 0.5s; }
         @keyframes fadein { from { opacity: 0; } to { opacity: 1; } }
     </style>
@@ -244,25 +204,25 @@
 <header>
     <div class="header-content" id="header-normal">
         <div class="logo">DownAPK</div>
-        <i class="fas fa-search search-trigger" onclick="toggleSearch(true)"></i>
+        <div class="header-icons">
+            <i class="fas fa-search icon-btn" onclick="toggleSearch(true)"></i>
+            <i class="fas fa-sliders-h icon-btn" onclick="toggleSettings(true)"></i>
+        </div>
     </div>
     
     <div class="search-bar" id="search-bar">
-        <input type="text" class="search-input" id="search-input" placeholder="Apps oder Spiele suchen..." autocomplete="off">
-        <i class="fas fa-times close-search" onclick="toggleSearch(false)"></i>
+        <input type="text" class="search-input" id="search-input" placeholder="Apps suchen..." autocomplete="off">
+        <i class="fas fa-times icon-btn" onclick="toggleSearch(false)"></i>
     </div>
 </header>
 
 <div id="main-content">
-    
     <div id="featured-section"></div>
 
     <div class="section-title">
         Angesagt <i class="fas fa-fire" style="color: #ff8400;"></i>
     </div>
-    <div class="horizontal-scroll" id="trending-list">
-        <div class="loader">Lade Trends...</div>
-    </div>
+    <div class="horizontal-scroll" id="trending-list"></div>
 
     <div class="section-title">Schnellsuche</div>
     <div class="tags-container">
@@ -270,25 +230,38 @@
         <div class="tag" onclick="autoSearch('Minecraft')">Minecraft</div>
         <div class="tag" onclick="autoSearch('Spotify')">Spotify</div>
         <div class="tag" onclick="autoSearch('Vanced')">Vanced</div>
-        <div class="tag" onclick="autoSearch('VPN')">VPN</div>
-        <div class="tag" onclick="autoSearch('Telegram')">Telegram</div>
     </div>
 
     <div class="section-title">
-        Top Spiele
-        <span class="section-more" onclick="viewAll('Spiele')">Alle ansehen</span>
+        Top Spiele <span class="section-more" onclick="viewAll('Spiele')">Alle ansehen</span>
     </div>
     <div class="horizontal-scroll" id="games-list"></div>
 
     <div class="section-title">Frisch aktualisiert</div>
     <div id="feed-list" class="app-list-container"></div>
     <button class="load-more-btn" onclick="loadMore()">Mehr laden</button>
-
 </div>
 
 <div id="search-results-container" class="hidden">
-    <div class="section-title">Ergebnisse für <span id="search-term-display" class="highlight"></span> <span class="section-more" onclick="closeViewAll()" style="font-size:20px; padding:0 10px;">&times;</span></div>
+    <div class="section-title">Ergebnisse <span id="search-term-display" class="highlight"></span> <span class="section-more" onclick="closeAllViews()" style="font-size:20px;">&times;</span></div>
     <div id="search-list" class="app-list-container"></div>
+</div>
+
+<div id="settings-page" class="hidden">
+    <div class="section-title">Einstellungen <span class="section-more" onclick="closeAllViews()" style="font-size:20px;">&times;</span></div>
+    <div class="settings-container">
+        <div class="settings-item">
+            <span>Dark Mode</span>
+            <label class="switch">
+                <input type="checkbox" id="dark-mode-toggle" onchange="updateTheme()">
+                <span class="slider"></span>
+            </label>
+        </div>
+        <div class="settings-item">
+            <span>Akzentfarbe</span>
+            <input type="color" id="accent-picker" class="color-picker" value="#ff8400" onchange="updateAccent()">
+        </div>
+    </div>
 </div>
 
 <script>
@@ -296,233 +269,135 @@
     let featuredInterval;
 
     // --- UI Logic ---
-    const headerNormal = document.getElementById('header-normal');
-    const searchBar = document.getElementById('search-bar');
-    const searchInput = document.getElementById('search-input');
-    const mainContent = document.getElementById('main-content');
-    const searchResultsContainer = document.getElementById('search-results-container');
-    const searchList = document.getElementById('search-list');
-
-    function toggleSearch(show) {
-        if (show) {
-            searchBar.classList.add('active');
-            searchInput.focus();
-        } else {
-            searchBar.classList.remove('active');
-            searchInput.value = '';
-            closeViewAll();
-        }
+    function closeAllViews() {
+        document.getElementById('main-content').classList.remove('hidden');
+        document.getElementById('search-results-container').classList.add('hidden');
+        document.getElementById('settings-page').classList.add('hidden');
     }
 
-    // --- NEU: Auto-Suche beim Klick auf Tag ---
+    function toggleSearch(show) {
+        const bar = document.getElementById('search-bar');
+        if (show) { bar.classList.add('active'); document.getElementById('search-input').focus(); }
+        else { bar.classList.remove('active'); closeAllViews(); }
+    }
+
+    function toggleSettings(show) {
+        if (show) {
+            document.getElementById('main-content').classList.add('hidden');
+            document.getElementById('search-results-container').classList.add('hidden');
+            document.getElementById('settings-page').classList.remove('hidden');
+        } else { closeAllViews(); }
+    }
+
+    // --- Theme Logic ---
+    function updateTheme() {
+        const isDark = document.getElementById('dark-mode-toggle').checked;
+        document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+    }
+
+    function updateAccent() {
+        const color = document.getElementById('accent-picker').value;
+        document.documentElement.style.setProperty('--accent-color', color);
+    }
+
+    // --- Der Rest der Logik (unverändert) ---
     function autoSearch(term) {
         toggleSearch(true);
-        searchInput.value = term;
+        document.getElementById('search-input').value = term;
         performSearch(term);
     }
 
-    // --- NEU: Alle ansehen Logik ---
     function viewAll(category) {
-        mainContent.classList.add('hidden');
-        searchResultsContainer.classList.remove('hidden');
+        document.getElementById('main-content').classList.add('hidden');
+        document.getElementById('search-results-container').classList.remove('hidden');
         document.getElementById('search-term-display').innerText = category;
-        searchList.innerHTML = '<div class="loader">Lade alle ' + category + '...</div>';
-
-        // Simuliere Laden einer Kategorie
-        setTimeout(() => {
-            searchList.innerHTML = '';
-            // Wir nehmen einfach alle Apps und shuffeln sie zur Demo
-            let catApps = [...allApps].sort(() => 0.5 - Math.random());
-            catApps.forEach(app => {
-                const div = document.createElement('div');
-                div.innerHTML = createAppItem(app);
-                searchList.appendChild(div.firstElementChild);
-            });
-        }, 400);
+        const list = document.getElementById('search-list');
+        list.innerHTML = '';
+        allApps.forEach(app => list.innerHTML += createAppItem(app));
     }
 
-    function closeViewAll() {
-        mainContent.classList.remove('hidden');
-        searchResultsContainer.classList.add('hidden');
-    }
-
-    // --- Templates ---
     function createAppItem(app, isUpdate = false) {
         const badge = isUpdate ? '<span class="badge badge-new">Update</span>' : `<span class="badge">${app.version}</span>`;
         return `
-            <a href="app.html?id=${app.packageName}" class="app-item">
-                <img src="${app.icon}" class="app-icon" onerror="this.src='https://via.placeholder.com/50'">
+            <a href="#" class="app-item">
+                <img src="${app.icon}" class="app-icon">
                 <div class="app-info">
                     <div class="app-name">${app.name}</div>
                     <div class="app-meta">${badge} • ${app.author}</div>
                 </div>
                 <div class="d-icon"><i class="fas fa-download"></i></div>
-            </a>
-        `;
+            </a>`;
     }
 
     function createCardItem(app) {
-        // Prüfen ob Text lang ist für Scroll-Effekt
         const isLong = app.name.length > 10;
-        const nameClass = isLong ? "card-name scroll-active" : "card-name";
-        
         return `
-            <a href="app.html?id=${app.packageName}" class="card-item">
-                <img src="${app.icon}" class="card-icon" onerror="this.src='https://via.placeholder.com/64'">
-                <div class="card-name-container">
-                    <div class="${nameClass}">${app.name}</div>
-                </div>
+            <div class="card-item">
+                <img src="${app.icon}" class="card-icon">
+                <div class="card-name-container"><div class="card-name ${isLong ? 'scroll-active' : ''}">${app.name}</div></div>
                 <div class="card-rating"><i class="fas fa-star" style="color:#ffc107; font-size:10px;"></i> 4.8</div>
-            </a>
-        `;
+            </div>`;
     }
 
-    // --- Rotation Logic ---
     let currentFeaturedIndex = 0;
-
     function renderFeatured(app) {
         if(!app) return;
-        
-        // Prüfen ob Titel sehr lang ist
-        const isLongTitle = app.name.length > 15;
-        const titleClass = isLongTitle ? "featured-title scroll-text" : "featured-title";
-        
-        // Style für Animation resetten durch Neu-Einfügen
-        const container = document.getElementById('featured-section');
-        container.innerHTML = `
-            <a href="app.html?id=${app.packageName}" class="featured-banner fade-anim">
+        const isLong = app.name.length > 15;
+        document.getElementById('featured-section').innerHTML = `
+            <div class="featured-banner fade-anim">
                 <div class="featured-info">
                     <span class="featured-tag">Empfehlung</span>
-                    <div class="${titleClass}" style="${isLongTitle ? 'width:fit-content;' : ''}">${app.name}</div>
-                    <div class="featured-desc">Die neueste Version von ${app.name} ist jetzt verfügbar.</div>
+                    <div class="featured-title ${isLong ? 'scroll-text' : ''}">${app.name}</div>
+                    <div class="featured-desc">Die neueste Version ist jetzt verfügbar.</div>
                     <div class="featured-btn">Jetzt installieren</div>
                 </div>
-                <img src="${app.icon}" class="featured-img" onerror="this.src='https://via.placeholder.com/80'">
-            </a>
-        `;
+                <img src="${app.icon}" class="featured-img">
+            </div>`;
     }
 
-    function startFeaturedRotation() {
-        if(featuredInterval) clearInterval(featuredInterval);
-        featuredInterval = setInterval(() => {
-            currentFeaturedIndex = (currentFeaturedIndex + 1) % Math.min(5, allApps.length); // Rotiere durch die ersten 5
-            renderFeatured(allApps[currentFeaturedIndex]);
-        }, 5000); // Alle 5 Sekunden
-    }
-
-    // --- Daten & Rendering ---
     let feedAppsShown = 0;
-    let feedAppsCache = [];
-    const BATCH_SIZE = 8;
-
-    async function init() {
-        try {
-            // Simulierte Daten (Da keine echte API da ist)
-            // Erstelle Dummy Data für Demo Zwecke, falls fetch fehlschlägt
-            const dummyData = [
-                { name: "org.woheller69.omweather.very.long.package.name", author: "Woheller", version: "1.0", icon: "https://via.placeholder.com/80/FFA500/fff?text=Sun", packageName: "pkg1" },
-                { name: "WhatsApp Beta", author: "Meta", version: "2.23", icon: "https://via.placeholder.com/80/25D366/fff?text=WA", packageName: "pkg2" },
-                { name: "Minecraft PE", author: "Mojang", version: "1.20", icon: "https://via.placeholder.com/80/4CAF50/fff?text=MC", packageName: "pkg3" },
-                { name: "Spotify Premium", author: "Spotify", version: "8.8", icon: "https://via.placeholder.com/80/1DB954/fff?text=Sp", packageName: "pkg4" },
-                { name: "YouTube Vanced", author: "Team Vanced", version: "17.03", icon: "https://via.placeholder.com/80/FF0000/fff?text=YT", packageName: "pkg5" },
-                { name: "Telegram X", author: "Telegram", version: "0.25", icon: "https://via.placeholder.com/80/0088cc/fff?text=TG", packageName: "pkg6" },
-                { name: "Subway Surfers", author: "Sybo", version: "3.4", icon: "https://via.placeholder.com/80/FFC107/fff?text=SS", packageName: "pkg7" },
-                { name: "Clash Royale", author: "Supercell", version: "3.5", icon: "https://via.placeholder.com/80/2196F3/fff?text=CR", packageName: "pkg8" },
-            ];
-            
-            // Versuch Fetch, sonst Dummy
-            try {
-                const res = await fetch('/api/apps');
-                if(res.ok) allApps = await res.json();
-                else allApps = dummyData;
-            } catch(e) {
-                allApps = dummyData;
-                // Füge mehr Dummies hinzu um Scrollen zu testen
-                for(let i=0; i<10; i++) allApps.push({...dummyData[i%dummyData.length], name: dummyData[i%dummyData.length].name + " " + i, packageName: "p"+i});
-            }
-            
-            // 1. Featured Starten
-            renderFeatured(allApps[0]);
-            startFeaturedRotation();
-
-            // 2. Trends
-            const trendingList = document.getElementById('trending-list');
-            trendingList.innerHTML = '';
-            allApps.slice(0, 6).forEach(app => trendingList.innerHTML += createCardItem(app));
-
-            // 3. Games
-            const gamesList = document.getElementById('games-list');
-            gamesList.innerHTML = '';
-            const gameApps = allApps.length > 6 ? allApps.slice(6, 12) : allApps;
-            gameApps.forEach(app => gamesList.innerHTML += createCardItem(app));
-
-            // 4. Feed
-            feedAppsCache = allApps; 
-            loadMore(); 
-
-        } catch (error) {
-            console.error("Fehler:", error);
-            document.getElementById('trending-list').innerHTML = "Fehler beim Laden.";
-        }
-    }
-
-    window.loadMore = function() {
+    function loadMore() {
         const container = document.getElementById('feed-list');
-        const total = feedAppsCache.length;
-        const nextBatch = feedAppsCache.slice(feedAppsShown, feedAppsShown + BATCH_SIZE);
-
-        nextBatch.forEach(app => {
-            container.innerHTML += createAppItem(app, true);
-        });
-
-        feedAppsShown += nextBatch.length;
-
-        if (feedAppsShown >= total) {
-            document.querySelector('.load-more-btn').style.display = 'none';
-        }
-    };
-
-    // --- Such Logik ---
-    let debounceTimer;
+        const batch = allApps.slice(feedAppsShown, feedAppsShown + 8);
+        batch.forEach(app => container.innerHTML += createAppItem(app, true));
+        feedAppsShown += batch.length;
+    }
 
     function performSearch(query) {
-        mainContent.classList.add('hidden');
-        searchResultsContainer.classList.remove('hidden');
+        document.getElementById('main-content').classList.add('hidden');
+        document.getElementById('search-results-container').classList.remove('hidden');
         document.getElementById('search-term-display').innerText = `"${query}"`;
-        searchList.innerHTML = '<div class="loader"><i class="fas fa-spinner fa-spin"></i> Suche läuft...</div>';
-
-        setTimeout(() => {
-            // Einfache lokale Filterung für Demo
-            const results = allApps.filter(app => app.name.toLowerCase().includes(query));
-            
-            searchList.innerHTML = '';
-            if (results.length === 0) {
-                searchList.innerHTML = '<div style="padding:40px; text-align:center; color:#999">Keine Apps gefunden.</div>';
-                return;
-            }
-            results.forEach(app => {
-                const div = document.createElement('div');
-                div.innerHTML = createAppItem(app);
-                searchList.appendChild(div.firstElementChild);
-            });
-        }, 300);
+        const list = document.getElementById('search-list');
+        list.innerHTML = '';
+        const results = allApps.filter(app => app.name.toLowerCase().includes(query.toLowerCase()));
+        results.forEach(app => list.innerHTML += createAppItem(app));
     }
 
-    searchInput.addEventListener('input', (e) => {
-        const query = e.target.value.toLowerCase().trim();
-        clearTimeout(debounceTimer);
-
-        if (query.length > 0) {
-            debounceTimer = setTimeout(() => {
-                performSearch(query);
-            }, 300);
-        } else {
-            closeViewAll();
-        }
+    document.getElementById('search-input').addEventListener('input', (e) => {
+        if (e.target.value.length > 0) performSearch(e.target.value);
+        else closeAllViews();
     });
+
+    async function init() {
+        const dummyData = [
+            { name: "org.woheller69.weather", author: "Woheller", version: "1.0", icon: "https://via.placeholder.com/80/FFA500/fff?text=Sun" },
+            { name: "WhatsApp Beta", author: "Meta", version: "2.23", icon: "https://via.placeholder.com/80/25D366/fff?text=WA" },
+            { name: "Minecraft PE", author: "Mojang", version: "1.20", icon: "https://via.placeholder.com/80/4CAF50/fff?text=MC" },
+            { name: "Spotify", author: "Spotify", version: "8.8", icon: "https://via.placeholder.com/80/1DB954/fff?text=Sp" }
+        ];
+        allApps = dummyData;
+        renderFeatured(allApps[0]);
+        setInterval(() => {
+            currentFeaturedIndex = (currentFeaturedIndex + 1) % allApps.length;
+            renderFeatured(allApps[currentFeaturedIndex]);
+        }, 5000);
+        
+        allApps.forEach(app => document.getElementById('trending-list').innerHTML += createCardItem(app));
+        allApps.forEach(app => document.getElementById('games-list').innerHTML += createCardItem(app));
+        loadMore();
+    }
 
     init();
 </script>
-
 </body>
 </html>
