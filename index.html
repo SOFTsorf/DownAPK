@@ -253,6 +253,17 @@
         .laden-badge { background: #333; color: var(--ios-blue); padding: 6px 18px; border-radius: 20px; font-weight: 800; font-size: 12px; transition: background 0.2s; pointer-events: none; }
         .app-item:hover .laden-badge { background: #444; color: #fff; }
 
+        /* LOAD MORE BUTTON */
+        .load-more-btn {
+            background: var(--ios-card); color: var(--ios-blue);
+            border: var(--glass-border); padding: 12px 35px;
+            border-radius: 30px; font-weight: 600; font-size: 15px;
+            cursor: pointer; transition: all 0.3s ease; margin: 20px auto;
+            display: inline-block; box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        .load-more-btn:hover { background: rgba(255,255,255,0.1); transform: scale(1.05); }
+        #load-more-container { transition: opacity 0.5s ease; text-align: center; }
+
         /* ERROR & SEARCH */
         .error-msg { text-align: center; padding: 50px 20px; color: var(--ios-subtext); font-size: 16px; font-weight: 500; }
         .error-icon { font-size: 40px; margin-bottom: 15px; opacity: 0.5; display: block; }
@@ -472,6 +483,10 @@
         <div class="cat-pill" onclick="selectCat(this, 'Social Media')">Social Media</div>
         <div class="cat-pill" onclick="selectCat(this, 'Privacy')">Privacy</div>
         <div class="cat-pill" onclick="selectCat(this, 'Media')">Media</div>
+        <div class="cat-pill" onclick="selectCat(this, 'Produktivität')">Produktivität</div>
+        <div class="cat-pill" onclick="selectCat(this, 'Lifestyle')">Lifestyle</div>
+        <div class="cat-pill" onclick="selectCat(this, 'Bildung')">Bildung</div>
+        <div class="cat-pill" onclick="selectCat(this, 'Finanzen')">Finanzen</div>
     </div>
 
     <div id="featured-hero" class="animate-entry delay-1"></div>
@@ -484,6 +499,10 @@
 
     <div class="section-title animate-entry delay-4">Neueste Updates</div>
     <div id="update-feed" class="app-list-container animate-entry delay-4"></div>
+    
+    <div id="load-more-container" class="animate-entry delay-4">
+        <button class="load-more-btn" onclick="loadMore()">Mehr laden</button>
+    </div>
 </div>
 
 <nav class="bottom-nav animate-nav">
@@ -510,6 +529,10 @@
         { name: "VLC", author: "VideoLAN", pkg: "org.videolan.vlc", icon: "https://f-droid.org/repo/org.videolan.vlc/en-US/icon.png", ver: "3.5.4", cat: "Media" },
         { name: "SuperTuxKart", author: "Tux", pkg: "org.supertuxkart", icon: "https://f-droid.org/repo/org.supertuxkart.stk/en-US/icon.png", ver: "1.4", cat: "Spiele" } 
     ];
+
+    let currentFeedApps = [];
+    let currentFeedCount = 0;
+    const feedBatchSize = 4; // Lade 4 Apps auf einmal für den Showcase
 
     async function loadFDroidApps() {
         // Kurzer Delay für Skeleton-Demo
@@ -658,6 +681,43 @@
         document.getElementById('scroll-trending').innerHTML = errorHTML;
     }
 
+    // Erstellt das HTML für ein App-Item der Update-Liste
+    function getAppItemHTML(app) {
+        return `
+            <div class="app-item animate-entry" 
+                 onclick="if(!document.getElementById('context-menu-overlay').classList.contains('active')) window.location.href='app.html?id=${app.pkg}'"
+                 ontouchstart="startLongPress(event, '${app.name}', '${app.author}', '${app.icon}', '${app.pkg}')"
+                 ontouchend="cancelLongPress()"
+                 ontouchmove="cancelLongPress()"
+                 oncontextmenu="return handleContext(event, '${app.name}', '${app.author}', '${app.icon}', '${app.pkg}')">
+                <img src="${app.icon}" class="app-icon" onerror="this.src='https://f-droid.org/repo/${app.pkg}/en-US/icon.png'">
+                <div class="app-info">
+                    <div class="app-name-wrap"><span class="app-name">${app.name}</span></div>
+                    <div class="app-meta">${app.cat} • v${app.ver}</div>
+                </div>
+                <div class="laden-badge">LADEN</div>
+            </div>
+        `;
+    }
+
+    // Läd mehr Apps, wenn auf den Button geklickt wird
+    function loadMore() {
+        const feed = document.getElementById('update-feed');
+        const nextCount = Math.min(currentFeedCount + feedBatchSize, currentFeedApps.length);
+        
+        currentFeedApps.slice(currentFeedCount, nextCount).forEach(app => {
+            feed.innerHTML += getAppItemHTML(app);
+        });
+        
+        currentFeedCount = nextCount;
+        
+        if (currentFeedCount >= currentFeedApps.length) {
+            const container = document.getElementById('load-more-container');
+            container.style.opacity = '0';
+            setTimeout(() => { container.style.display = 'none'; }, 500);
+        }
+    }
+
     // Render akzeptiert jetzt Filter
     function render(filterCat) {
         document.getElementById('skeleton-loader').style.display = 'none';
@@ -675,6 +735,7 @@
              document.getElementById('scroll-trending').innerHTML = `<div style="padding:20px; color:#666;">Keine Apps in "${filterCat}"</div>`;
              document.getElementById('scroll-top').innerHTML = "";
              document.getElementById('update-feed').innerHTML = "";
+             document.getElementById('load-more-container').style.display = 'none';
              return;
         }
 
@@ -721,23 +782,22 @@
 
         shuffled.slice(0, 8).forEach(app => trending.innerHTML += createCard(app));
         [...shuffled].reverse().slice(0, 8).forEach(app => top.innerHTML += createCard(app));
-        shuffled.slice(0, 15).forEach(app => {
-            feed.innerHTML += `
-                <div class="app-item animate-entry" 
-                     onclick="if(!document.getElementById('context-menu-overlay').classList.contains('active')) window.location.href='app.html?id=${app.pkg}'"
-                     ontouchstart="startLongPress(event, '${app.name}', '${app.author}', '${app.icon}', '${app.pkg}')"
-                     ontouchend="cancelLongPress()"
-                     ontouchmove="cancelLongPress()"
-                     oncontextmenu="return handleContext(event, '${app.name}', '${app.author}', '${app.icon}', '${app.pkg}')">
-                    <img src="${app.icon}" class="app-icon">
-                    <div class="app-info">
-                        <div class="app-name-wrap"><span class="app-name">${app.name}</span></div>
-                        <div class="app-meta">${app.cat} • v${app.ver}</div>
-                    </div>
-                    <div class="laden-badge">LADEN</div>
-                </div>
-            `;
+        
+        // --- NEUE LADE-LOGIK FÜR DEN FEED ---
+        currentFeedApps = shuffled;
+        currentFeedCount = Math.min(feedBatchSize, currentFeedApps.length);
+        
+        currentFeedApps.slice(0, currentFeedCount).forEach(app => {
+            feed.innerHTML += getAppItemHTML(app);
         });
+
+        const loadMoreContainer = document.getElementById('load-more-container');
+        if (currentFeedApps.length > currentFeedCount) {
+            loadMoreContainer.style.display = 'block';
+            setTimeout(() => { loadMoreContainer.style.opacity = '1'; }, 50);
+        } else {
+            loadMoreContainer.style.display = 'none';
+        }
     }
 
     function performSearch(query) {
@@ -761,7 +821,7 @@
                 resultsBox.innerHTML += `
                     <div class="app-item" style="padding: 10px 16px; background: rgba(255,255,255,0.05); margin-bottom: 1px;" 
                          onclick="addToHistory('${app.name}'); window.location.href='app.html?id=${app.pkg}'">
-                        <img src="${app.icon}" class="app-icon" style="width:48px; height:48px;">
+                        <img src="${app.icon}" class="app-icon" style="width:48px; height:48px;" onerror="this.src='https://f-droid.org/repo/${app.pkg}/en-US/icon.png'">
                         <div class="app-info">
                             <div class="app-name-wrap"><span class="app-name" style="font-size:16px;">${app.name}</span></div>
                             <div class="app-meta">${app.cat}</div>
@@ -797,7 +857,7 @@
 </script>
 
 <div style="text-align: center; margin-top: 20px; padding: 10px;">
-    <p style="color: #888888; font-size: 12px; margin: 0;">Version 23.65</p>
+    <p style="color: #888888; font-size: 12px; margin: 0;">Version 24.72</p>
     <p style="color: #666666; font-size: 10px; margin-top: 5px; opacity: 0.7;">By Nexus with ❤️</p>
     <div style="width: 100%; text-align: center; margin-top: 15px;">
         <a href="https://nexus-ashy.vercel.app/" style="color: #00ff00; text-decoration: none; font-size: 12px; font-weight: bold;">Mehr von uns</a>
