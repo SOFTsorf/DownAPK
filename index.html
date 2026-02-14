@@ -3,149 +3,114 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DownAPK - iOS 26</title>
+    <title>DownAPK - iOS 26 Edition</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --ios-bg: #000000;
-            --ios-card: #1C1C1E;
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.4);
             --ios-blue: #007AFF;
-            --ios-text: #FFFFFF;
-            --ios-subtext: #8E8E93;
-            --ios-blur: rgba(20, 20, 20, 0.7);
-            --radius-l: 28px;
-            --radius-m: 18px;
-            --shadow: 0 10px 30px rgba(0,0,0,0.5);
+            --liquid-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            --radius-liquid: 35px;
         }
 
+        /* LIQUID GLASS BASE */
         body { 
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif; 
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif; 
             margin: 0; 
-            background: var(--ios-bg); 
-            color: var(--ios-text); 
+            background: #fbfbfd; 
+            color: #1d1d1f; 
             padding-bottom: 120px; 
             overflow-x: hidden;
             -webkit-tap-highlight-color: transparent;
         }
 
-        a { text-decoration: none; color: inherit; }
-        * { box-sizing: border-box; }
-
         /* HEADER */
         header { 
-            padding: 40px 20px 10px;
+            padding: 30px 25px 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: var(--ios-bg);
         }
 
-        .logo-area h1 {
-            font-size: 34px;
-            font-weight: 800;
-            margin: 0;
+        .logo { 
+            font-size: 32px; 
+            font-weight: 860; 
             letter-spacing: -1px;
+            color: #000;
         }
 
-        .user-profile {
+        .user-avatar {
             width: 36px;
             height: 36px;
             border-radius: 50%;
-            background: #333;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            background: #eee;
             overflow: hidden;
-            border: 1px solid #444;
+            border: 1px solid rgba(0,0,0,0.05);
         }
 
-        /* FEATURED HERO (iOS 26 Style) */
-        #featured-section {
-            padding: 10px 20px;
-        }
-
+        /* LIQUID FEATURED CARD (Style from Image 1) */
         .featured-banner {
-            width: 100%;
-            height: 450px;
-            border-radius: var(--radius-l);
+            margin: 15px 20px 30px;
+            height: 420px;
+            border-radius: var(--radius-liquid);
             position: relative;
             overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            background-size: cover;
-            background-position: center;
-            box-shadow: var(--shadow);
-            transition: transform 0.3s cubic-bezier(0.2, 0, 0.2, 1);
+            box-shadow: var(--liquid-shadow);
+            transition: transform 0.4s cubic-bezier(0.2, 1, 0.3, 1);
+            display: block;
         }
 
-        .featured-banner::before {
-            content: '';
+        .featured-banner:active { transform: scale(0.95); }
+
+        .featured-img-bg {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
             position: absolute;
-            inset: 0;
-            background: linear-gradient(to top, rgba(0,0,0,0.9) 10%, rgba(0,0,0,0.2) 50%, transparent 100%);
         }
 
-        .featured-content {
-            position: relative;
-            padding: 30px;
-            z-index: 2;
+        .featured-overlay {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            padding: 30px 25px;
+            background: linear-gradient(transparent, rgba(0,0,0,0.7));
+            color: white;
+            backdrop-filter: blur(5px);
         }
 
         .featured-tag {
-            font-size: 12px;
-            font-weight: 700;
-            color: var(--ios-blue);
+            font-size: 13px;
+            font-weight: 600;
+            opacity: 0.8;
             text-transform: uppercase;
-            margin-bottom: 8px;
+            margin-bottom: 5px;
             display: block;
         }
 
         .featured-title {
             font-size: 28px;
-            font-weight: 800;
-            margin-bottom: 5px;
+            font-weight: 700;
+            margin-bottom: 8px;
             line-height: 1.1;
         }
 
-        .featured-desc {
-            font-size: 15px;
-            color: var(--ios-subtext);
-            margin-bottom: 20px;
-            max-width: 80%;
-        }
-
-        .play-btn {
-            background: #fff;
-            color: #000;
-            padding: 12px 35px;
-            border-radius: 25px;
-            font-weight: 700;
-            display: inline-block;
-            font-size: 16px;
-        }
-
-        /* SECTIONS */
-        .section-title {
-            padding: 25px 20px 15px;
-            font-size: 20px;
-            font-weight: 700;
+        /* APP GRID (Horizontal) */
+        .section-header {
+            padding: 0 25px 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .section-more {
-            color: var(--ios-blue);
-            font-size: 15px;
-            font-weight: 400;
-        }
+        .section-header h2 { font-size: 22px; margin: 0; font-weight: 700; }
+        .section-header .more { color: var(--ios-blue); font-size: 15px; cursor: pointer; }
 
-        /* HORIZONTAL SCROLL */
         .horizontal-scroll {
             display: flex;
             overflow-x: auto;
-            padding: 0 20px;
+            padding: 0 20px 25px;
             gap: 15px;
             scrollbar-width: none;
         }
@@ -160,317 +125,269 @@
             width: 110px;
             height: 110px;
             border-radius: 24px;
+            background: white;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.05);
+            margin-bottom: 10px;
             object-fit: cover;
-            margin-bottom: 8px;
-            background: var(--ios-card);
+            border: 0.5px solid rgba(0,0,0,0.1);
         }
 
-        .card-name {
-            font-size: 13px;
-            font-weight: 500;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            display: block;
-        }
+        .card-name { font-size: 13px; font-weight: 500; color: #1d1d1f; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%; }
+        .card-meta { font-size: 12px; color: #86868b; }
 
-        /* LIST VIEW */
+        /* LIST VIEW (Liquid Glass Apps) */
         .app-list-container {
             margin: 0 20px;
-            background: var(--ios-card);
-            border-radius: var(--radius-m);
-            padding: 5px 15px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border-radius: var(--radius-liquid);
+            border: 1px solid var(--glass-border);
+            padding: 10px 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.03);
         }
 
         .app-item {
             display: flex;
             align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px solid #2C2C2E;
+            padding: 15px 0;
+            border-bottom: 0.5px solid rgba(0,0,0,0.1);
         }
-
         .app-item:last-child { border-bottom: none; }
 
-        .app-icon {
-            width: 55px;
-            height: 55px;
-            border-radius: 12px;
+        .app-icon-list {
+            width: 58px;
+            height: 58px;
+            border-radius: 14px;
             margin-right: 15px;
+            object-fit: cover;
         }
 
         .app-info { flex: 1; min-width: 0; }
-        .app-name { font-weight: 600; font-size: 16px; margin-bottom: 3px; }
-        .app-meta { color: var(--ios-subtext); font-size: 12px; }
+        .app-name-list { font-weight: 600; font-size: 17px; margin-bottom: 3px; }
+        .app-sub-list { font-size: 13px; color: #86868b; }
 
-        .laden-btn {
-            background: #2C2C2E;
+        .get-btn {
+            background: rgba(0, 122, 255, 0.1);
             color: var(--ios-blue);
-            font-weight: 700;
-            padding: 6px 18px;
+            padding: 6px 20px;
             border-radius: 20px;
-            font-size: 13px;
-        }
-
-        /* TAGS */
-        .tags-container { padding: 5px 20px; display: flex; flex-wrap: wrap; gap: 8px; }
-        .tag {
-            background: var(--ios-card);
-            padding: 8px 16px;
-            border-radius: 10px;
+            font-weight: 700;
             font-size: 14px;
-            color: var(--ios-blue);
-        }
-
-        /* SEARCH OVERLAY */
-        #search-bar {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--ios-bg);
-            z-index: 2000;
-            display: none;
-            padding: 20px;
-        }
-
-        .search-input-box {
-            background: var(--ios-card);
-            border-radius: 12px;
-            padding: 12px;
-            display: flex;
-            align-items: center;
-        }
-
-        .search-input-box input {
-            background: transparent;
+            text-transform: uppercase;
             border: none;
-            color: #fff;
-            margin-left: 10px;
-            width: 100%;
-            outline: none;
-            font-size: 17px;
         }
 
-        /* FLOATING DOCK (iOS 26) */
-        .bottom-nav {
+        /* LIQUID FLOATING DOCK (Style from Image 1) */
+        .liquid-dock {
             position: fixed;
             bottom: 30px;
             left: 50%;
             transform: translateX(-50%);
-            width: 90%;
-            max-width: 400px;
-            height: 70px;
-            background: var(--ios-blur);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            border-radius: 35px;
+            width: 200px; /* Kompakt für nur 2 Buttons */
+            height: 64px;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border-radius: 32px;
             display: flex;
             justify-content: space-around;
             align-items: center;
-            border: 1px solid rgba(255,255,255,0.1);
-            z-index: 1000;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+            border: 0.5px solid rgba(255,255,255,0.4);
+            z-index: 2000;
         }
 
         .nav-item {
             display: flex;
             flex-direction: column;
             align-items: center;
-            color: #8E8E93;
+            color: #86868b;
             font-size: 10px;
+            font-weight: 600;
             gap: 4px;
+            transition: color 0.3s;
         }
 
-        .nav-item.active { color: #fff; }
-        .nav-item i { font-size: 22px; }
+        .nav-item.active { color: var(--ios-blue); }
+        .nav-item i { font-size: 20px; }
+
+        /* SEARCH OVERLAY */
+        .search-container {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #fff;
+            z-index: 3000;
+            padding: 20px;
+            display: none;
+        }
+
+        .search-bar {
+            background: #f2f2f7;
+            border-radius: 12px;
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .search-input {
+            background: none; border: none; outline: none; flex: 1; font-size: 17px; margin-left: 10px;
+        }
 
         .hidden { display: none; }
-        .fade-in { animation: fadeIn 0.5s ease; }
+        .fade-anim { animation: fadeIn 0.5s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
-<div id="search-bar">
-    <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-        <h2 style="margin:0;">Suche</h2>
-        <span onclick="toggleSearch(false)" style="color:var(--ios-blue)">Fertig</span>
-    </div>
-    <div class="search-input-box">
-        <i class="fas fa-search" style="color:#8E8E93"></i>
-        <input type="text" id="search-input" placeholder="Spiele, Apps und mehr">
-    </div>
-    <div id="search-list" class="app-list-container" style="margin-top:20px; background:transparent; padding:0;"></div>
-</div>
+<div id="home-view">
+    <header>
+        <div class="logo">DownAPK</div>
+        <div class="user-avatar"><img src="https://via.placeholder.com/36" alt="Profile"></div>
+    </header>
 
-<header>
-    <div class="logo-area">
-        <h1>DownAPK</h1>
-    </div>
-    <div class="user-profile">
-        <img src="https://via.placeholder.com/36" alt="User">
-    </div>
-</header>
-
-<div id="main-content">
-    
     <div id="featured-section">
         </div>
 
-    <div class="section-title">
-        Weiter spielen
+    <div class="section-header">
+        <h2>Angesagt</h2>
+        <span class="more" onclick="showSearch()">Alle</span>
     </div>
-    <div class="horizontal-scroll" id="trending-list">
-        <div style="padding:20px;">Lade...</div>
-    </div>
+    <div class="horizontal-scroll" id="trending-list"></div>
 
-    <div class="section-title">Entdecken</div>
-    <div class="tags-container">
-        <div class="tag" onclick="autoSearch('WhatsApp')">Social</div>
-        <div class="tag" onclick="autoSearch('Minecraft')">Gaming</div>
-        <div class="tag" onclick="autoSearch('Spotify')">Musik</div>
-        <div class="tag" onclick="autoSearch('VPN')">Tools</div>
+    <div class="section-header">
+        <h2>Zuletzt aktualisiert</h2>
     </div>
-
-    <div class="section-title">
-        New Games We Love
-        <span class="section-more" onclick="viewAll('Games')">Alle</span>
-    </div>
-    <div class="horizontal-scroll" id="games-list"></div>
-
-    <div class="section-title">Frisch aktualisiert</div>
     <div id="feed-list" class="app-list-container"></div>
     
-    <button onclick="loadMore()" id="load-more" style="background:transparent; border:none; color:var(--ios-blue); display:block; width:100%; padding:20px; font-weight:600;">Mehr anzeigen</button>
+    <center>
+        <button class="load-more-btn" style="background:none; border:none; color:#007AFF; padding:30px; font-size:17px; font-weight:600;" onclick="loadMore()">Mehr laden</button>
+    </center>
 </div>
 
-<div class="bottom-nav">
-    <div class="nav-item active" onclick="location.reload()">
+<div id="search-view" class="search-container">
+    <div style="display:flex; align-items:center; gap:15px; margin-bottom:10px;">
+        <h1 style="font-size:34px; margin:0; flex:1;">Suche</h1>
+        <span onclick="hideSearch()" style="color:#007AFF; font-size:17px;">Fertig</span>
+    </div>
+    <div class="search-bar">
+        <i class="fas fa-search" style="color:#8E8E93;"></i>
+        <input type="text" id="search-input" class="search-input" placeholder="Apps und Spiele">
+    </div>
+    <div id="search-results" class="app-list-container"></div>
+</div>
+
+<div class="liquid-dock">
+    <div class="nav-item active" onclick="hideSearch()">
         <i class="fas fa-home"></i>
         <span>Home</span>
     </div>
-    <div class="nav-item">
-        <i class="fas fa-gamepad"></i>
-        <span>Arcade</span>
-    </div>
-    <div class="nav-item" onclick="toggleSearch(true)">
+    <div class="nav-item" onclick="showSearch()">
         <i class="fas fa-search"></i>
         <span>Suche</span>
-    </div>
-    <div class="nav-item">
-        <i class="fas fa-layer-group"></i>
-        <span>Library</span>
     </div>
 </div>
 
 <script>
     let allApps = [];
-    let currentFeaturedIndex = 0;
     let feedAppsShown = 0;
-    const BATCH_SIZE = 6;
+    const BATCH_SIZE = 8;
 
     // --- UI LOGIC ---
-    function toggleSearch(show) {
-        const bar = document.getElementById('search-bar');
-        bar.style.display = show ? 'block' : 'none';
-        if(show) document.getElementById('search-input').focus();
+    function showSearch() {
+        document.getElementById('search-view').style.display = 'block';
+        document.querySelectorAll('.nav-item')[1].classList.add('active');
+        document.querySelectorAll('.nav-item')[0].classList.remove('active');
+        document.getElementById('search-input').focus();
     }
 
-    function autoSearch(term) {
-        toggleSearch(true);
-        document.getElementById('search-input').value = term;
-        performSearch(term);
+    function hideSearch() {
+        document.getElementById('search-view').style.display = 'none';
+        document.querySelectorAll('.nav-item')[0].classList.add('active');
+        document.querySelectorAll('.nav-item')[1].classList.remove('active');
     }
 
-    // --- TEMPLATES ---
+    // --- RENDER FUNCTIONS ---
     function renderFeatured(app) {
-        if(!app) return;
         const container = document.getElementById('featured-section');
-        // Nutzt Gradient als Background-Ersatz für Demo
-        const bg = `https://images.unsplash.com/photo-1614850523296-d8c1af93d400?auto=format&fit=crop&w=600&q=80`;
-        
+        const hue = (app.name.length * 50) % 360;
         container.innerHTML = `
-            <div class="featured-banner fade-in" style="background-image: url('${bg}')">
-                <div class="featured-content">
-                    <span class="featured-tag">SPECIAL EVENT</span>
+            <a href="#" class="featured-banner fade-anim">
+                <div class="featured-img-bg" style="background: linear-gradient(135deg, hsl(${hue}, 80%, 60%), hsl(${hue+40}, 70%, 40%));"></div>
+                <div class="featured-overlay">
+                    <span class="featured-tag">Highlight</span>
                     <div class="featured-title">${app.name}</div>
-                    <div class="featured-desc">Jetzt die neueste Version von ${app.author} erleben.</div>
-                    <a href="#" class="play-btn">Play</a>
+                    <button class="get-btn" style="background:white; color:black;">Laden</button>
                 </div>
+            </a>
+        `;
+    }
+
+    function createAppItem(app) {
+        return `
+            <div class="app-item">
+                <img src="${app.icon}" class="app-icon-list" onerror="this.src='https://via.placeholder.com/60'">
+                <div class="app-info">
+                    <div class="app-name-list">${app.name}</div>
+                    <div class="app-sub-list">${app.author} • ${app.version}</div>
+                </div>
+                <button class="get-btn">Laden</button>
             </div>
         `;
     }
 
     function createCardItem(app) {
         return `
-            <div class="card-item fade-in">
-                <img src="${app.icon}" class="card-icon" onerror="this.src='https://via.placeholder.com/110/333/fff?text=App'">
-                <span class="card-name">${app.name}</span>
-                <span style="color:#8E8E93; font-size:11px;">${app.author}</span>
+            <div class="card-item">
+                <img src="${app.icon}" class="card-icon" onerror="this.src='https://via.placeholder.com/110'">
+                <div class="card-name">${app.name}</div>
+                <div class="card-meta">App</div>
             </div>
         `;
     }
 
-    function createAppItem(app) {
-        return `
-            <div class="app-item fade-in">
-                <img src="${app.icon}" class="app-icon" onerror="this.src='https://via.placeholder.com/55/333/fff?text=A'">
-                <div class="app-info">
-                    <div class="app-name">${app.name}</div>
-                    <div class="app-meta">${app.version} • ${app.author}</div>
-                </div>
-                <div class="laden-btn">LADEN</div>
-            </div>
-        `;
-    }
-
-    // --- CORE LOGIC ---
+    // --- DATA HANDLING ---
     async function init() {
         const dummyData = [
-            { name: "Marvel Snap", author: "Nuverse", version: "1.0", icon: "https://via.placeholder.com/110/6200ea/fff?text=Snap", packageName: "p1" },
-            { name: "WhatsApp", author: "Meta", version: "2.24", icon: "https://via.placeholder.com/110/25D366/fff?text=WA", packageName: "p2" },
-            { name: "Minecraft", author: "Mojang", version: "1.21", icon: "https://via.placeholder.com/110/4CAF50/fff?text=MC", packageName: "p3" },
-            { name: "Spotify", author: "Spotify AB", version: "8.9", icon: "https://via.placeholder.com/110/1DB954/fff?text=Sp", packageName: "p4" },
-            { name: "Telegram", author: "Telegram FZ", version: "10.1", icon: "https://via.placeholder.com/110/0088cc/fff?text=TG", packageName: "p5" },
-            { name: "YouTube", author: "Google", version: "19.0", icon: "https://via.placeholder.com/110/FF0000/fff?text=YT", packageName: "p6" }
+            { name: "WhatsApp Plus", author: "Meta", version: "2.26", icon: "https://via.placeholder.com/150/25D366/fff?text=WA", packageName: "p1" },
+            { name: "Spotify Premium", author: "Spotify", version: "8.9", icon: "https://via.placeholder.com/150/1DB954/fff?text=SP", packageName: "p2" },
+            { name: "Minecraft", author: "Mojang", version: "1.21", icon: "https://via.placeholder.com/150/4CAF50/fff?text=MC", packageName: "p3" },
+            { name: "YouTube Pro", author: "Google", version: "19.0", icon: "https://via.placeholder.com/150/FF0000/fff?text=YT", packageName: "p4" },
+            { name: "TikTok Lite", author: "Bytedance", version: "3.2", icon: "https://via.placeholder.com/150/000/fff?text=TT", packageName: "p5" }
         ];
 
-        try {
-            const res = await fetch('/api/apps');
-            allApps = res.ok ? await res.json() : dummyData;
-        } catch(e) { 
-            allApps = dummyData; 
-        }
+        // Fill data for demo
+        allApps = [...dummyData];
+        for(let i=0; i<15; i++) allApps.push({...dummyData[i%5], name: dummyData[i%5].name + " " + (i+1)});
 
         renderFeatured(allApps[0]);
         
-        // Trends & Games
-        const tList = document.getElementById('trending-list');
-        const gList = document.getElementById('games-list');
-        tList.innerHTML = ''; gList.innerHTML = '';
-        
-        allApps.forEach((app, i) => {
-            if(i < 6) tList.innerHTML += createCardItem(app);
-            if(i > 2) gList.innerHTML += createCardItem(app);
-        });
+        const trendingList = document.getElementById('trending-list');
+        allApps.slice(0, 8).forEach(app => trendingList.innerHTML += createCardItem(app));
 
         loadMore();
     }
 
-    function loadMore() {
-        const list = document.getElementById('feed-list');
-        const batch = allApps.slice(feedAppsShown, feedAppsShown + BATCH_SIZE);
-        batch.forEach(app => list.innerHTML += createAppItem(app));
-        feedAppsShown += BATCH_SIZE;
-        if(feedAppsShown >= allApps.length) document.getElementById('load-more').style.display = 'none';
-    }
+    window.loadMore = function() {
+        const container = document.getElementById('feed-list');
+        const nextBatch = allApps.slice(feedAppsShown, feedAppsShown + BATCH_SIZE);
+        nextBatch.forEach(app => container.innerHTML += createAppItem(app));
+        feedAppsShown += nextBatch.length;
+    };
 
-    function performSearch(query) {
-        const list = document.getElementById('search-list');
-        const filtered = allApps.filter(a => a.name.toLowerCase().includes(query.toLowerCase()));
-        list.innerHTML = filtered.length ? '' : '<div style="color:#8E8E93; text-align:center; padding:20px;">Nichts gefunden</div>';
-        filtered.forEach(app => list.innerHTML += createAppItem(app));
-    }
-
-    document.getElementById('search-input').addEventListener('input', (e) => performSearch(e.target.value));
+    // --- SEARCH LOGIC ---
+    document.getElementById('search-input').addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase();
+        const resultsContainer = document.getElementById('search-results');
+        resultsContainer.innerHTML = "";
+        
+        if(query.length > 0) {
+            const filtered = allApps.filter(a => a.name.toLowerCase().includes(query));
+            filtered.forEach(app => resultsContainer.innerHTML += createAppItem(app));
+        }
+    });
 
     init();
 </script>
