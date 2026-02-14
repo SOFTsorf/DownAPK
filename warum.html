@@ -3,49 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Optimiert-Meldung</title>
+    <title>Mobile View Check</title>
     <style>
-        /* 1. Schriftart global oder für den Body festlegen */
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f4f4;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-        }
-
-        /* 2. Spezifische Anpassung für die H1-Meldung */
-        h1 {
-            font-family: 'Arial Black', sans-serif; /* Hier deine Wunsch-Schriftart */
-            color: #333;
-            font-size: 1.5rem;
+        /* 1. Grund-Design für die Meldung */
+        .mobile-notice {
+            display: none; /* Standardmäßig ausblenden */
             text-align: center;
+            padding: 50px;
+            background-color: #f4f4f4;
         }
 
-        /* 3. Spezifische Anpassung für Textblöcke (p-Tags) */
-        p {
-            font-family: 'Courier New', Courier, monospace; /* Beispiel für eine Monospace-Schrift */
-            color: #666;
+        /* 2. SCHRIFTART ANPASSEN */
+        /* Hier kannst du die Schriftart für die Meldung festlegen */
+        .mobile-notice h1 {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Deine Wunsch-Schrift */
+            font-size: 24px;
+            color: #333;
+        }
+
+        .mobile-notice p {
+            font-family: 'Georgia', serif; /* Eine andere Schrift für den Fließtext */
+            font-size: 18px;
             line-height: 1.6;
         }
 
-        /* Optional: Container für die Meldung */
-        .message-box {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        /* 3. DIE LOGIK (Media Query) */
+        /* Wenn der Bildschirm schmaler als 768px ist (typisch Handy/Tablet) */
+        @media screen and (max-width: 768px) {
+            .mobile-notice {
+                display: block; /* Meldung anzeigen */
+            }
+            .main-content {
+                display: none; /* Restlichen Inhalt verstecken */
+            }
         }
     </style>
 </head>
 <body>
 
-    <div class="message-box">
+    <div class="mobile-notice">
         <h1>Ooops! Diese Webseite ist für dein Handy optimiert.</h1>
-        <p>Bitte besuche uns auf deinem Smartphone für das beste Erlebnis oder skaliere dein Browserfenster.</p>
+        <p>Wir haben das Layout angepasst, damit du alles perfekt lesen kannst.</p>
+    </div>
+
+    <div class="main-content">
+        <h1>Warum erscheint dei Meldung "Ooops! Diese Webseite ist für dein Handy optimiert."?</h1>
+        <p>.</p>
     </div>
 
 </body>
