@@ -2,280 +2,362 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>App Details - DownAPK</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --brand-orange: #ff8400;
-            --download-red: #d32f2f;
-            --download-red-dark: #b71c1c;
-            --bg-gray: #f5f5f5;
-            --border-gray: #e0e0e0;
-            --text-main: #333;
-            --text-secondary: #757575;
+            --ios-bg: #000000;
+            --ios-card: #1C1C1E;
+            --ios-blue: #0A84FF;
+            --ios-text: #FFFFFF;
+            --ios-subtext: #8E8E93;
+            --ios-separator: #38383A;
+            --glass-border: 1px solid rgba(255, 255, 255, 0.08);
+            --radius-l: 32px;
+            --radius-m: 18px;
+            --header-height: 60px;
         }
 
         body { 
-            font-family: 'Roboto', sans-serif; 
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif; 
             margin: 0; 
-            background: var(--bg-gray); 
-            color: var(--text-main); 
-            overflow-x: hidden; /* Verhindert horizontales Scrollen der Seite */
+            background: var(--ios-bg); 
+            color: var(--ios-text); 
+            padding-bottom: 80px; 
+            overflow-x: hidden; 
+            -webkit-font-smoothing: antialiased;
         }
-        
+
+        a { text-decoration: none !important; color: inherit !important; -webkit-tap-highlight-color: transparent; }
+
+        /* ANIMATIONS */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.4; }
+            100% { opacity: 1; }
+        }
+
+        .animate-entry {
+            opacity: 0; 
+            animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+
+        /* HEADER */
         header { 
-            background: var(--brand-orange); 
-            padding: 15px; 
-            color: white; 
-            display: flex; 
-            align-items: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: fixed; top: 0; left: 0; width: 100%; 
+            height: var(--header-height);
+            z-index: 1000;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 15px; box-sizing: border-box;
+            background: rgba(20, 20, 20, 0.7);
+            backdrop-filter: blur(20px) saturate(180%);
+            border-bottom: var(--glass-border);
         }
 
         .back-btn { 
-            margin-right: 15px; 
+            width: 35px; height: 35px;
+            display: flex; align-items: center; justify-content: center;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
             cursor: pointer; 
-            font-size: 20px; 
+            font-size: 16px; 
+            color: var(--ios-blue);
+            transition: background 0.2s;
+        }
+        .back-btn:active { background: rgba(255,255,255,0.2); }
+
+        .header-title {
+            font-weight: 600; font-size: 17px;
+            opacity: 0; transform: translateY(10px);
+            transition: all 0.3s ease;
+        }
+        .header-title.visible { opacity: 1; transform: translateY(0); }
+
+        /* CONTENT CONTAINER */
+        .main-container {
+            padding-top: 80px; /* Header height + space */
+            padding-left: 20px;
+            padding-right: 20px;
+            max-width: 600px;
+            margin: 0 auto;
         }
 
-        .brand-name { 
-            font-weight: bold; 
-            font-size: 20px; 
-        }
-
-        .breadcrumb {
-            background: white;
-            padding: 10px 15px;
-            font-size: 12px;
-            color: var(--brand-orange);
-            border-bottom: 1px solid var(--border-gray);
-            margin-bottom: 10px;
-        }
-
-        .card { 
-            background: white; 
-            margin: 0 10px 15px 10px; 
-            padding: 20px; 
-            border-radius: 4px; 
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1); 
-            box-sizing: border-box;
+        /* APP HEADER HERO */
+        .app-hero {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 30px;
+            position: relative;
         }
         
-        /* FIX: Container für den Header, damit nichts rausspringt */
-        .app-header-flex { 
-            display: flex; 
-            align-items: center; 
-            overflow: hidden; /* Wichtig für den Scroll-Effekt */
-        }
-
         .big-icon { 
-            width: 72px; 
-            height: 72px; 
-            border-radius: 8px; 
-            margin-right: 15px; 
-            flex-shrink: 0; /* Icon darf nicht kleiner werden */
+            width: 110px; height: 110px; 
+            border-radius: 24px; 
+            margin-right: 20px; 
+            flex-shrink: 0; 
+            border: var(--glass-border);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            object-fit: cover;
+            background: #222;
         }
 
-        /* FIX: Titel-Sektion mit Marquee-Effekt */
-        .app-title-section {
+        .app-hero-info {
             flex: 1;
-            overflow: hidden; /* Schneidet den überlaufenden Text ab */
-            white-space: nowrap;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: 110px;
         }
 
-        .app-title-section h1 { 
-            font-size: 20px; 
-            margin: 0; 
-            color: #333; 
-            display: inline-block;
-            padding-right: 50px; /* Platz am Ende des Durchlaufs */
-            animation: marquee 10s linear infinite; /* Hier wird gescrollt */
+        .app-title { 
+            font-size: 22px; 
+            font-weight: 700; 
+            margin: 0 0 5px 0; 
+            line-height: 1.2;
+            color: #fff;
         }
-
-        /* Die Animation für den Textfluss */
-        @keyframes marquee {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-        }
-
-        /* Falls der Text kurz ist, stoppen wir die Animation (optional via JS, hier immer an für lange IDs) */
 
         .dev-name { 
-            color: var(--brand-orange); 
-            font-weight: bold; 
-            font-size: 14px; 
-            display: block; 
-            margin-top: 5px;
-        }
-
-        .meta-info-bar {
-            display: flex;
-            border-top: 1px solid var(--border-gray);
-            border-bottom: 1px solid var(--border-gray);
-            margin: 20px 0;
-            padding: 12px 0;
-        }
-        .meta-item {
-            flex: 1;
-            text-align: center;
-            font-size: 12px;
-            color: var(--text-secondary);
-            border-right: 1px solid var(--border-gray);
-        }
-        .meta-item:last-child { border-right: none; }
-        .meta-item strong { display: block; color: var(--text-main); font-size: 14px; margin-bottom: 2px; }
-
-        .download-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--download-red);
-            color: white;
-            padding: 15px;
-            font-size: 16px;
-            font-weight: bold;
-            text-decoration: none;
-            border-radius: 4px;
-            text-transform: uppercase;
-            margin: 20px 0;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
-        .download-btn:active { background: var(--download-red-dark); }
-        .download-btn i { margin-right: 10px; font-size: 18px; }
-
-        .description-title { 
-            font-size: 16px; 
-            font-weight: bold; 
-            margin: 20px 0 10px 0; 
-            border-bottom: 2px solid var(--brand-orange);
-            display: inline-block;
-            padding-bottom: 3px;
-        }
-
-        .description { 
-            font-size: 14px; 
-            line-height: 1.6; 
-            color: #444;
-        }
-
-        .ad-placeholder {
-            background: #eee;
-            height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            color: #999;
+            color: var(--ios-subtext); 
+            font-size: 15px; 
             margin-bottom: 15px;
         }
-        
+
+        .action-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .download-btn {
+            background: var(--ios-blue);
+            color: white;
+            padding: 8px 24px;
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            text-decoration: none;
+            border-radius: 20px;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(10, 132, 255, 0.3);
+            transition: transform 0.2s, filter 0.2s;
+        }
+        .download-btn:active { transform: scale(0.96); filter: brightness(0.8); }
+        .download-btn i { margin-right: 6px; }
+
+        /* STATS BAR (Version, Size etc) */
+        .stats-bar {
+            display: flex;
+            overflow-x: auto;
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+            border-bottom: var(--ios-separator) 1px solid;
+        }
+        .stat-item {
+            flex: 1;
+            min-width: 80px;
+            text-align: center;
+            border-right: 1px solid rgba(255,255,255,0.1);
+        }
+        .stat-item:last-child { border-right: none; }
+        .stat-label { font-size: 11px; color: var(--ios-subtext); text-transform: uppercase; margin-bottom: 5px; font-weight: 600; }
+        .stat-value { font-size: 15px; font-weight: 700; color: #dbdbdb; }
+
+        /* DESCRIPTION */
+        .section-header {
+            font-size: 19px; font-weight: 700; margin-bottom: 10px; color: #fff;
+        }
+        .description-box { 
+            font-size: 15px; 
+            line-height: 1.6; 
+            color: #ddd;
+            margin-bottom: 30px;
+        }
+
+        /* AD & PLACEHOLDERS */
+        .ad-placeholder {
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            color: var(--ios-subtext);
+            margin: 20px 0;
+            border: var(--glass-border);
+            letter-spacing: 1px;
+        }
+
+        /* SKELETON LOADER */
+        .skeleton { background: #2C2C2E; border-radius: 8px; animation: pulse 1.5s infinite ease-in-out; }
+        .sk-icon { width: 110px; height: 110px; border-radius: 24px; margin-right: 20px; float: left; }
+        .sk-title { width: 60%; height: 24px; margin-bottom: 10px; margin-top: 10px; }
+        .sk-sub { width: 40%; height: 16px; margin-bottom: 20px; }
+        .sk-btn { width: 100px; height: 32px; border-radius: 20px; }
+        .sk-text { width: 100%; height: 12px; margin-bottom: 8px; }
+
+        /* FOOTER */
         footer {
             text-align: center;
-            padding: 20px;
+            padding: 30px 20px;
             font-size: 12px;
-            color: var(--text-secondary);
+            color: var(--ios-subtext);
+            border-top: 1px solid var(--ios-separator);
+            margin-top: 40px;
+        }
+
+        /* BACKGROUND BLUR FX */
+        .bg-blur-fx {
+            position: fixed; top: 0; left: 0; width: 100%; height: 60vh;
+            background: radial-gradient(circle at 50% 0%, rgba(10, 132, 255, 0.15), transparent 70%);
+            z-index: -1; pointer-events: none;
         }
     </style>
 </head>
 <body>
 
-<header>
-    <i class="fas fa-arrow-left back-btn" onclick="history.back()"></i>
-    <span class="brand-name">DownAPK</span>
-</header>
+<div class="bg-blur-fx"></div>
 
-<div class="breadcrumb">
-    Home &nbsp;»&nbsp; Apps &nbsp;»&nbsp; <span id="breadcrumb-app">App Details</span>
+<header>
+    <div class="back-btn" onclick="history.back()">
+        <i class="fas fa-chevron-left"></i>
+    </div>
+    <div class="header-title" id="scroll-title">App Details</div>
+    <div style="width: 35px;"></div> </header>
+
+<div class="main-container" id="content-area">
+    
+    <div id="loader">
+        <div style="overflow: hidden; margin-bottom: 30px;">
+            <div class="skeleton sk-icon"></div>
+            <div class="skeleton sk-title"></div>
+            <div class="skeleton sk-sub"></div>
+            <div class="skeleton sk-btn"></div>
+        </div>
+        <div class="skeleton sk-text"></div>
+        <div class="skeleton sk-text"></div>
+        <div class="skeleton sk-text" style="width: 80%"></div>
+    </div>
+
 </div>
 
-<div id="content">
-    <div class="card">
-        <div style="text-align:center; padding: 30px;">
-            <i class="fas fa-spinner fa-spin" style="color: var(--brand-orange); font-size: 24px;"></i> 
-            <p>Lade Details...</p>
-        </div>
+<div id="footer-area" style="display:none;">
+    <div style="text-align: center; margin-top: 20px; padding: 10px;">
+        <p style="color: #8E8E93; font-size: 12px; margin: 0;">Version 4.75</p>
+        <p style="color: #636366; font-size: 10px; margin-top: 5px; opacity: 0.7;">By Nexus with ❤️</p>
+    </div>
+
+    <div style="width: 100%; text-align: center; margin-top: 15px; padding-bottom: 30px;">
+        <a href="https://nexus-ashy.vercel.app/" style="color: #0A84FF; text-decoration: none; font-size: 12px; font-weight: 600; display: inline-block; pointer-events: auto;">Mehr von uns</a>
     </div>
 </div>
 
-<footer>
-    &copy; 2026 DownAPK
-</footer>
-
 <script>
+    // Scroll Effekt für Header Titel
+    window.addEventListener('scroll', () => {
+        const title = document.getElementById('scroll-title');
+        if (window.scrollY > 120) title.classList.add('visible');
+        else title.classList.remove('visible');
+    });
+
     async function loadDetails() {
         const params = new URLSearchParams(window.location.search);
         const id = params.get('id');
+        const container = document.getElementById('content-area');
+        const footer = document.getElementById('footer-area');
+        const loader = document.getElementById('loader');
 
         if(!id) {
-            document.getElementById('content').innerHTML = '<div class="card">Fehler: Keine App ID gefunden.</div>';
+            loader.style.display = 'none';
+            container.innerHTML = '<div class="description-box" style="text-align:center; padding-top:50px;">Fehler: Keine App ID gefunden.</div>';
             return;
         }
 
         try {
+            // Simulation eines Fetches (in echter Umgebung einfach fetch nutzen)
             const res = await fetch(`/api/details?id=${id}`);
             const app = await res.json();
 
             if(app.error) {
-                document.getElementById('content').innerHTML = '<div class="card">App nicht gefunden.</div>';
+                loader.style.display = 'none';
+                container.innerHTML = '<div class="description-box" style="text-align:center; padding-top:50px;">App nicht gefunden.</div>';
                 return;
             }
 
-            document.getElementById('breadcrumb-app').innerText = app.name;
+            // Update Breadcrumb / Title Logic
+            document.getElementById('scroll-title').innerText = app.name;
 
+            // HTML Generierung im neuen Design
             const html = `
-                <div class="card">
-                    <div class="app-header-flex">
-                        <img src="${app.icon}" class="big-icon" onerror="this.src='https://via.placeholder.com/72'">
-                        <div class="app-title-section">
-                            <h1>${app.name} &nbsp;&nbsp;&nbsp; ${app.name}</h1>
-                            <div class="dev-name">${app.author}</div>
+                <div class="app-hero animate-entry">
+                    <img src="${app.icon}" class="big-icon" onerror="this.src='https://via.placeholder.com/110'">
+                    <div class="app-hero-info">
+                        <h1 class="app-title">${app.name}</h1>
+                        <div class="dev-name">${app.author}</div>
+                        
+                        <div class="action-row">
+                            <a href="${app.downloadUrl}" class="download-btn">
+                                LADEN
+                            </a>
+                            <a href="#" class="download-btn" style="background: rgba(255,255,255,0.1); width: 20px; padding: 8px;">
+                                <i class="fas fa-share" style="margin:0;"></i>
+                            </a>
                         </div>
                     </div>
+                </div>
 
-                    <div class="ad-placeholder">ADVERTISEMENT</div>
-
-                    <div class="meta-info-bar">
-                        <div class="meta-item">
-                            <strong>Version</strong>
-                            ${app.version}
-                        </div>
-                        <div class="meta-item">
-                            <strong>Updated</strong>
-                            ${app.lastUpdated}
-                        </div>
-                        <div class="meta-item">
-                            <strong>Size</strong>
-                            -- MB
-                        </div>
+                <div class="stats-bar animate-entry" style="animation-delay: 0.1s;">
+                    <div class="stat-item">
+                        <div class="stat-label">Version</div>
+                        <div class="stat-value">${app.version}</div>
                     </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Update</div>
+                        <div class="stat-value">${app.lastUpdated.split('-')[0] || '2026'}</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Größe</div>
+                        <div class="stat-value">-- MB</div>
+                    </div>
+                </div>
 
-                    <a href="${app.downloadUrl}" class="download-btn">
-                        <i class="fas fa-download"></i> Download APK
-                    </a>
+                <div class="ad-placeholder animate-entry" style="animation-delay: 0.2s;">
+                    ADVERTISEMENT
+                </div>
 
-                    <div class="description-title">Description</div>
-                    <div class="description">${app.description}</div>
+                <div class="section-header animate-entry" style="animation-delay: 0.3s;">Über diese App</div>
+                <div class="description-box animate-entry" style="animation-delay: 0.3s;">
+                    ${app.description}
                 </div>
             `;
 
-            document.getElementById('content').innerHTML = html;
+            loader.style.display = 'none';
+            // Wir fügen das HTML *vor* dem Footer ein oder ersetzen den Loader
+            const contentDiv = document.createElement('div');
+            contentDiv.innerHTML = html;
+            container.appendChild(contentDiv);
+            footer.style.display = 'block';
+            container.appendChild(footer);
+
         } catch (e) {
-            document.getElementById('content').innerHTML = '<div class="card">Fehler beim Laden der Daten.</div>';
+            // Fallback für Demo/Testzwecke (falls API nicht da ist)
+            // Wenn dies in Produktion ist, nur die Fehlermeldung anzeigen
+            loader.style.display = 'none';
+            container.innerHTML = `<div class="description-box" style="text-align:center; margin-top:50px;"><i class="fas fa-exclamation-triangle"></i><br>Fehler beim Laden der Daten.</div>`;
         }
     }
 
     loadDetails();
 </script>
 
-<div style="text-align: center; margin-top: 20px; padding: 10px;">
-    <p style="color: #888888; font-size: 12px; margin: 0;">Version 4.75</p>
-    <p style="color: #666666; font-size: 10px; margin-top: 5px; opacity: 0.7;">By Nexus with ❤️</p>
-</div>
-
-
-<div style="width: 100%; text-align: center; margin-top: 15px;">
-    <a href="https://nexus-ashy.vercel.app/" style="color: #00ff00; text-decoration: none; font-size: 12px; font-weight: bold; display: inline-block; pointer-events: auto;">Mehr von uns</a>
-</div>
 </body>
 </html>
