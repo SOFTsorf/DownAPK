@@ -13,8 +13,7 @@
             --ios-text: #FFFFFF;
             --ios-subtext: #8E8E93;
             --ios-separator: #38383A;
-            --ios-blur: rgba(28, 28, 30, 0.85);
-            --glass-border: 1px solid rgba(255, 255, 255, 0.1);
+            --glass-border: 1px solid rgba(255, 255, 255, 0.08);
             --radius-l: 32px;
             --radius-m: 18px;
             --header-height: 100px;
@@ -41,7 +40,6 @@
             100% { transform: translateX(-100%); }
         }
 
-        /* --- NEU: Skeleton Animation --- */
         @keyframes pulse {
             0% { opacity: 1; }
             50% { opacity: 0.4; }
@@ -69,10 +67,8 @@
             overflow: hidden;
         }
 
-        /* Spacer damit der Inhalt nicht unter dem fixed Header verschwindet */
         .header-spacer { height: var(--header-height); width: 100%; }
 
-        /* Der unscharfe Hintergrund (initially hidden) */
         .header-blur-bg {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background-size: cover !important; background-position: center !important;
@@ -81,7 +77,6 @@
             z-index: 1;
         }
 
-        /* Großes Logo */
         .logo { 
             font-size: 34px; font-weight: 800; letter-spacing: -1px; 
             position: relative; z-index: 2;
@@ -89,7 +84,6 @@
             transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
 
-        /* Die Mini App Bar (initially hidden/translated down) */
         .sticky-app-bar {
             position: absolute; left: 0; top: 0; width: 100%; height: 100%;
             display: flex; align-items: center; justify-content: space-between;
@@ -98,7 +92,7 @@
             opacity: 0;
             transform: translateY(20px);
             transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
-            pointer-events: none; /* Klickbar nur wenn sichtbar */
+            pointer-events: none;
         }
         
         .sticky-left { display: flex; align-items: center; overflow: hidden; }
@@ -118,10 +112,9 @@
         }
         .sticky-btn:hover { background: rgba(255,255,255,0.3); }
 
-        /* Wenn gescrollt wird (wird per JS hinzugefügt) */
         header.scrolled {
             height: var(--header-collapsed);
-            background: rgba(0,0,0,0.3); /* Leichtes Overlay */
+            background: rgba(0,0,0,0.3);
             border-bottom: var(--glass-border);
         }
         header.scrolled .header-blur-bg { opacity: 1; }
@@ -129,9 +122,8 @@
         header.scrolled .sticky-app-bar { 
             opacity: 1; transform: translateY(0); pointer-events: auto; 
         }
-        /* --- HEADER END --- */
 
-        /* --- NEU: CATEGORY PILLS --- */
+        /* --- CATEGORY PILLS --- */
         .category-scroll {
             display: flex;
             overflow-x: auto;
@@ -143,8 +135,8 @@
         .category-scroll::-webkit-scrollbar { display: none; }
         
         .cat-pill {
-            background: rgba(255,255,255,0.1);
-            color: #fff;
+            background: rgba(255,255,255,0.08);
+            color: rgba(255,255,255,0.8);
             padding: 8px 18px;
             border-radius: 20px;
             font-size: 14px;
@@ -154,53 +146,22 @@
             transition: all 0.3s ease;
             border: 1px solid transparent;
         }
-        .cat-pill:hover { background: rgba(255,255,255,0.2); }
+        .cat-pill:hover { background: rgba(255,255,255,0.15); color: #fff; }
         .cat-pill.active {
             background: var(--ios-blue);
             color: white;
             box-shadow: 0 4px 15px rgba(10, 132, 255, 0.4);
         }
 
-        /* --- NEU: SKELETON SCREENS --- */
-        .skeleton-loader {
-            padding: 20px;
-        }
-        .skeleton {
-            background: #2C2C2E;
-            border-radius: 8px;
-            animation: pulse 1.5s infinite ease-in-out;
-        }
-        .sk-hero {
-            height: 420px;
-            border-radius: var(--radius-l);
-            margin-bottom: 30px;
-            width: 100%;
-        }
-        .sk-row {
-            display: flex;
-            gap: 18px;
-            overflow: hidden;
-            margin-bottom: 30px;
-        }
-        .sk-card {
-            width: 120px;
-            height: 120px;
-            border-radius: 26px;
-            flex-shrink: 0;
-        }
-        .sk-list {
-            margin-top: 20px;
-        }
-        .sk-item {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        .sk-icon {
-            width: 62px; height: 62px;
-            border-radius: 14px;
-            margin-right: 15px;
-        }
+        /* --- SKELETON SCREENS --- */
+        .skeleton-loader { padding: 20px; }
+        .skeleton { background: #2C2C2E; border-radius: 8px; animation: pulse 1.5s infinite ease-in-out; }
+        .sk-hero { height: 420px; border-radius: var(--radius-l); margin-bottom: 30px; width: 100%; }
+        .sk-row { display: flex; gap: 18px; overflow: hidden; margin-bottom: 30px; }
+        .sk-card { width: 120px; height: 120px; border-radius: 26px; flex-shrink: 0; }
+        .sk-list { margin-top: 20px; }
+        .sk-item { display: flex; align-items: center; margin-bottom: 20px; }
+        .sk-icon { width: 62px; height: 62px; border-radius: 14px; margin-right: 15px; }
         .sk-text-lines { flex: 1; }
         .sk-line { height: 10px; border-radius: 4px; margin-bottom: 8px; }
         .sk-line.short { width: 40%; }
@@ -214,18 +175,13 @@
             box-shadow: 0 20px 40px rgba(0,0,0,0.6);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
-        .featured-banner:hover {
-            transform: scale(1.02);
-            box-shadow: 0 30px 60px rgba(0,0,0,0.8);
-        }
-
+        .featured-banner:hover { transform: scale(1.02); box-shadow: 0 30px 60px rgba(0,0,0,0.8); }
         .featured-img-bg {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background-size: cover !important; background-position: center !important;
             filter: brightness(0.5); z-index: 1; transition: transform 5s ease;
         }
         .featured-banner:hover .featured-img-bg { transform: scale(1.1); }
-
         .featured-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.95) 100%);
@@ -233,11 +189,9 @@
         }
         .featured-info { position: relative; z-index: 3; padding: 30px; text-align: center; display: flex; flex-direction: column; align-items: center; width: 100%; box-sizing: border-box; }
         .featured-tag { color: #bf55ec; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
-        
         .featured-title-wrap { width: 100%; overflow: hidden; white-space: nowrap; margin-bottom: 5px; }
         .featured-title { font-size: 28px; font-weight: 800; color: white !important; display: inline-block; }
         .featured-banner:hover .featured-title { animation: scrollText 4s linear infinite; }
-
         .featured-desc { font-size: 15px; color: var(--ios-subtext); margin-bottom: 20px; }
         .get-btn { 
             background: #FFFFFF; color: #000; padding: 12px 50px; border-radius: 25px; 
@@ -249,72 +203,89 @@
         .section-title { padding: 20px 20px 15px; font-size: 22px; font-weight: 700; display: flex; justify-content: space-between; align-items: center; }
         .section-more { color: var(--ios-blue); font-size: 16px; font-weight: 400; cursor: pointer; transition: opacity 0.2s; }
         .section-more:hover { opacity: 0.7; }
-
         .horizontal-scroll { display: flex; overflow-x: auto; padding: 0 20px 25px; gap: 18px; scrollbar-width: none; }
         .horizontal-scroll::-webkit-scrollbar { display: none; }
 
-        /* CARD ITEMS */
+        /* CARDS & ITEMS */
         .card-item { width: 120px; min-width: 120px; cursor: pointer; transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
         .card-item:hover { transform: translateY(-5px) scale(1.03); }
-        
         .card-icon { width: 120px; height: 120px; border-radius: 26px; object-fit: cover; border: var(--glass-border); margin-bottom: 10px; background: #222; transition: filter 0.3s; }
         .card-item:hover .card-icon { filter: brightness(1.2); }
-
         .card-name-wrap { width: 100%; overflow: hidden; white-space: nowrap; margin-bottom: 2px; mask-image: linear-gradient(to right, black 90%, transparent 100%); }
         .card-name { font-size: 14px; font-weight: 500; color: white !important; display: inline-block; text-overflow: ellipsis; }
         .card-item:hover .card-name { text-overflow: clip; animation: scrollText 3s linear infinite; padding-right: 20px; }
-
         .card-author { font-size: 12px; color: var(--ios-subtext); }
 
-        /* LIST STYLE */
         .app-list-container { background: var(--ios-card); margin: 0 20px; border-radius: var(--radius-m); padding: 0 16px; border: var(--glass-border); }
         .app-item { display: flex; padding: 15px 0; border-bottom: 0.5px solid var(--ios-separator); align-items: center; cursor: pointer; transition: background 0.2s, transform 0.2s; }
         .app-item:last-child { border-bottom: none; }
         .app-item:hover { background: rgba(255,255,255,0.05); transform: scale(1.01); }
-
         .app-icon { width: 62px; height: 62px; border-radius: 14px; margin-right: 15px; border: var(--glass-border); background: #222; object-fit: cover; }
         .app-info { flex-grow: 1; min-width: 0; overflow: hidden; }
-        
         .app-name-wrap { width: 100%; overflow: hidden; white-space: nowrap; margin-bottom: 3px; mask-image: linear-gradient(to right, black 90%, transparent 100%); }
         .app-name { font-weight: 600; font-size: 17px; color: #FFF !important; display: inline-block; text-overflow: ellipsis; }
         .app-item:hover .app-name { text-overflow: clip; animation: scrollText 4s linear infinite; padding-right: 30px; }
-
         .app-meta { font-size: 13px; color: var(--ios-subtext); }
         .laden-badge { background: #333; color: var(--ios-blue); padding: 6px 18px; border-radius: 20px; font-weight: 800; font-size: 12px; transition: background 0.2s; }
         .app-item:hover .laden-badge { background: #444; color: #fff; }
 
-        /* ERROR MESSAGE */
+        /* ERROR & SEARCH */
         .error-msg { text-align: center; padding: 50px 20px; color: var(--ios-subtext); font-size: 16px; font-weight: 500; }
         .error-icon { font-size: 40px; margin-bottom: 15px; opacity: 0.5; display: block; }
 
-        /* SEARCH BAR */
+        /* --- UPDATED: ELEGANT SEARCH --- */
         .search-bar {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.98); backdrop-filter: blur(30px);
-            z-index: 5000; transform: translateY(-100%); transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            background: rgba(10, 10, 10, 0.7); /* Viel transparenter */
+            backdrop-filter: blur(40px) saturate(180%); /* Starker Blur */
+            z-index: 5000; 
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.3s ease, backdrop-filter 0.3s ease;
             padding-top: 60px;
         }
-        .search-bar.active { transform: translateY(0); }
-        .search-box { display: flex; align-items: center; padding: 0 20px; gap: 15px; }
-        .input-wrap { flex: 1; background: #222; border-radius: 14px; display: flex; align-items: center; padding: 12px 15px; border: var(--glass-border); }
-        .input-wrap input { background: transparent; border: none; color: white; font-size: 17px; width: 100%; outline: none; }
+        .search-bar.active { opacity: 1; pointer-events: auto; }
+        
+        .search-box { 
+            display: flex; align-items: center; padding: 0 20px; gap: 15px; 
+            transform: translateY(-10px); transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        .search-bar.active .search-box { transform: translateY(0); }
 
-        /* NAV */
+        .input-wrap { 
+            flex: 1; 
+            background: rgba(255, 255, 255, 0.12); /* Milchiger */
+            border-radius: 12px; 
+            display: flex; align-items: center; padding: 12px 15px; 
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: background 0.2s;
+        }
+        .input-wrap:focus-within { background: rgba(255, 255, 255, 0.18); }
+        
+        .input-wrap input { background: transparent; border: none; color: white; font-size: 17px; width: 100%; outline: none; margin-left: 10px; font-weight: 500; }
+        .input-wrap input::placeholder { color: rgba(255,255,255,0.4); }
+
+        /* --- UPDATED: NOBLE NAV --- */
         .bottom-nav {
             position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
-            width: 240px; height: 74px; background: var(--ios-blur);
-            backdrop-filter: blur(35px) saturate(160%); border-radius: 37px;
+            width: 240px; height: 74px; 
+            /* Neuer edler Blur-Look ohne grauen Layer */
+            background: rgba(20, 20, 20, 0.5); 
+            backdrop-filter: blur(50px) saturate(160%);
+            -webkit-backdrop-filter: blur(50px) saturate(160%);
+            border-radius: 37px;
             display: flex; justify-content: space-evenly; align-items: center;
-            z-index: 4000; border: var(--glass-border); box-shadow: 0 20px 50px rgba(0,0,0,0.9);
+            z-index: 4000; 
+            border: 1px solid rgba(255,255,255,0.15);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
             transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         .animate-nav { animation: fadeInUp 0.8s 0.6s backwards; }
 
-        .nav-item { color: rgba(255,255,255,0.4); text-align: center; cursor: pointer; transition: color 0.3s, transform 0.2s; }
-        .nav-item.active { color: #FFF; }
+        .nav-item { color: rgba(255,255,255,0.5); text-align: center; cursor: pointer; transition: color 0.3s, transform 0.2s; }
+        .nav-item.active { color: #FFF; text-shadow: 0 0 15px rgba(255,255,255,0.3); }
         .nav-item:hover { transform: scale(1.1); color: #fff; }
         .nav-item i { font-size: 24px; display: block; margin-bottom: 4px; }
-        .nav-item span { font-size: 10px; font-weight: 600; text-transform: uppercase; }
+        .nav-item span { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
 
         .hidden { display: none; }
     </style>
@@ -324,12 +295,12 @@
 <div class="search-bar" id="search-overlay">
     <div class="search-box">
         <div class="input-wrap">
-            <i class="fas fa-search" style="color:#8E8E93"></i>
-            <input type="text" id="search-input" placeholder="Tausende Apps suchen...">
+            <i class="fas fa-search" style="color:rgba(255,255,255,0.5)"></i>
+            <input type="text" id="search-input" placeholder="Apps, Spiele und Tools...">
         </div>
-        <span onclick="toggleSearch(false)" style="color:var(--ios-blue); font-size:17px; cursor:pointer;">Abbrechen</span>
+        <span onclick="toggleSearch(false)" style="color:var(--ios-blue); font-size:17px; cursor:pointer; font-weight:500;">Abbrechen</span>
     </div>
-    <div id="search-results" class="app-list-container" style="margin-top:20px; max-height: 75vh; overflow-y: auto;"></div>
+    <div id="search-results" class="app-list-container animate-entry" style="margin-top:25px; max-height: 75vh; overflow-y: auto; background: transparent; border: none; padding: 0;"></div>
 </div>
 
 <header id="main-header" class="animate-entry">
@@ -374,26 +345,18 @@
                 <div class="skeleton sk-line short"></div>
             </div>
         </div>
-        <div class="sk-item">
-            <div class="skeleton sk-icon"></div>
-            <div class="sk-text-lines">
-                <div class="skeleton sk-line long"></div>
-                <div class="skeleton sk-line short"></div>
-            </div>
-        </div>
     </div>
 </div>
 
 <div id="content-main" style="display: none;">
     
     <div class="category-scroll animate-entry">
-        <div class="cat-pill active" onclick="selectCat(this)">Alle</div>
-        <div class="cat-pill" onclick="selectCat(this)">Spiele</div>
-        <div class="cat-pill" onclick="selectCat(this)">Apps</div>
-        <div class="cat-pill" onclick="selectCat(this)">Tools</div>
-        <div class="cat-pill" onclick="selectCat(this)">Social Media</div>
-        <div class="cat-pill" onclick="selectCat(this)">Privacy</div>
-        <div class="cat-pill" onclick="selectCat(this)">Development</div>
+        <div class="cat-pill active" onclick="selectCat(this, 'Alle')">Alle</div>
+        <div class="cat-pill" onclick="selectCat(this, 'Spiele')">Spiele</div>
+        <div class="cat-pill" onclick="selectCat(this, 'Tools')">Tools</div>
+        <div class="cat-pill" onclick="selectCat(this, 'Social Media')">Social Media</div>
+        <div class="cat-pill" onclick="selectCat(this, 'Privacy')">Privacy</div>
+        <div class="cat-pill" onclick="selectCat(this, 'Media')">Media</div>
     </div>
 
     <div id="featured-hero" class="animate-entry delay-1"></div>
@@ -420,48 +383,57 @@
 </nav>
 
 <script>
+    // Kategorien hinzugefügt für Filter-Logik
     let appDatabase = [
-        { name: "PhotoSwooper", author: "krille-chan", pkg: "com.github.krille_chan.photoswooper", icon: "https://f-droid.org/repo/com.github.krille_chan.photoswooper/en-US/icon.png", ver: "2.1.0" },
-        { name: "OmWeather", author: "woheller69", pkg: "org.woheller69.omweather", icon: "https://f-droid.org/repo/org.woheller69.omweather/en-US/icon.png", ver: "1.5.2" },
-        { name: "NewPipe", author: "Team NewPipe", pkg: "org.schabi.newpipe", icon: "https://f-droid.org/repo/org.schabi.newpipe/en-US/icon.png", ver: "0.27.0" },
-        { name: "Telegram FOSS", author: "Telegram", pkg: "org.telegram.messenger", icon: "https://f-droid.org/repo/org.telegram.messenger/en-US/icon.png", ver: "10.3.1" },
-        { name: "AdAway", author: "AdAway", pkg: "org.adaway", icon: "https://f-droid.org/repo/org.adaway/en-US/icon.png", ver: "6.1.1" },
-        { name: "F-Droid", author: "F-Droid", pkg: "org.fdroid.fdroid", icon: "https://f-droid.org/repo/org.fdroid.fdroid/en-US/icon.png", ver: "1.19" },
-        { name: "AntennaPod", author: "AntennaPod", pkg: "de.danoeh.antennapod", icon: "https://f-droid.org/repo/de.danoeh.antennapod/en-US/icon.png", ver: "3.2.0" },
-        { name: "VLC", author: "VideoLAN", pkg: "org.videolan.vlc", icon: "https://f-droid.org/repo/org.videolan.vlc/en-US/icon.png", ver: "3.5.4" }
+        { name: "PhotoSwooper", author: "krille-chan", pkg: "com.github.krille_chan.photoswooper", icon: "https://f-droid.org/repo/com.github.krille_chan.photoswooper/en-US/icon.png", ver: "2.1.0", cat: "Tools" },
+        { name: "OmWeather", author: "woheller69", pkg: "org.woheller69.omweather", icon: "https://f-droid.org/repo/org.woheller69.omweather/en-US/icon.png", ver: "1.5.2", cat: "Tools" },
+        { name: "NewPipe", author: "Team NewPipe", pkg: "org.schabi.newpipe", icon: "https://f-droid.org/repo/org.schabi.newpipe/en-US/icon.png", ver: "0.27.0", cat: "Media" },
+        { name: "Telegram FOSS", author: "Telegram", pkg: "org.telegram.messenger", icon: "https://f-droid.org/repo/org.telegram.messenger/en-US/icon.png", ver: "10.3.1", cat: "Social Media" },
+        { name: "AdAway", author: "AdAway", pkg: "org.adaway", icon: "https://f-droid.org/repo/org.adaway/en-US/icon.png", ver: "6.1.1", cat: "Privacy" },
+        { name: "F-Droid", author: "F-Droid", pkg: "org.fdroid.fdroid", icon: "https://f-droid.org/repo/org.fdroid.fdroid/en-US/icon.png", ver: "1.19", cat: "Tools" },
+        { name: "AntennaPod", author: "AntennaPod", pkg: "de.danoeh.antennapod", icon: "https://f-droid.org/repo/de.danoeh.antennapod/en-US/icon.png", ver: "3.2.0", cat: "Media" },
+        { name: "VLC", author: "VideoLAN", pkg: "org.videolan.vlc", icon: "https://f-droid.org/repo/org.videolan.vlc/en-US/icon.png", ver: "3.5.4", cat: "Media" },
+        { name: "SuperTuxKart", author: "Tux", pkg: "org.supertuxkart", icon: "https://f-droid.org/repo/org.supertuxkart.stk/en-US/icon.png", ver: "1.4", cat: "Spiele" } 
     ];
 
     async function loadFDroidApps() {
-        // Simulierte Ladezeit, damit man den Skeleton-Screen sieht (optional)
-        // await new Promise(r => setTimeout(r, 1000));
+        // Kurzer Delay für Skeleton-Demo
+        await new Promise(r => setTimeout(r, 600));
 
         try {
             const response = await fetch('/api/apps');
             const data = await response.json();
-            
             const remoteApps = data.map(app => ({
                 name: app.name,
                 author: app.author,
                 pkg: app.packageName,
                 icon: app.icon,
-                ver: app.version
+                ver: app.version,
+                cat: "Tools" // Default cat für API items
             }));
-            
             appDatabase = [...appDatabase, ...remoteApps];
-        } catch (e) { 
-            console.log("API konnte nicht geladen werden, verwende interne Liste.", e); 
-        } finally {
-            render();
-        }
+        } catch (e) { console.log("Verwende Offline DB"); } 
+        finally { render('Alle'); }
     }
 
     function shuffle(array) { return array.sort(() => Math.random() - 0.5); }
 
     function toggleSearch(show) {
-        document.getElementById('search-overlay').classList.toggle('active', show);
-        document.getElementById('btn-search').classList.toggle('active', show);
-        document.getElementById('btn-home').classList.toggle('active', !show);
-        if(show) document.getElementById('search-input').focus();
+        const overlay = document.getElementById('search-overlay');
+        const btnSearch = document.getElementById('btn-search');
+        const btnHome = document.getElementById('btn-home');
+        
+        if(show) {
+            overlay.classList.add('active');
+            btnSearch.classList.add('active');
+            btnHome.classList.remove('active');
+            setTimeout(() => document.getElementById('search-input').focus(), 100);
+        } else {
+            overlay.classList.remove('active');
+            btnSearch.classList.remove('active');
+            btnHome.classList.add('active');
+            document.getElementById('search-input').blur();
+        }
     }
 
     function viewAll(title) {
@@ -470,60 +442,59 @@
         performSearch(""); 
     }
 
-    // Logik für die Kategorie-Pills
-    function selectCat(el) {
+    // Filter-Funktion für Kategorien
+    function selectCat(el, category) {
         document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
         el.classList.add('active');
-        // Hier könnte man später eine Filter-Logik einbauen
+        render(category);
     }
 
     function renderError() {
         document.getElementById('skeleton-loader').style.display = 'none';
         document.getElementById('content-main').style.display = 'block';
-
-        const errorHTML = `
-            <div class="error-msg animate-entry">
-                <i class="fas fa-wifi error-icon"></i>
-                Apps können nicht geladen werden.<br>
-                <span style="font-size:13px; font-weight:400; opacity:0.7;">Bitte überprüfen Sie Ihre Verbindung.</span>
-            </div>
-        `;
-        document.getElementById('featured-hero').innerHTML = "";
+        const errorHTML = `<div class="error-msg"><i class="fas fa-wifi error-icon"></i>Keine Apps gefunden.</div>`;
         document.getElementById('scroll-trending').innerHTML = errorHTML;
-        document.getElementById('scroll-top').innerHTML = "";
-        document.getElementById('update-feed').innerHTML = "";
     }
 
-    function render() {
-        // Skeleton ausblenden, Inhalt einblenden
+    // Render akzeptiert jetzt Filter
+    function render(filterCat) {
         document.getElementById('skeleton-loader').style.display = 'none';
         document.getElementById('content-main').style.display = 'block';
 
-        if (!appDatabase || appDatabase.length === 0) {
-            renderError();
-            return;
+        if (!appDatabase || appDatabase.length === 0) { renderError(); return; }
+
+        // Filtern
+        let filteredApps = appDatabase;
+        if (filterCat && filterCat !== 'Alle') {
+            filteredApps = appDatabase.filter(app => app.cat === filterCat);
         }
 
-        const shuffled = shuffle([...appDatabase]);
+        if(filteredApps.length === 0) {
+             // Fallback falls Kategorie leer
+             document.getElementById('scroll-trending').innerHTML = `<div style="padding:20px; color:#666;">Keine Apps in "${filterCat}"</div>`;
+             document.getElementById('scroll-top').innerHTML = "";
+             document.getElementById('update-feed').innerHTML = "";
+             return;
+        }
+
+        const shuffled = shuffle([...filteredApps]);
         const feat = shuffled[0];
 
-        // --- STICKY HEADER UPDATE ---
+        // Header Update (nur wenn "Alle" oder wenn gefiltert)
         document.getElementById('header-blur').style.backgroundImage = `url('${feat.icon}')`;
         document.getElementById('sticky-icon').src = feat.icon;
         document.getElementById('sticky-name').innerText = feat.name;
         document.getElementById('sticky-bar').onclick = () => window.location.href = `app.html?id=${feat.pkg}`;
 
-        // Featured Hero
+        // Featured nur anzeigen wenn "Alle" ausgewählt ist (optional, hier zeigen wir es immer based auf filter)
         document.getElementById('featured-hero').innerHTML = `
             <div class="featured-banner" onclick="window.location.href='app.html?id=${feat.pkg}'">
                 <div class="featured-img-bg" style="background: url('${feat.icon}') center/cover"></div>
                 <div class="featured-overlay"></div>
                 <div class="featured-info">
-                    <span class="featured-tag">DownAPK Empfehlung</span>
-                    <div class="featured-title-wrap">
-                        <span class="featured-title">${feat.name}</span>
-                    </div>
-                    <div class="featured-desc">Von ${feat.author} • Jetzt laden</div>
+                    <span class="featured-tag">Highlights</span>
+                    <div class="featured-title-wrap"><span class="featured-title">${feat.name}</span></div>
+                    <div class="featured-desc">Von ${feat.author} • ${feat.cat || 'App'}</div>
                     <button class="get-btn">Laden</button>
                 </div>
             </div>
@@ -535,32 +506,22 @@
         trending.innerHTML = ""; top.innerHTML = ""; feed.innerHTML = "";
         
         const createCard = (app) => `
-            <div class="card-item" onclick="window.location.href='app.html?id=${app.pkg}'">
+            <div class="card-item animate-entry" onclick="window.location.href='app.html?id=${app.pkg}'">
                 <img src="${app.icon}" class="card-icon" onerror="this.src='https://f-droid.org/repo/${app.pkg}/en-US/icon.png'">
-                <div class="card-name-wrap">
-                    <span class="card-name">${app.name}</span>
-                </div>
+                <div class="card-name-wrap"><span class="card-name">${app.name}</span></div>
                 <span class="card-author">${app.author}</span>
             </div>
         `;
 
-        shuffled.slice(0, 8).forEach(app => {
-            trending.innerHTML += createCard(app);
-        });
-
-        [...shuffled].reverse().slice(0, 8).forEach(app => {
-            top.innerHTML += createCard(app);
-        });
-
+        shuffled.slice(0, 8).forEach(app => trending.innerHTML += createCard(app));
+        [...shuffled].reverse().slice(0, 8).forEach(app => top.innerHTML += createCard(app));
         shuffled.slice(0, 15).forEach(app => {
             feed.innerHTML += `
-                <div class="app-item" onclick="window.location.href='app.html?id=${app.pkg}'">
+                <div class="app-item animate-entry" onclick="window.location.href='app.html?id=${app.pkg}'">
                     <img src="${app.icon}" class="app-icon">
                     <div class="app-info">
-                        <div class="app-name-wrap">
-                            <span class="app-name">${app.name}</span>
-                        </div>
-                        <div class="app-meta">Version ${app.ver} • ${app.author}</div>
+                        <div class="app-name-wrap"><span class="app-name">${app.name}</span></div>
+                        <div class="app-meta">${app.cat} • v${app.ver}</div>
                     </div>
                     <div class="laden-badge">LADEN</div>
                 </div>
@@ -571,51 +532,41 @@
     function performSearch(query) {
         const resultsBox = document.getElementById('search-results');
         resultsBox.innerHTML = "";
-        const filtered = query === "" ? appDatabase.slice(0, 20) : appDatabase.filter(a => a.name.toLowerCase().includes(query.toLowerCase()) || a.pkg.toLowerCase().includes(query.toLowerCase())).slice(0, 50);
+        const filtered = query === "" ? [] : appDatabase.filter(a => a.name.toLowerCase().includes(query.toLowerCase()) || a.pkg.toLowerCase().includes(query.toLowerCase())).slice(0, 50);
         
-        if(filtered.length === 0) {
-            resultsBox.innerHTML = "<div style='padding:40px; color:#888; text-align:center;'>Keine Apps gefunden.</div>";
-        } else {
+        if(query !== "" && filtered.length === 0) {
+            resultsBox.innerHTML = "<div style='padding:40px; color:#888; text-align:center;'>Keine Treffer.</div>";
+        } else if (filtered.length > 0) {
             filtered.forEach(app => {
                 resultsBox.innerHTML += `
-                    <div class="app-item" onclick="window.location.href='app.html?id=${app.pkg}'">
-                        <img src="${app.icon}" class="app-icon">
+                    <div class="app-item" style="padding: 10px 16px; background: rgba(255,255,255,0.05); margin-bottom: 1px;" onclick="window.location.href='app.html?id=${app.pkg}'">
+                        <img src="${app.icon}" class="app-icon" style="width:48px; height:48px;">
                         <div class="app-info">
-                            <div class="app-name-wrap">
-                                <span class="app-name">${app.name}</span>
-                            </div>
-                            <div class="app-meta">${app.pkg}</div>
+                            <div class="app-name-wrap"><span class="app-name" style="font-size:16px;">${app.name}</span></div>
+                            <div class="app-meta">${app.cat}</div>
                         </div>
-                        <div class="laden-badge">LADEN</div>
+                        <i class="fas fa-chevron-right" style="opacity:0.3; font-size:12px;"></i>
                     </div>`;
             });
         }
     }
 
-    // SCROLL LOGIC FÜR HEADER TRANSITION
     window.addEventListener('scroll', () => {
         const header = document.getElementById('main-header');
-        if (window.scrollY > 40) {
-            header.classList.add('scrolled');
-        } else {
-            header.classList.remove('scrolled');
-        }
+        if (window.scrollY > 40) header.classList.add('scrolled');
+        else header.classList.remove('scrolled');
     });
 
     document.getElementById('search-input').addEventListener('input', (e) => performSearch(e.target.value));
-
-    window.onload = () => {
-        loadFDroidApps();
-    };
+    window.onload = () => { loadFDroidApps(); };
 </script>
 
 <div style="text-align: center; margin-top: 20px; padding: 10px;">
-    <p style="color: #888888; font-size: 12px; margin: 0;">Version 14.78</p>
+    <p style="color: #888888; font-size: 12px; margin: 0;">Version 16.8</p>
     <p style="color: #666666; font-size: 10px; margin-top: 5px; opacity: 0.7;">By Nexus with ❤️</p>
-
-<div style="width: 100%; text-align: center; margin-top: 15px;">
-    <a href="https://nexus-ashy.vercel.app/" style="color: #00ff00; text-decoration: none; font-size: 12px; font-weight: bold; display: inline-block; pointer-events: auto;">Mehr von uns</a>
-</div>
+    <div style="width: 100%; text-align: center; margin-top: 15px;">
+        <a href="https://nexus-ashy.vercel.app/" style="color: #00ff00; text-decoration: none; font-size: 12px; font-weight: bold;">Mehr von uns</a>
+    </div>
 </div>
 </body>
 </html>
