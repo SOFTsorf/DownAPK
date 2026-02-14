@@ -25,6 +25,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
+            /* Default Dark Mode */
             --ios-bg: #000000;
             --ios-card: #1C1C1E;
             --ios-blue: #0A84FF;
@@ -32,10 +33,28 @@
             --ios-subtext: #8E8E93;
             --ios-separator: #38383A;
             --glass-border: 1px solid rgba(255, 255, 255, 0.08);
+            --nav-bg: rgba(20, 20, 20, 0.5);
+            --nav-item: rgba(255,255,255,0.5);
+            --nav-active: #FFF;
+            
             --radius-l: 32px;
             --radius-m: 18px;
             --header-height: 100px;
             --header-collapsed: 70px;
+        }
+
+        /* --- LIGHT MODE VARIABLES --- */
+        body.light-mode {
+            --ios-bg: #F2F2F7;
+            --ios-card: #FFFFFF;
+            --ios-blue: #007AFF;
+            --ios-text: #000000;
+            --ios-subtext: #8E8E93;
+            --ios-separator: #C6C6C8;
+            --glass-border: 1px solid rgba(0, 0, 0, 0.05);
+            --nav-bg: rgba(255, 255, 255, 0.65);
+            --nav-item: rgba(0,0,0,0.4);
+            --nav-active: #000;
         }
 
         body { 
@@ -43,6 +62,7 @@
             margin: 0; background: var(--ios-bg); color: var(--ios-text); 
             padding-bottom: 120px; overflow-x: hidden; -webkit-font-smoothing: antialiased;
             user-select: none; -webkit-user-select: none;
+            transition: background 0.3s, color 0.3s;
         }
 
         a { text-decoration: none !important; color: inherit !important; -webkit-tap-highlight-color: transparent; }
@@ -71,8 +91,6 @@
             100% { transform: scale(1); }
         }
 
-        /* --- FIXED CONTEXT MENU ANIMATION --- */
-        /* Translate entfernt, da Flexbox bereits zentriert */
         @keyframes scaleIn {
             from { opacity: 0; transform: scale(0.9); }
             to { opacity: 1; transform: scale(1); }
@@ -93,10 +111,10 @@
             position: fixed; top: 0; left: 0; width: 100%; 
             height: var(--header-height);
             z-index: 1000;
-            display: flex; align-items: center; justify-content: flex-start;
+            display: flex; align-items: center; justify-content: flex-start; /* Flex Start behalten */
             padding: 0 20px; box-sizing: border-box;
             transition: height 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), background 0.4s;
-            overflow: hidden;
+            overflow: visible; /* Visible für den Button */
         }
 
         .header-spacer { height: var(--header-height); width: 100%; }
@@ -108,13 +126,38 @@
             opacity: 0; transition: opacity 0.5s ease;
             z-index: 1;
         }
+        /* Im Light Mode weniger abdunkeln */
+        body.light-mode .header-blur-bg { filter: blur(25px) brightness(1.2); }
 
         .logo { 
             font-size: 34px; font-weight: 800; letter-spacing: -1px; 
             position: relative; z-index: 2;
             transform-origin: left center;
             transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+            color: var(--ios-text);
         }
+
+        /* --- NEU: Header More Button --- */
+        .header-more-btn {
+            width: 34px; height: 34px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            display: flex; align-items: center; justify-content: center;
+            margin-left: auto; /* Push to right */
+            cursor: pointer;
+            z-index: 2000; /* Über Sticky Bar */
+            color: var(--ios-blue);
+            font-size: 16px;
+            transition: background 0.2s, color 0.2s;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        body.light-mode .header-more-btn {
+            background: rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        .header-more-btn:active { opacity: 0.7; transform: scale(0.95); }
+
 
         .sticky-app-bar {
             position: absolute; left: 0; top: 0; width: 100%; height: 100%;
@@ -125,13 +168,14 @@
             transform: translateY(20px);
             transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
             pointer-events: none;
+            padding-right: 60px; /* Platz für More Button lassen */
         }
         
         .sticky-left { display: flex; align-items: center; overflow: hidden; }
         .sticky-icon { width: 38px; height: 38px; border-radius: 8px; margin-right: 12px; background: #333; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
         .sticky-info-text { display: flex; flex-direction: column; overflow: hidden; }
-        .sticky-name { font-weight: 600; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px; }
-        .sticky-sub { font-size: 11px; opacity: 0.7; }
+        .sticky-name { font-weight: 600; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 120px; color: var(--ios-text); }
+        .sticky-sub { font-size: 11px; opacity: 0.7; color: var(--ios-text); }
         
         .sticky-btn {
             background: rgba(255,255,255,0.2); color: white;
@@ -142,6 +186,7 @@
             cursor: pointer; transition: background 0.2s;
             white-space: nowrap;
         }
+        body.light-mode .sticky-btn { color: #000; border: 1px solid rgba(0,0,0,0.1); background: rgba(255,255,255,0.8); }
         .sticky-btn:hover { background: rgba(255,255,255,0.3); }
 
         header.scrolled {
@@ -149,6 +194,8 @@
             background: rgba(0,0,0,0.3);
             border-bottom: var(--glass-border);
         }
+        body.light-mode header.scrolled { background: rgba(255,255,255,0.6); }
+
         header.scrolled .header-blur-bg { opacity: 1; }
         header.scrolled .logo { opacity: 0; transform: translateY(-20px) scale(0.8); }
         header.scrolled .sticky-app-bar { 
@@ -168,7 +215,7 @@
         
         .cat-pill {
             background: rgba(255,255,255,0.08);
-            color: rgba(255,255,255,0.8);
+            color: var(--ios-subtext);
             padding: 8px 18px;
             border-radius: 20px;
             font-size: 14px;
@@ -178,7 +225,11 @@
             transition: all 0.3s ease;
             border: 1px solid transparent;
         }
-        .cat-pill:hover { background: rgba(255,255,255,0.15); color: #fff; }
+        body.light-mode .cat-pill { background: rgba(0,0,0,0.05); color: #666; }
+
+        .cat-pill:hover { background: rgba(255,255,255,0.15); color: var(--ios-text); }
+        body.light-mode .cat-pill:hover { background: rgba(0,0,0,0.1); }
+
         .cat-pill.active {
             background: var(--ios-blue);
             color: white;
@@ -188,6 +239,7 @@
         /* --- SKELETON SCREENS --- */
         .skeleton-loader { padding: 20px; }
         .skeleton { background: #2C2C2E; border-radius: 8px; animation: pulse 1.5s infinite ease-in-out; }
+        body.light-mode .skeleton { background: #E5E5EA; }
         .sk-hero { height: 420px; border-radius: var(--radius-l); margin-bottom: 30px; width: 100%; }
         .sk-row { display: flex; gap: 18px; overflow: hidden; margin-bottom: 30px; }
         .sk-card { width: 120px; height: 120px; border-radius: 26px; flex-shrink: 0; }
@@ -207,7 +259,10 @@
             box-shadow: 0 20px 40px rgba(0,0,0,0.6);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
+        body.light-mode .featured-banner { box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
         .featured-banner:hover { transform: scale(1.02); box-shadow: 0 30px 60px rgba(0,0,0,0.8); }
+        body.light-mode .featured-banner:hover { box-shadow: 0 30px 60px rgba(0,0,0,0.2); }
+
         .featured-img-bg {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background-size: cover !important; background-position: center !important;
@@ -224,7 +279,7 @@
         .featured-title-wrap { width: 100%; overflow: hidden; white-space: nowrap; margin-bottom: 5px; }
         .featured-title { font-size: 28px; font-weight: 800; color: white !important; display: inline-block; }
         .featured-banner:hover .featured-title { animation: scrollText 4s linear infinite; }
-        .featured-desc { font-size: 15px; color: var(--ios-subtext); margin-bottom: 20px; }
+        .featured-desc { font-size: 15px; color: #ccc; margin-bottom: 20px; }
         .get-btn { 
             background: #FFFFFF; color: #000; padding: 12px 50px; border-radius: 25px; 
             font-weight: 700; font-size: 16px; border: none; transition: transform 0.2s; cursor: pointer;
@@ -232,7 +287,7 @@
         .get-btn:hover { transform: scale(1.05); background: #eee; }
 
         /* SECTIONS */
-        .section-title { padding: 20px 20px 15px; font-size: 22px; font-weight: 700; display: flex; justify-content: space-between; align-items: center; }
+        .section-title { padding: 20px 20px 15px; font-size: 22px; font-weight: 700; display: flex; justify-content: space-between; align-items: center; color: var(--ios-text); }
         .section-more { color: var(--ios-blue); font-size: 16px; font-weight: 400; cursor: pointer; transition: opacity 0.2s; }
         .section-more:hover { opacity: 0.7; }
         .horizontal-scroll { display: flex; overflow-x: auto; padding: 0 20px 25px; gap: 18px; scrollbar-width: none; }
@@ -244,21 +299,22 @@
         .card-icon { width: 120px; height: 120px; border-radius: 26px; object-fit: cover; border: var(--glass-border); margin-bottom: 10px; background: #222; transition: filter 0.3s; pointer-events: none; }
         .card-item:hover .card-icon { filter: brightness(1.2); }
         .card-name-wrap { width: 100%; overflow: hidden; white-space: nowrap; margin-bottom: 2px; mask-image: linear-gradient(to right, black 90%, transparent 100%); pointer-events: none; }
-        .card-name { font-size: 14px; font-weight: 500; color: white !important; display: inline-block; text-overflow: ellipsis; }
+        .card-name { font-size: 14px; font-weight: 500; color: var(--ios-text) !important; display: inline-block; text-overflow: ellipsis; }
         .card-item:hover .card-name { text-overflow: clip; animation: scrollText 3s linear infinite; padding-right: 20px; }
         .card-author { font-size: 12px; color: var(--ios-subtext); pointer-events: none; }
 
-        .app-list-container { background: var(--ios-card); margin: 0 20px; border-radius: var(--radius-m); padding: 0 16px; border: var(--glass-border); }
+        .app-list-container { background: var(--ios-card); margin: 0 20px; border-radius: var(--radius-m); padding: 0 16px; border: var(--glass-border); transition: background 0.3s; }
         .app-item { display: flex; padding: 15px 0; border-bottom: 0.5px solid var(--ios-separator); align-items: center; cursor: pointer; transition: background 0.2s, transform 0.2s; -webkit-touch-callout: none; }
         .app-item:last-child { border-bottom: none; }
-        .app-item:hover { background: rgba(255,255,255,0.05); transform: scale(1.01); }
+        .app-item:hover { background: rgba(125,125,125,0.05); transform: scale(1.01); }
         .app-icon { width: 62px; height: 62px; border-radius: 14px; margin-right: 15px; border: var(--glass-border); background: #222; object-fit: cover; pointer-events: none; }
         .app-info { flex-grow: 1; min-width: 0; overflow: hidden; pointer-events: none; }
         .app-name-wrap { width: 100%; overflow: hidden; white-space: nowrap; margin-bottom: 3px; mask-image: linear-gradient(to right, black 90%, transparent 100%); }
-        .app-name { font-weight: 600; font-size: 17px; color: #FFF !important; display: inline-block; text-overflow: ellipsis; }
+        .app-name { font-weight: 600; font-size: 17px; color: var(--ios-text) !important; display: inline-block; text-overflow: ellipsis; }
         .app-item:hover .app-name { text-overflow: clip; animation: scrollText 4s linear infinite; padding-right: 30px; }
         .app-meta { font-size: 13px; color: var(--ios-subtext); }
         .laden-badge { background: #333; color: var(--ios-blue); padding: 6px 18px; border-radius: 20px; font-weight: 800; font-size: 12px; transition: background 0.2s; pointer-events: none; }
+        body.light-mode .laden-badge { background: #F2F2F7; }
         .app-item:hover .laden-badge { background: #444; color: #fff; }
 
         /* LOAD MORE BUTTON */
@@ -269,7 +325,7 @@
             cursor: pointer; transition: all 0.3s ease; margin: 20px auto;
             display: inline-block; box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
-        .load-more-btn:hover { background: rgba(255,255,255,0.1); transform: scale(1.05); }
+        .load-more-btn:hover { background: rgba(125,125,125,0.1); transform: scale(1.05); }
         #load-more-container { transition: opacity 0.5s ease; text-align: center; }
 
         /* ERROR & SEARCH */
@@ -286,6 +342,8 @@
             transition: opacity 0.3s ease, backdrop-filter 0.3s ease;
             padding-top: 60px;
         }
+        body.light-mode .search-bar { background: rgba(255, 255, 255, 0.6); }
+
         .search-bar.active { opacity: 1; pointer-events: auto; }
         
         .search-box { 
@@ -302,14 +360,19 @@
             border: 1px solid rgba(255,255,255,0.05);
             transition: background 0.2s;
         }
+        body.light-mode .input-wrap { background: rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.05); }
+
         .input-wrap:focus-within { background: rgba(255, 255, 255, 0.18); }
+        body.light-mode .input-wrap:focus-within { background: rgba(0,0,0,0.1); }
         
         .input-wrap input { background: transparent; border: none; color: white; font-size: 17px; width: 100%; outline: none; margin-left: 10px; font-weight: 500; }
+        body.light-mode .input-wrap input { color: #000; }
         .input-wrap input::placeholder { color: rgba(255,255,255,0.4); }
+        body.light-mode .input-wrap input::placeholder { color: rgba(0,0,0,0.4); }
 
         /* SEARCH HISTORY */
         .search-history-container { padding: 0 20px; margin-top: 20px; }
-        .history-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .history-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; color: var(--ios-text); }
         .history-title { font-size: 18px; font-weight: 700; }
         .history-clear { font-size: 14px; color: var(--ios-blue); cursor: pointer; }
         .history-item { 
@@ -323,7 +386,7 @@
         .bottom-nav {
             position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
             width: 240px; height: 74px; 
-            background: rgba(20, 20, 20, 0.5); 
+            background: var(--nav-bg); 
             backdrop-filter: blur(50px) saturate(160%);
             -webkit-backdrop-filter: blur(50px) saturate(160%);
             border-radius: 37px;
@@ -333,33 +396,37 @@
             box-shadow: 0 20px 40px rgba(0,0,0,0.5);
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
+        body.light-mode .bottom-nav { border: 1px solid rgba(0,0,0,0.1); box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
         .bottom-nav.nav-scrolled { width: 140px; height: 52px; bottom: 20px; }
         .animate-nav { animation: fadeInUp 0.8s 0.6s backwards; }
-        .nav-item { color: rgba(255,255,255,0.5); text-align: center; cursor: pointer; transition: color 0.3s, transform 0.2s; }
-        .nav-item.active { color: #FFF; text-shadow: 0 0 15px rgba(255,255,255,0.3); }
+        .nav-item { color: var(--nav-item); text-align: center; cursor: pointer; transition: color 0.3s, transform 0.2s; }
+        .nav-item.active { color: var(--nav-active); text-shadow: 0 0 15px rgba(255,255,255,0.3); }
+        body.light-mode .nav-item.active { text-shadow: none; }
         .nav-item.active i { animation: popBounce 0.4s ease forwards; color: var(--ios-blue); }
-        .nav-item:hover { transform: scale(1.1); color: #fff; }
+        .nav-item:hover { transform: scale(1.1); color: var(--nav-active); }
         .nav-item i { font-size: 24px; display: block; margin-bottom: 4px; transition: margin 0.3s ease; }
         .nav-item span { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; display: block; opacity: 1; height: auto; transition: opacity 0.3s ease, height 0.3s ease, margin 0.3s ease; }
         .bottom-nav.nav-scrolled .nav-item span { opacity: 0; height: 0; margin: 0; overflow: hidden; }
         .bottom-nav.nav-scrolled .nav-item i { margin-bottom: 0; }
 
-        /* --- UPDATED: CONTEXT MENU STYLES --- */
+        /* --- CONTEXT MENU STYLES --- */
         .context-menu-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6); /* Etwas dunkler */
+            background: rgba(0,0,0,0.6); 
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
             z-index: 6000;
             display: none; 
             justify-content: center; 
-            align-items: center; /* Flexbox zentriert jetzt korrekt */
+            align-items: center; 
             opacity: 0; transition: opacity 0.2s ease;
         }
+        body.light-mode .context-menu-overlay { background: rgba(255,255,255,0.4); }
+
         .context-menu-overlay.active { display: flex; opacity: 1; }
         
         .context-menu-wrapper {
-            width: 90%; max-width: 280px; /* Responsive Width */
+            width: 90%; max-width: 280px; 
             text-align: center;
             animation: scaleIn 0.25s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
         }
@@ -373,12 +440,12 @@
             margin-bottom: 15px; border: var(--glass-border);
             box-shadow: 0 15px 35px rgba(0,0,0,0.5);
         }
+        body.light-mode .context-preview-card { background: rgba(255,255,255,0.85); box-shadow: 0 15px 35px rgba(0,0,0,0.15); }
         
         .ctx-icon { width: 90px; height: 90px; border-radius: 20px; margin-bottom: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.3); object-fit: cover; background: #222; }
         
-        /* Text Overflow Fix */
         .ctx-name { 
-            font-size: 18px; font-weight: 700; margin-bottom: 5px; color: #FFF; 
+            font-size: 18px; font-weight: 700; margin-bottom: 5px; color: var(--ios-text); 
             width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
         }
         .ctx-author { 
@@ -392,6 +459,7 @@
             font-weight: 600; font-size: 16px; margin-top: 5px;
             cursor: pointer; border: none;
         }
+        body.light-mode .ctx-btn { background: #000; color: #FFF; }
         
         .ctx-cancel-btn {
             background: rgba(255,255,255,0.15); color: #FFF;
@@ -399,6 +467,32 @@
             border-radius: 14px; font-weight: 600; font-size: 16px;
             border: none; cursor: pointer;
         }
+        body.light-mode .ctx-cancel-btn { background: rgba(0,0,0,0.05); color: #000; }
+
+        /* --- NEU: SPEZIFISCHE STYLES FÜR DAS MENU --- */
+        .menu-list-wrapper {
+            background: rgba(30,30,30,0.85); 
+            backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+            border-radius: 14px;
+            overflow: hidden;
+            border: var(--glass-border);
+            display: flex; flex-direction: column;
+            width: 250px;
+        }
+        body.light-mode .menu-list-wrapper { background: rgba(250,250,250,0.9); border: 1px solid rgba(0,0,0,0.1); }
+
+        .menu-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 16px 16px;
+            cursor: pointer;
+            transition: background 0.2s;
+            color: var(--ios-text);
+            font-size: 16px;
+        }
+        .menu-item:active { background: rgba(255,255,255,0.1); }
+        body.light-mode .menu-item:active { background: rgba(0,0,0,0.1); }
+        
+        .menu-separator { height: 1px; background: var(--ios-separator); width: 100%; margin-left: 16px; }
 
         .hidden { display: none; }
     </style>
@@ -417,10 +511,28 @@
     </div>
 </div>
 
+<div id="settings-menu-overlay" class="context-menu-overlay" onclick="toggleSettings(false)">
+    <div class="context-menu-wrapper" style="width: auto;" onclick="event.stopPropagation()">
+        <div class="menu-list-wrapper">
+            <div class="menu-item" onclick="toggleTheme()">
+                <span id="theme-text">Zu Light Mode wechseln</span>
+                <i id="theme-icon" class="fas fa-sun"></i>
+            </div>
+            
+            <div class="menu-separator"></div>
+            
+            <div class="menu-item" onclick="location.reload()">
+                <span>Seite neu laden</span>
+                <i class="fas fa-rotate-right"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="search-bar" id="search-overlay">
     <div class="search-box">
         <div class="input-wrap">
-            <i class="fas fa-search" style="color:rgba(255,255,255,0.5)"></i>
+            <i class="fas fa-search" style="color:var(--ios-subtext)"></i>
             <input type="text" id="search-input" placeholder="Apps, Spiele und Tools..." autocomplete="off">
         </div>
         <span onclick="toggleSearch(false)" style="color:var(--ios-blue); font-size:17px; cursor:pointer; font-weight:500;">Abbrechen</span>
@@ -450,6 +562,10 @@
             </div>
         </div>
         <button class="sticky-btn">LADEN</button>
+    </div>
+
+    <div class="header-more-btn" onclick="toggleSettings(true)">
+        <i class="fas fa-ellipsis"></i>
     </div>
 </header>
 
@@ -525,6 +641,47 @@
 </nav>
 
 <script>
+    // --- THEME LOGIC START ---
+    let isLightMode = false;
+
+    function toggleSettings(show) {
+        const overlay = document.getElementById('settings-menu-overlay');
+        if(show) {
+            overlay.classList.add('active');
+        } else {
+            overlay.classList.remove('active');
+        }
+    }
+
+    function toggleTheme() {
+        isLightMode = !isLightMode;
+        
+        // CSS Klasse am Body umschalten
+        if (isLightMode) {
+            document.body.classList.add('light-mode');
+            document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]').setAttribute("content", "default");
+        } else {
+            document.body.classList.remove('light-mode');
+            document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]').setAttribute("content", "black-translucent");
+        }
+
+        // Text und Icon im Menü anpassen
+        const text = document.getElementById('theme-text');
+        const icon = document.getElementById('theme-icon');
+        
+        if (isLightMode) {
+            text.innerText = "Zu Dark Mode wechseln";
+            icon.className = "fas fa-moon";
+        } else {
+            text.innerText = "Zu Light Mode wechseln";
+            icon.className = "fas fa-sun";
+        }
+
+        // Menü schließen
+        toggleSettings(false);
+    }
+    // --- THEME LOGIC END ---
+
     // Kategorien hinzugefügt für Filter-Logik
     let appDatabase = [
         { name: "PhotoSwooper", author: "krille-chan", pkg: "com.github.krille_chan.photoswooper", icon: "https://f-droid.org/repo/com.github.krille_chan.photoswooper/en-US/icon.png", ver: "2.1.0", cat: "Tools" },
@@ -865,7 +1022,7 @@
 </script>
 
 <div style="text-align: center; margin-top: 20px; padding: 10px;">
-    <p style="color: #888888; font-size: 12px; margin: 0;">Version 24.72</p>
+    <p style="color: #888888; font-size: 12px; margin: 0;">Version 26.79</p>
     <p style="color: #666666; font-size: 10px; margin-top: 5px; opacity: 0.7;">By Nexus with ❤️</p>
     <div style="width: 100%; text-align: center; margin-top: 15px;">
         <a href="https://nexus-ashy.vercel.app/" style="color: #00ff00; text-decoration: none; font-size: 12px; font-weight: bold;">Mehr von uns</a>
