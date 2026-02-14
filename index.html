@@ -13,304 +13,264 @@
             --ios-text: #FFFFFF;
             --ios-subtext: #8E8E93;
             --ios-separator: #38383A;
-            --ios-blur: rgba(30, 30, 30, 0.75);
+            --ios-blur: rgba(28, 28, 30, 0.8);
             --glass-border: 1px solid rgba(255, 255, 255, 0.1);
-            --radius-l: 28px;
-            --radius-m: 16px;
-            --shadow: 0 10px 30px rgba(0,0,0,0.5);
+            --radius-l: 32px;
+            --radius-m: 18px;
         }
 
         body { 
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif; 
-            margin: 0; 
-            background: var(--ios-bg); 
-            color: var(--ios-text); 
-            padding-bottom: 120px; 
-            -webkit-tap-highlight-color: transparent;
-            overflow-x: hidden;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif; 
+            margin: 0; background: var(--ios-bg); color: var(--ios-text); 
+            padding-bottom: 120px; overflow-x: hidden; -webkit-font-smoothing: antialiased;
         }
 
-        /* HEADER */
-        header { 
-            padding: 40px 20px 10px; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center;
-        }
-        .logo { font-size: 32px; font-weight: 800; letter-spacing: -0.5px; }
-        .user-avatar { width: 36px; height: 36px; background: #333; border-radius: 50%; border: 1.5px solid #444; }
+        /* Verhindert rote Unterstreichung bei Links */
+        a { text-decoration: none; color: inherit; -webkit-tap-highlight-color: transparent; }
 
-        /* SEARCH OVERLAY */
-        .search-bar {
-            position: fixed;
-            top: 0; left: 0; width: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            backdrop-filter: blur(20px);
-            padding: 50px 20px 20px;
-            transform: translateY(-100%);
-            transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-            z-index: 1001;
-            display: flex; align-items: center;
-        }
-        .search-bar.active { transform: translateY(0); }
-        .search-input-wrapper {
-            flex-grow: 1; background: #222; border-radius: 12px;
-            display: flex; align-items: center; padding: 0 12px; height: 42px;
-            border: var(--glass-border);
-        }
-        .search-input { background: transparent; border: none; width: 100%; color: #FFF; font-size: 17px; outline: none; }
-        .close-search { color: var(--ios-blue); margin-left: 15px; cursor: pointer; }
+        header { padding: 50px 20px 10px; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 34px; font-weight: 800; letter-spacing: -1px; }
 
-        /* FEATURED BANNER (FIXED) */
+        /* FEATURED BANNER - FIX FÜR LINK-OPTIK & ÜBERLAPPUNG */
         .featured-banner {
-            margin: 10px 20px 25px;
-            background: var(--ios-card);
+            margin: 15px 20px 30px;
+            background: #111;
             border-radius: var(--radius-l);
-            height: 400px;
+            height: 420px;
             position: relative;
             overflow: hidden;
             display: flex;
             flex-direction: column;
             justify-content: flex-end;
             border: var(--glass-border);
-            box-shadow: var(--shadow);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
         }
         .featured-img-bg {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background-size: cover !important; background-position: center !important;
-            z-index: 1;
+            filter: brightness(0.7); z-index: 1;
         }
         .featured-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(to bottom, rgba(0,0,0,0) 30%, rgba(0,0,0,0.9) 100%);
+            background: linear-gradient(to bottom, transparent 20%, rgba(0,0,0,0.95) 100%);
             z-index: 2;
         }
         .featured-info { 
-            position: relative; z-index: 3; padding: 25px; 
-            display: flex; flex-direction: column; align-items: center; text-align: center;
+            position: relative; z-index: 3; padding: 30px; 
+            text-align: center; display: flex; flex-direction: column; align-items: center;
         }
-        .featured-tag { color: #bf55ec; font-size: 12px; font-weight: 700; text-transform: uppercase; margin-bottom: 8px; }
-        .featured-title { font-size: 26px; font-weight: 800; margin-bottom: 8px; }
-        .featured-desc { font-size: 14px; color: rgba(255,255,255,0.7); margin-bottom: 18px; }
+        .featured-tag { color: #bf55ec; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+        .featured-title { font-size: 28px; font-weight: 800; margin-bottom: 5px; color: white; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+        .featured-desc { font-size: 15px; color: var(--ios-subtext); margin-bottom: 20px; }
         .get-btn {
-            background: rgba(255,255,255,0.2); backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.3); color: #FFF;
-            padding: 12px 60px; border-radius: 25px; font-weight: 700; font-size: 16px;
+            background: #FFFFFF; color: #000; padding: 12px 50px; 
+            border-radius: 25px; font-weight: 700; font-size: 16px; border: none;
         }
 
-        /* SECTIONS & LISTS */
-        .section-title { padding: 20px 20px 12px; font-size: 22px; font-weight: 700; display: flex; justify-content: space-between; align-items: center; }
-        .section-more { color: var(--ios-blue); font-size: 15px; font-weight: 400; }
+        /* SECTIONS */
+        .section-title { padding: 20px 20px 15px; font-size: 22px; font-weight: 700; display: flex; justify-content: space-between; align-items: center; }
+        .section-more { color: var(--ios-blue); font-size: 16px; font-weight: 400; }
 
-        .horizontal-scroll { display: flex; overflow-x: auto; padding: 0 20px 20px; gap: 15px; scrollbar-width: none; }
+        .horizontal-scroll { display: flex; overflow-x: auto; padding: 0 20px 25px; gap: 18px; scrollbar-width: none; }
         .horizontal-scroll::-webkit-scrollbar { display: none; }
 
-        .card-item { width: 110px; min-width: 110px; }
-        .card-icon { width: 110px; height: 110px; border-radius: 24px; object-fit: cover; background: #222; border: var(--glass-border); margin-bottom: 8px; }
-        .card-name { font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .card-rating { font-size: 11px; color: var(--ios-subtext); }
+        .card-item { width: 120px; min-width: 120px; transition: transform 0.2s; }
+        .card-icon { width: 120px; height: 120px; border-radius: 26px; object-fit: cover; border: var(--glass-border); margin-bottom: 10px; box-shadow: 0 8px 20px rgba(0,0,0,0.3); }
+        .card-name { font-size: 14px; font-weight: 500; margin-bottom: 2px; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .card-author { font-size: 12px; color: var(--ios-subtext); }
 
+        /* LIST STYLE */
         .app-list-container { background: var(--ios-card); margin: 0 20px; border-radius: var(--radius-m); padding: 0 16px; border: var(--glass-border); }
-        .app-item { display: flex; padding: 14px 0; border-bottom: 1px solid var(--ios-separator); align-items: center; }
+        .app-item { display: flex; padding: 15px 0; border-bottom: 0.5px solid var(--ios-separator); align-items: center; }
         .app-item:last-child { border-bottom: none; }
-        .app-icon { width: 60px; height: 60px; border-radius: 14px; margin-right: 15px; object-fit: cover; border: var(--glass-border); }
+        .app-icon { width: 62px; height: 62px; border-radius: 14px; margin-right: 15px; border: var(--glass-border); }
         .app-info { flex-grow: 1; min-width: 0; }
-        .app-name { font-weight: 600; font-size: 17px; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .app-name { font-weight: 600; font-size: 17px; margin-bottom: 3px; }
         .app-meta { font-size: 13px; color: var(--ios-subtext); }
-        .d-icon { background: #333; color: var(--ios-blue); padding: 6px 16px; border-radius: 20px; font-weight: 700; font-size: 13px; text-transform: uppercase; }
-        .d-icon::after { content: 'Laden'; }
+        .laden-badge { background: #333; color: var(--ios-blue); padding: 6px 18px; border-radius: 20px; font-weight: 800; font-size: 13px; }
 
-        /* TAGS */
-        .tags-container { padding: 0 20px 10px; display: flex; flex-wrap: wrap; gap: 10px; }
-        .tag { background: #1C1C1E; padding: 10px 18px; border-radius: 12px; color: #FFF; border: var(--glass-border); font-size: 14px; font-weight: 500; }
+        /* SEARCH BAR */
+        .search-bar {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.95); backdrop-filter: blur(25px);
+            z-index: 2000; transform: translateY(-100%); transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            padding-top: 60px;
+        }
+        .search-bar.active { transform: translateY(0); }
+        .search-box { display: flex; align-items: center; padding: 0 20px; gap: 15px; }
+        .input-wrap { flex: 1; background: #222; border-radius: 12px; display: flex; align-items: center; padding: 10px 15px; }
+        .input-wrap input { background: transparent; border: none; color: white; font-size: 17px; width: 100%; outline: none; }
 
-        /* LIQUID NAV */
+        /* NAV */
         .bottom-nav {
             position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
-            width: 220px; height: 70px; background: var(--ios-blur);
-            backdrop-filter: saturate(180%) blur(25px); border-radius: 35px;
+            width: 240px; height: 74px; background: var(--ios-blur);
+            backdrop-filter: blur(30px) saturate(150%); border-radius: 37px;
             display: flex; justify-content: space-evenly; align-items: center;
-            z-index: 1000; border: var(--glass-border); box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+            z-index: 3000; border: var(--glass-border); box-shadow: 0 20px 50px rgba(0,0,0,0.8);
         }
-        .nav-item { display: flex; flex-direction: column; align-items: center; color: rgba(255,255,255,0.4); font-size: 11px; gap: 4px; }
+        .nav-item { color: rgba(255,255,255,0.4); text-align: center; transition: 0.3s; }
         .nav-item.active { color: #FFF; }
-        .nav-item i { font-size: 22px; }
+        .nav-item i { font-size: 24px; display: block; margin-bottom: 4px; }
+        .nav-item span { font-size: 10px; font-weight: 600; text-transform: uppercase; }
 
         .hidden { display: none; }
-        .fade-anim { animation: fadein 0.5s ease; }
-        @keyframes fadein { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
     </style>
 </head>
 <body>
 
-<div class="search-bar" id="search-bar">
-    <div class="search-input-wrapper">
-        <i class="fas fa-search" style="color:#8E8E93; margin-right: 10px;"></i>
-        <input type="text" class="search-input" id="search-input" placeholder="Apps suchen..." autocomplete="off">
+<div class="search-bar" id="search-overlay">
+    <div class="search-box">
+        <div class="input-wrap">
+            <i class="fas fa-search" style="color:#8E8E93"></i>
+            <input type="text" id="search-input" placeholder="F-Droid Apps durchsuchen...">
+        </div>
+        <span onclick="toggleSearch(false)" style="color:var(--ios-blue); font-size:17px;">Abbrechen</span>
     </div>
-    <div class="close-search" onclick="toggleSearch(false)">Abbrechen</div>
+    <div id="search-results" class="app-list-container" style="margin-top:20px; max-height: 70vh; overflow-y: auto;"></div>
 </div>
 
 <header>
     <div class="logo">Home</div>
-    <div class="user-avatar"></div>
+    <div style="width:38px; height:38px; background:#222; border-radius:50%; border:var(--glass-border);"></div>
 </header>
 
-<div id="main-content">
-    <div id="featured-section"></div>
+<div id="content-main">
+    <div id="featured-hero"></div>
 
-    <div class="section-title">Angesagt <i class="fas fa-chevron-right" style="font-size: 14px; color: #333;"></i></div>
-    <div class="horizontal-scroll" id="trending-list"></div>
+    <div class="section-title">Angesagt <i class="fas fa-chevron-right" style="font-size:14px; opacity:0.2;"></i></div>
+    <div class="horizontal-scroll" id="scroll-trending"></div>
 
-    <div class="section-title">Entdecken</div>
-    <div class="tags-container">
-        <button class="tag" onclick="autoSearch('WhatsApp')">WhatsApp</button>
-        <button class="tag" onclick="autoSearch('Spotify')">Musik</button>
-        <button class="tag" onclick="autoSearch('VPN')">Tools</button>
-        <button class="tag" onclick="autoSearch('Telegram')">Chat</button>
-    </div>
+    <div class="section-title">Top Apps <span class="section-more">Alle</span></div>
+    <div class="horizontal-scroll" id="scroll-top"></div>
 
-    <div class="section-title">Top Apps <span class="section-more" onclick="viewAll('Apps')">Alle ansehen</span></div>
-    <div class="horizontal-scroll" id="games-list"></div>
-
-    <div class="section-title">Updates</div>
-    <div id="feed-list" class="app-list-container"></div>
-    <button class="load-more-btn" style="width:100%; background:none; border:none; color:#0A84FF; padding:30px; font-size:17px; font-weight:600;" onclick="loadMore()">Mehr anzeigen</button>
+    <div class="section-title">Neueste Updates</div>
+    <div id="update-feed" class="app-list-container"></div>
 </div>
 
-<div id="search-results-container" class="hidden">
-    <div class="section-title">Ergebnisse für <span id="search-term-display" style="color:#0A84FF"></span> <span class="section-more" onclick="closeViewAll()" style="font-size:24px;">&times;</span></div>
-    <div id="search-list" class="app-list-container"></div>
-</div>
-
-<div class="bottom-nav">
-    <div class="nav-item active" id="nav-home" onclick="toggleSearch(false)">
-        <i class="fas fa-home"></i>
+<nav class="bottom-nav">
+    <div class="nav-item active" onclick="toggleSearch(false)">
+        <i class="fas fa-house"></i>
         <span>Home</span>
     </div>
-    <div class="nav-item" id="nav-search" onclick="toggleSearch(true)">
-        <i class="fas fa-search"></i>
+    <div class="nav-item" onclick="toggleSearch(true)">
+        <i class="fas fa-magnifying-glass"></i>
         <span>Suche</span>
     </div>
-</div>
+</nav>
 
 <script>
-    let allApps = [];
-    let featuredInterval;
+    // Mock-Daten (In einer echten App würde man hier die F-Droid JSON API anfragen)
+    const appDatabase = [
+        { name: "OmWeather", author: "woheller69", pkg: "org.woheller69.omweather", icon: "https://f-droid.org/repo/org.woheller69.omweather/en-US/icon_vC_jP3X8E1X_8Y_J7S7e1_Qv7X_yX_J7S7e1_Qv7X_y.png", ver: "1.5.2" },
+        { name: "NewPipe", author: "Team NewPipe", pkg: "org.schabi.newpipe", icon: "https://f-droid.org/repo/org.schabi.newpipe/en-US/icon_vC_jP3X8E1X_8Y_J7S7e1_Qv7X_yX_J7S7e1_Qv7X_y.png", ver: "0.27.0" },
+        { name: "Telegram FOSS", author: "Telegram", pkg: "org.telegram.messenger", icon: "https://f-droid.org/repo/org.telegram.messenger/en-US/icon_vC_jP3X8E1X_8Y_J7S7e1_Qv7X_yX_J7S7e1_Qv7X_y.png", ver: "10.3.1" },
+        { name: "AdAway", author: "AdAway", pkg: "org.adaway", icon: "https://f-droid.org/repo/org.adaway/en-US/icon_vC_jP3X8E1X_8Y_J7S7e1_Qv7X_yX_J7S7e1_Qv7X_y.png", ver: "6.1.1" },
+        { name: "F-Droid", author: "F-Droid", pkg: "org.fdroid.fdroid", icon: "https://f-droid.org/repo/org.fdroid.fdroid/en-US/icon_vC_jP3X8E1X_8Y_J7S7e1_Qv7X_yX_J7S7e1_Qv7X_y.png", ver: "1.19" },
+        { name: "VLC", author: "VideoLAN", pkg: "org.videolan.vlc", icon: "https://f-droid.org/repo/org.videolan.vlc/en-US/icon_vC_jP3X8E1X_8Y_J7S7e1_Qv7X_yX_J7S7e1_Qv7X_y.png", ver: "3.5.4" },
+        { name: "AntennaPod", author: "AntennaPod", pkg: "de.danoeh.antennapod", icon: "https://f-droid.org/repo/de.danoeh.antennapod/en-US/icon_vC_jP3X8E1X_8Y_J7S7e1_Qv7X_yX_J7S7e1_Qv7X_y.png", ver: "3.2.0" }
+    ];
+
+    function shuffle(array) {
+        return array.sort(() => Math.random() - 0.5);
+    }
 
     function toggleSearch(show) {
-        const bar = document.getElementById('search-bar');
-        const homeNav = document.getElementById('nav-home');
-        const searchNav = document.getElementById('nav-search');
-        if (show) {
-            bar.classList.add('active');
-            document.getElementById('search-input').focus();
-            searchNav.classList.add('active'); homeNav.classList.remove('active');
-        } else {
-            bar.classList.remove('active');
-            closeViewAll();
-            homeNav.classList.add('active'); searchNav.classList.remove('active');
-        }
+        document.getElementById('search-overlay').classList.toggle('active', show);
+        if(show) document.getElementById('search-input').focus();
     }
 
-    function autoSearch(term) {
-        toggleSearch(true);
-        document.getElementById('search-input').value = term;
-        performSearch(term);
-    }
-
-    function createAppItem(app) {
-        return `
-            <a href="app.html?id=${app.packageName}" class="app-item">
-                <img src="${app.icon}" class="app-icon" onerror="this.src='https://via.placeholder.com/60/222/fff?text=App'">
-                <div class="app-info">
-                    <div class="app-name">${app.name}</div>
-                    <div class="app-meta">Version ${app.version} • ${app.author}</div>
-                </div>
-                <div class="d-icon"></div>
-            </a>
-        `;
-    }
-
-    function createCardItem(app) {
-        return `
-            <a href="app.html?id=${app.packageName}" class="card-item">
-                <img src="${app.icon}" class="card-icon" onerror="this.src='https://via.placeholder.com/110/222/fff?text=App'">
-                <div class="card-name">${app.name}</div>
-                <div class="card-rating">${app.author}</div>
-            </a>
-        `;
-    }
-
-    function renderFeatured(app) {
-        if(!app) return;
-        const container = document.getElementById('featured-section');
-        container.innerHTML = `
-            <a href="app.html?id=${app.packageName}" class="featured-banner fade-anim">
-                <div class="featured-img-bg" style="background: url('${app.icon}') center/cover;"></div>
+    function render() {
+        const shuffled = shuffle([...appDatabase]);
+        
+        // Featured
+        const feat = shuffled[0];
+        document.getElementById('featured-hero').innerHTML = `
+            <a href="app.html?id=${feat.pkg}" class="featured-banner">
+                <div class="featured-img-bg" style="background: url('${feat.icon}')"></div>
                 <div class="featured-overlay"></div>
                 <div class="featured-info">
                     <span class="featured-tag">DownAPK Empfehlung</span>
-                    <div class="featured-title">${app.name}</div>
-                    <div class="featured-desc">Jetzt die neueste Version laden.</div>
-                    <button class="get-btn">Laden</button>
+                    <div class="featured-title">${feat.name}</div>
+                    <div class="featured-desc">Von ${feat.author} • Jetzt laden</div>
+                    <div class="get-btn">Laden</div>
                 </div>
             </a>
         `;
-    }
 
-    let feedAppsShown = 0;
-    async function init() {
-        const dummy = [
-            { name: "Weather Pro", author: "Woheller", version: "2.1", icon: "https://via.placeholder.com/300/FFA500/fff?text=Weather", packageName: "p1" },
-            { name: "WhatsApp", author: "Meta", version: "2.24", icon: "https://via.placeholder.com/300/25D366/fff?text=WA", packageName: "p2" },
-            { name: "Spotify", author: "Spotify", version: "8.9", icon: "https://via.placeholder.com/300/1DB954/fff?text=Music", packageName: "p3" },
-            { name: "Telegram", author: "Telegram", version: "10.1", icon: "https://via.placeholder.com/300/0088cc/fff?text=Chat", packageName: "p4" },
-            { name: "Vanced Video", author: "TeamV", version: "18.0", icon: "https://via.placeholder.com/300/FF0000/fff?text=Video", packageName: "p5" },
-            { name: "Alpha Browser", author: "DevX", version: "4.5", icon: "https://via.placeholder.com/300/444/fff?text=Web", packageName: "p6" }
-        ];
+        // Horizontal Lists
+        const trending = document.getElementById('scroll-trending');
+        const top = document.getElementById('scroll-top');
+        trending.innerHTML = ""; top.innerHTML = "";
         
-        try {
-            const res = await fetch('/api/apps');
-            allApps = res.ok ? await res.json() : dummy;
-        } catch { allApps = dummy; }
+        shuffled.slice(1, 6).forEach(app => {
+            const html = `
+                <a href="app.html?id=${app.pkg}" class="card-item">
+                    <img src="${app.icon}" class="card-icon">
+                    <span class="card-name">${app.name}</span>
+                    <span class="card-author">${app.author}</span>
+                </a>
+            `;
+            trending.innerHTML += html;
+        });
 
-        renderFeatured(allApps[0]);
-        const trending = document.getElementById('trending-list');
-        allApps.slice(0, 5).forEach(a => trending.innerHTML += createCardItem(a));
-        const topApps = document.getElementById('games-list');
-        allApps.slice(0, 5).forEach(a => topApps.innerHTML += createCardItem(a));
-        loadMore();
+        shuffled.slice(2, 7).forEach(app => {
+            top.innerHTML += `
+                <a href="app.html?id=${app.pkg}" class="card-item">
+                    <img src="${app.icon}" class="card-icon">
+                    <span class="card-name">${app.name}</span>
+                    <span class="card-author">${app.author}</span>
+                </a>
+            `;
+        });
+
+        // Feed
+        const feed = document.getElementById('update-feed');
+        feed.innerHTML = "";
+        shuffled.forEach(app => {
+            feed.innerHTML += `
+                <a href="app.html?id=${app.pkg}" class="app-item">
+                    <img src="${app.icon}" class="app-icon">
+                    <div class="app-info">
+                        <div class="app-name">${app.name}</div>
+                        <div class="app-meta">Version ${app.ver} • ${app.author}</div>
+                    </div>
+                    <div class="laden-badge">LADEN</div>
+                </a>
+            `;
+        });
     }
 
-    function loadMore() {
-        const container = document.getElementById('feed-list');
-        allApps.slice(feedAppsShown, feedAppsShown + 5).forEach(a => container.innerHTML += createAppItem(a));
-        feedAppsShown += 5;
-    }
-
-    function performSearch(q) {
-        const main = document.getElementById('main-content');
-        const results = document.getElementById('search-results-container');
-        const list = document.getElementById('search-list');
-        main.classList.add('hidden'); results.classList.remove('hidden');
-        document.getElementById('search-term-display').innerText = `"${q}"`;
-        const filtered = allApps.filter(a => a.name.toLowerCase().includes(q.toLowerCase()));
-        list.innerHTML = filtered.length ? '' : '<div style="padding:40px; text-align:center; color:#555">Keine Apps gefunden.</div>';
-        filtered.forEach(a => list.innerHTML += createAppItem(a));
-    }
-
+    // Suche Logik
     document.getElementById('search-input').addEventListener('input', (e) => {
-        if(e.target.value.length > 0) performSearch(e.target.value);
-        else closeViewAll();
+        const query = e.target.value.toLowerCase();
+        const resultsBox = document.getElementById('search-results');
+        resultsBox.innerHTML = "";
+        
+        if(query.length < 1) return;
+
+        const filtered = appDatabase.filter(a => a.name.toLowerCase().includes(query) || a.pkg.toLowerCase().includes(query));
+        
+        if(filtered.length === 0) {
+            resultsBox.innerHTML = "<div style='padding:20px; color:#888; text-align:center;'>Keine Apps in F-Droid gefunden.</div>";
+        } else {
+            filtered.forEach(app => {
+                resultsBox.innerHTML += `
+                    <a href="app.html?id=${app.pkg}" class="app-item">
+                        <img src="${app.icon}" class="app-icon">
+                        <div class="app-info">
+                            <div class="app-name">${app.name}</div>
+                            <div class="app-meta">${app.pkg}</div>
+                        </div>
+                        <div class="laden-badge">LADEN</div>
+                    </a>
+                `;
+            });
+        }
     });
 
-    function closeViewAll() {
-        document.getElementById('main-content').classList.remove('hidden');
-        document.getElementById('search-results-container').classList.add('hidden');
-    }
-
-    init();
+    window.onload = render;
 </script>
+
 </body>
 </html>
