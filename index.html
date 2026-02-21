@@ -4,16 +4,27 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="PodStream">
+    <meta name="description" content="Höre deine Lieblingspodcasts!">
+    <meta name="author" content="Nexus">
+    
+    <meta property="og:title" content="PodStream - Podcasts kostenlos streamen!">
+    <meta property="og:description" content="Deine Shows - überall!">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1590602847861-f357a9332bbc?q=80&w=500&auto=format&fit=crop">
+    <meta property="og:type" content="website">
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>PodStream - Dein Podcast Hub</title>
+    <title>PodStream</title>
 
+    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/1051/1051994.png">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/1051/1051994.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
         :root {
             --ios-bg: #000000;
             --ios-card: #1C1C1E;
-            --ios-blue: #0A84FF;
+            --ios-blue: #FF2D55; /* Podcast-Rot als Akzent */
             --ios-text: #FFFFFF;
             --ios-subtext: #8E8E93;
             --ios-separator: #38383A;
@@ -24,12 +35,13 @@
             --radius-l: 32px;
             --radius-m: 18px;
             --header-height: 100px;
+            --header-collapsed: 70px;
         }
 
         body.light-mode {
             --ios-bg: #F2F2F7;
             --ios-card: #FFFFFF;
-            --ios-blue: #007AFF;
+            --ios-blue: #D81B60;
             --ios-text: #000000;
             --ios-subtext: #8E8E93;
             --ios-separator: #C6C6C8;
@@ -43,124 +55,132 @@
             font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif; 
             margin: 0; background: var(--ios-bg); color: var(--ios-text); 
             padding-bottom: 120px; overflow-x: hidden; -webkit-font-smoothing: antialiased;
+            user-select: none; -webkit-user-select: none;
             transition: background 0.3s, color 0.3s;
         }
 
-        /* ANIMATIONS */
+        a { text-decoration: none !important; color: inherit !important; -webkit-tap-highlight-color: transparent; }
+
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes scrollText { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
+        @keyframes scrollText { 0% { transform: translateX(0); } 20% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+        @keyframes popBounce { 0% { transform: scale(1); } 40% { transform: scale(1.3); } 100% { transform: scale(1); } }
         @keyframes scaleIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
-        
+
         .animate-entry { opacity: 0; animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
         .delay-1 { animation-delay: 0.1s; }
         .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
 
-        /* HEADER */
         header { 
             position: fixed; top: 0; left: 0; width: 100%; height: var(--header-height);
-            z-index: 1000; display: flex; align-items: center; padding: 0 20px; box-sizing: border-box;
-            transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+            z-index: 1000; display: flex; align-items: center; justify-content: flex-start;
+            padding: 0 20px; box-sizing: border-box; transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
+        .header-spacer { height: var(--header-height); width: 100%; }
         .header-blur-bg {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background-size: cover !important; background-position: center !important;
-            filter: blur(25px) brightness(0.4); opacity: 0; transition: opacity 0.5s; z-index: 1;
+            filter: blur(25px) brightness(0.4); opacity: 0; transition: opacity 0.5s ease; z-index: 1;
         }
         body.light-mode .header-blur-bg { filter: blur(25px) brightness(1.2); }
-        
-        .logo { font-size: 34px; font-weight: 800; letter-spacing: -1px; position: relative; z-index: 2; transition: all 0.4s; }
-        
+
+        .logo { font-size: 34px; font-weight: 800; letter-spacing: -1px; position: relative; z-index: 2; transition: all 0.4s; color: var(--ios-text); }
+
         .header-more-btn {
             width: 34px; height: 34px; border-radius: 50%; background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center;
-            margin-left: auto; cursor: pointer; z-index: 2000; color: var(--ios-blue); border: 1px solid rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            display: flex; align-items: center; justify-content: center; margin-left: auto;
+            cursor: pointer; z-index: 2000; color: var(--ios-blue); font-size: 16px; border: 1px solid rgba(255,255,255,0.05);
         }
+        body.light-mode .header-more-btn { background: rgba(0,0,0,0.05); }
 
-        header.scrolled { height: 70px; background: rgba(0,0,0,0.3); border-bottom: var(--glass-border); }
-        body.light-mode header.scrolled { background: rgba(255,255,255,0.6); }
-        header.scrolled .logo { opacity: 0; transform: translateY(-20px) scale(0.8); }
-        header.scrolled .header-blur-bg { opacity: 1; }
-
-        /* STICKY APP BAR (während Scroll sichtbar) */
         .sticky-app-bar {
             position: absolute; left: 0; top: 0; width: 100%; height: 100%;
-            display: flex; align-items: center; padding: 0 20px; box-sizing: border-box;
-            z-index: 3; opacity: 0; transform: translateY(20px); transition: all 0.4s; pointer-events: none;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 20px; box-sizing: border-box; z-index: 3; opacity: 0;
+            transform: translateY(20px); transition: all 0.4s; pointer-events: none; padding-right: 60px;
         }
+        .sticky-left { display: flex; align-items: center; overflow: hidden; }
+        .sticky-icon { width: 38px; height: 38px; border-radius: 8px; margin-right: 12px; background: #333; }
+        .sticky-info-text { display: flex; flex-direction: column; overflow: hidden; }
+        .sticky-name { font-weight: 600; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 120px; color: var(--ios-text); }
+        .sticky-sub { font-size: 11px; opacity: 0.7; color: var(--ios-text); }
+        .sticky-btn {
+            background: var(--ios-blue); color: white; border: none; padding: 6px 16px; border-radius: 20px;
+            font-weight: 700; font-size: 12px; cursor: pointer;
+        }
+
+        header.scrolled { height: var(--header-collapsed); background: rgba(0,0,0,0.3); border-bottom: var(--glass-border); }
+        header.scrolled .logo { opacity: 0; transform: translateY(-20px) scale(0.8); }
         header.scrolled .sticky-app-bar { opacity: 1; transform: translateY(0); pointer-events: auto; }
-        .sticky-icon { width: 38px; height: 38px; border-radius: 8px; margin-right: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        header.scrolled .header-blur-bg { opacity: 1; }
 
-        /* PLAYER CONTAINER */
-        #player-container {
-            margin: 20px; background: var(--ios-card); border-radius: var(--radius-m);
-            padding: 15px; border: var(--glass-border); display: none;
-            animation: scaleIn 0.5s ease; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            position: relative; z-index: 100;
-        }
-        .custom-controls { display: flex; align-items: center; gap: 15px; margin-top: 15px; }
-        .play-pause-btn {
-            background: var(--ios-blue); color: white; border: none; border-radius: 50%;
-            width: 45px; height: 45px; display: flex; justify-content: center; align-items: center; font-size: 18px;
-        }
-        .seek-bar { flex: 1; -webkit-appearance: none; height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px; }
-        .seek-bar::-webkit-slider-thumb { -webkit-appearance: none; width: 12px; height: 12px; background: white; border-radius: 50%; }
-
-        /* CATEGORIES */
         .category-scroll { display: flex; overflow-x: auto; padding: 10px 20px; gap: 10px; scrollbar-width: none; }
         .category-scroll::-webkit-scrollbar { display: none; }
         .cat-pill {
             background: rgba(255,255,255,0.08); color: var(--ios-subtext); padding: 8px 18px;
-            border-radius: 20px; font-size: 14px; font-weight: 600; white-space: nowrap; cursor: pointer;
+            border-radius: 20px; font-size: 14px; font-weight: 600; white-space: nowrap; cursor: pointer; transition: 0.3s;
         }
-        body.light-mode .cat-pill { background: rgba(0,0,0,0.05); }
-        .cat-pill.active { background: var(--ios-blue); color: white; }
+        .cat-pill.active { background: var(--ios-blue); color: white; box-shadow: 0 4px 15px rgba(255, 45, 85, 0.4); }
 
-        /* HERO BANNER */
         .featured-banner {
             margin: 15px 20px 30px; background: #111; border-radius: var(--radius-l);
-            height: 380px; position: relative; overflow: hidden; display: flex;
+            height: 420px; position: relative; overflow: hidden; display: flex;
             flex-direction: column; justify-content: flex-end; border: var(--glass-border);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6); transition: transform 0.3s ease;
         }
-        .featured-img-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover !important; filter: brightness(0.6); }
-        .featured-info { position: relative; z-index: 3; padding: 30px; background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.9)); }
-        .featured-title { font-size: 28px; font-weight: 800; color: white; margin: 5px 0; }
+        .featured-img-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover !important; filter: brightness(0.5); transition: 5s ease; }
+        .featured-banner:hover .featured-img-bg { transform: scale(1.1); }
+        .featured-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.95) 100%); z-index: 2; }
+        .featured-info { position: relative; z-index: 3; padding: 30px; text-align: center; display: flex; flex-direction: column; align-items: center; width: 100%; box-sizing: border-box; }
+        .featured-title-wrap { width: 100%; overflow: hidden; white-space: nowrap; }
+        .featured-title { font-size: 28px; font-weight: 800; color: white !important; }
+        .get-btn { background: #FFFFFF; color: #000; padding: 12px 50px; border-radius: 25px; font-weight: 700; cursor: pointer; border: none; }
 
-        /* LISTS */
-        .section-title { padding: 20px 20px 10px; font-size: 22px; font-weight: 700; }
-        .horizontal-scroll { display: flex; overflow-x: auto; padding: 0 20px 25px; gap: 18px; }
-        .card-item { width: 140px; min-width: 140px; cursor: pointer; }
-        .card-icon { width: 140px; height: 140px; border-radius: 22px; object-fit: cover; margin-bottom: 8px; box-shadow: 0 8px 16px rgba(0,0,0,0.3); }
-        .card-name { font-size: 14px; font-weight: 600; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .section-title { padding: 20px 20px 15px; font-size: 22px; font-weight: 700; display: flex; justify-content: space-between; color: var(--ios-text); }
+        .horizontal-scroll { display: flex; overflow-x: auto; padding: 0 20px 25px; gap: 18px; scrollbar-width: none; }
+        .horizontal-scroll::-webkit-scrollbar { display: none; }
+
+        .card-item { width: 120px; min-width: 120px; cursor: pointer; transition: 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .card-item:hover { transform: translateY(-5px) scale(1.03); }
+        .card-icon { width: 120px; height: 120px; border-radius: 26px; object-fit: cover; border: var(--glass-border); background: #222; }
+        .card-name-wrap { width: 100%; overflow: hidden; white-space: nowrap; mask-image: linear-gradient(to right, black 90%, transparent 100%); }
+        .card-name { font-size: 14px; font-weight: 500; color: var(--ios-text) !important; }
+        .card-item:hover .card-name { animation: scrollText 3s linear infinite; padding-right: 20px; }
 
         .app-list-container { background: var(--ios-card); margin: 0 20px; border-radius: var(--radius-m); padding: 0 16px; border: var(--glass-border); }
-        .app-item { display: flex; padding: 14px 0; border-bottom: 0.5px solid var(--ios-separator); align-items: center; cursor: pointer; }
+        .app-item { display: flex; padding: 15px 0; border-bottom: 0.5px solid var(--ios-separator); align-items: center; cursor: pointer; }
         .app-item:last-child { border-bottom: none; }
-        .app-icon { width: 58px; height: 58px; border-radius: 12px; margin-right: 15px; }
-        .app-info { flex: 1; min-width: 0; }
-        .app-name { font-weight: 600; font-size: 16px; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .app-meta { font-size: 12px; color: var(--ios-subtext); }
-        .play-badge { color: var(--ios-blue); font-weight: 800; font-size: 12px; background: rgba(255,255,255,0.1); padding: 6px 14px; border-radius: 20px; }
+        .app-icon { width: 62px; height: 62px; border-radius: 14px; margin-right: 15px; border: var(--glass-border); object-fit: cover; }
+        .app-info { flex-grow: 1; min-width: 0; }
+        .app-name { font-weight: 600; font-size: 17px; color: var(--ios-text) !important; }
+        .laden-badge { background: #333; color: var(--ios-blue); padding: 6px 18px; border-radius: 20px; font-weight: 800; font-size: 12px; }
 
-        /* SEARCH OVERLAY */
+        /* SEARCH BAR */
         .search-bar {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(10,10,10,0.8); backdrop-filter: blur(40px);
-            z-index: 5000; opacity: 0; pointer-events: none; transition: 0.3s; padding-top: 60px;
+            background: rgba(10, 10, 10, 0.7); backdrop-filter: blur(40px) saturate(180%);
+            z-index: 5000; opacity: 0; pointer-events: none; transition: 0.3s ease; padding-top: 60px;
         }
         .search-bar.active { opacity: 1; pointer-events: auto; }
-        .input-wrap { flex: 1; background: rgba(255,255,255,0.1); border-radius: 12px; display: flex; align-items: center; padding: 10px 15px; }
+        .input-wrap { flex: 1; background: rgba(255, 255, 255, 0.12); border-radius: 12px; display: flex; align-items: center; padding: 12px 15px; }
         .input-wrap input { background: transparent; border: none; color: white; font-size: 17px; width: 100%; outline: none; margin-left: 10px; }
 
         /* NAV */
         .bottom-nav {
             position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
-            width: 240px; height: 70px; background: var(--nav-bg); backdrop-filter: blur(30px);
-            border-radius: 35px; display: flex; justify-content: space-evenly; align-items: center;
-            z-index: 4000; border: 1px solid rgba(255,255,255,0.1); transition: 0.4s;
+            width: 240px; height: 74px; background: var(--nav-bg); backdrop-filter: blur(50px);
+            border-radius: 37px; display: flex; justify-content: space-evenly; align-items: center;
+            z-index: 4000; border: 1px solid rgba(255,255,255,0.15); transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        .nav-item { color: var(--nav-item); text-align: center; cursor: pointer; font-size: 22px; }
+        .bottom-nav.nav-scrolled { width: 140px; height: 52px; bottom: 20px; }
+        .nav-item { color: var(--nav-item); text-align: center; cursor: pointer; }
         .nav-item.active { color: var(--ios-blue); }
-        .nav-item span { display: block; font-size: 10px; font-weight: 700; margin-top: 4px; }
+        .nav-item i { font-size: 24px; display: block; margin-bottom: 4px; }
+        .nav-item span { font-size: 10px; font-weight: 600; text-transform: uppercase; transition: 0.3s; }
+        .bottom-nav.nav-scrolled .nav-item span { opacity: 0; height: 0; margin: 0; overflow: hidden; }
 
         /* CONTEXT MENU */
         .context-menu-overlay {
@@ -169,46 +189,71 @@
             z-index: 6000; display: none; justify-content: center; align-items: center; opacity: 0; transition: 0.2s;
         }
         .context-menu-overlay.active { display: flex; opacity: 1; }
-        .context-card { width: 280px; background: var(--ios-card); border-radius: 20px; padding: 20px; text-align: center; border: var(--glass-border); animation: scaleIn 0.3s forwards; }
+        .context-preview-card { background: rgba(30,30,30,0.85); border-radius: 20px; padding: 25px; text-align: center; border: var(--glass-border); width: 260px; }
+        .ctx-icon { width: 100px; height: 100px; border-radius: 20px; margin-bottom: 15px; }
+        .ctx-cancel-btn { background: rgba(255,255,255,0.1); color: white; border: none; width: 100%; padding: 12px; border-radius: 12px; margin-top: 10px; }
 
-        .loader { border: 3px solid rgba(255,255,255,0.1); border-top: 3px solid var(--ios-blue); border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; margin: 20px auto; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        #desktop-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: #000; z-index: 10000; display: none;
+            flex-direction: column; align-items: center; justify-content: center; color: white; text-align: center;
+        }
+        @media (min-width: 769px) { #desktop-overlay { display: flex; } }
+        body.overlay-closed #desktop-overlay { display: none !important; }
     </style>
 </head>
 <body>
 
-<div id="settings-overlay" class="context-menu-overlay" onclick="toggleSettings(false)">
-    <div class="context-card" onclick="event.stopPropagation()">
-        <h3 style="margin-top:0">Einstellungen</h3>
-        <div class="app-item" onclick="toggleTheme()" style="border:none">
-            <span id="theme-text">Light Mode</span>
-            <i class="fas fa-circle-half-stroke" style="margin-left:auto"></i>
+<div id="desktop-overlay">
+    <i class="fas fa-podcast" style="font-size: 80px; color: var(--ios-blue); margin-bottom: 20px;"></i>
+    <h1 style="font-size: 32px; font-weight: 800;">PodStream</h1>
+    <p style="color: #8E8E93; margin-bottom: 30px;">Für das beste Erlebnis öffne uns am Handy.</p>
+    <button onclick="document.body.classList.add('overlay-closed')" style="background: white; color: black; border: none; padding: 12px 24px; border-radius: 25px; font-weight: 700; cursor: pointer;">Trotzdem fortfahren</button>
+</div>
+
+<div id="context-menu-overlay" class="context-menu-overlay" onclick="closeContextMenu()">
+    <div class="context-preview-card" onclick="event.stopPropagation()">
+        <img id="ctx-icon" class="ctx-icon" src="">
+        <div id="ctx-name" style="font-weight: 700; font-size: 18px;">Show Name</div>
+        <div id="ctx-author" style="color: var(--ios-subtext); margin-bottom: 20px;">Artist</div>
+        <button class="get-btn" style="width: 100%; padding: 12px 0;" onclick="closeContextMenu()">Jetzt hören</button>
+        <button class="ctx-cancel-btn" onclick="closeContextMenu()">Abbrechen</button>
+    </div>
+</div>
+
+<div id="settings-menu-overlay" class="context-menu-overlay" onclick="toggleSettings(false)">
+    <div class="context-preview-card" style="width: auto; padding: 0; overflow: hidden;">
+        <div style="padding: 15px 25px; border-bottom: 0.5px solid var(--ios-separator);" onclick="toggleTheme()">
+            <span id="theme-text">Zu Light Mode</span>
         </div>
-        <button class="play-badge" style="width:100%; margin-top:15px; padding:12px" onclick="toggleSettings(false)">Schließen</button>
+        <div style="padding: 15px 25px;" onclick="location.reload()">Neu laden</div>
     </div>
 </div>
 
 <div class="search-bar" id="search-overlay">
-    <div style="display:flex; padding:0 20px; gap:15px; align-items:center">
+    <div style="display:flex; padding: 0 20px; gap:15px; align-items:center">
         <div class="input-wrap">
             <i class="fas fa-search" style="color:var(--ios-subtext)"></i>
-            <input type="text" id="search-input" placeholder="Podcasts suchen..." onkeyup="if(event.key==='Enter') searchPodcasts()">
+            <input type="text" id="search-input" placeholder="Podcasts suchen..." oninput="performSearch(this.value)">
         </div>
         <span onclick="toggleSearch(false)" style="color:var(--ios-blue); cursor:pointer">Abbrechen</span>
     </div>
-    <div id="search-results" style="margin-top:20px; overflow-y:auto; height:80vh"></div>
+    <div id="search-results" class="app-list-container" style="margin-top:25px; background: transparent; border:none;"></div>
 </div>
 
-<header id="main-header">
+<header id="main-header" class="animate-entry">
     <div class="header-blur-bg" id="header-blur"></div>
     <div class="logo">PodStream</div>
     
-    <div class="sticky-app-bar">
-        <img id="sticky-icon" src="" class="sticky-icon" onerror="this.src='https://via.placeholder.com/100'">
-        <div style="flex:1; overflow:hidden">
-            <div id="sticky-name" class="card-name">Wähle Podcast</div>
-            <div style="font-size:10px; opacity:0.6">Wird abgespielt</div>
+    <div class="sticky-app-bar" id="sticky-bar">
+        <div class="sticky-left">
+            <img id="sticky-icon" src="" class="sticky-icon">
+            <div class="sticky-info-text">
+                <span id="sticky-name" class="sticky-name">Laden...</span>
+                <span class="sticky-sub">Podcast</span>
+            </div>
         </div>
+        <button class="sticky-btn">HÖREN</button>
     </div>
 
     <div class="header-more-btn" onclick="toggleSettings(true)">
@@ -216,23 +261,11 @@
     </div>
 </header>
 
-<div style="height:100px"></div>
-
-<div id="player-container">
-    <div style="display:flex; align-items:center; gap:15px">
-        <img id="player-art" src="" style="width:50px; height:50px; border-radius:8px">
-        <div style="flex:1; overflow:hidden">
-            <div id="player-title" style="font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis">Titel der Episode</div>
-            <div id="player-sub" style="font-size:12px; color:var(--ios-subtext)">Wird geladen...</div>
-        </div>
-        <i class="fas fa-times" onclick="closePlayer()" style="opacity:0.5; cursor:pointer"></i>
-    </div>
-    <div id="media-wrapper"></div>
-</div>
+<div class="header-spacer"></div>
 
 <div id="content-main">
     <div class="category-scroll animate-entry">
-        <div class="cat-pill active">Entdecken</div>
+        <div class="cat-pill active">Alle</div>
         <div class="cat-pill">True Crime</div>
         <div class="cat-pill">Wissen</div>
         <div class="cat-pill">Comedy</div>
@@ -242,15 +275,15 @@
 
     <div id="featured-hero" class="animate-entry delay-1"></div>
 
-    <div class="section-title">Angesagt</div>
-    <div class="horizontal-scroll" id="scroll-trending"></div>
+    <div class="section-title animate-entry delay-2">Trending Shows</div>
+    <div class="horizontal-scroll animate-entry delay-2" id="scroll-trending"></div>
 
-    <div class="section-title" id="episode-header" style="display:none">Episoden</div>
-    <div id="episode-list" class="app-list-container" style="display:none"></div>
+    <div class="section-title animate-entry delay-3">Empfehlungen</div>
+    <div id="update-feed" class="app-list-container animate-entry delay-3"></div>
 </div>
 
-<nav class="bottom-nav">
-    <div class="nav-item active" onclick="location.reload()">
+<nav class="bottom-nav animate-nav">
+    <div class="nav-item active" onclick="toggleSearch(false)">
         <i class="fas fa-house"></i>
         <span>Home</span>
     </div>
@@ -262,170 +295,123 @@
 
 <script>
     let isLightMode = false;
-    const PROXIES = ["https://api.allorigins.win/get?url=", "https://api.codetabs.com/v1/proxy?quest="];
+    let podcastDb = [];
 
-    function toggleSettings(show) {
-        document.getElementById('settings-overlay').style.display = show ? 'flex' : 'none';
-        if(show) document.getElementById('settings-overlay').classList.add('active');
+    // Long Press Logic
+    let pressTimer;
+    function startLongPress(e, app) {
+        pressTimer = setTimeout(() => {
+            if(navigator.vibrate) navigator.vibrate(50);
+            document.getElementById('ctx-icon').src = app.artworkUrl600 || app.artworkUrl100;
+            document.getElementById('ctx-name').innerText = app.collectionName;
+            document.getElementById('ctx-author').innerText = app.artistName;
+            document.getElementById('context-menu-overlay').classList.add('active');
+        }, 500);
     }
+    function cancelLongPress() { clearTimeout(pressTimer); }
+    function closeContextMenu() { document.getElementById('context-menu-overlay').classList.remove('active'); }
+
+    function toggleSettings(show) { document.getElementById('settings-menu-overlay').classList.toggle('active', show); }
+    function toggleSearch(show) { document.getElementById('search-overlay').classList.toggle('active', show); }
 
     function toggleTheme() {
         isLightMode = !isLightMode;
         document.body.classList.toggle('light-mode', isLightMode);
-        document.getElementById('theme-text').innerText = isLightMode ? "Dark Mode" : "Light Mode";
+        document.getElementById('theme-text').innerText = isLightMode ? "Zu Dark Mode" : "Zu Light Mode";
         toggleSettings(false);
     }
 
-    function toggleSearch(show) {
-        const s = document.getElementById('search-overlay');
-        s.classList.toggle('active', show);
-        if(show) document.getElementById('search-input').focus();
-    }
-
-    async function searchPodcasts() {
-        const query = document.getElementById('search-input').value;
-        const results = document.getElementById('search-results');
-        if(!query) return;
-        results.innerHTML = '<div class="loader"></div>';
-
+    async function loadPodcasts() {
         try {
-            const resp = await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(query)}&entity=podcast&limit=15`);
+            const resp = await fetch('https://itunes.apple.com/search?term=podcast&limit=20&country=de');
             const data = await resp.json();
-            results.innerHTML = "";
-            data.results.forEach(p => {
-                results.innerHTML += `
-                    <div class="app-item" onclick="loadEpisodes('${p.feedUrl}', '${p.artworkUrl600}')">
-                        <img src="${p.artworkUrl100}" class="app-icon">
-                        <div class="app-info">
-                            <span class="app-name">${p.collectionName}</span>
-                            <span class="app-meta">${p.artistName}</span>
-                        </div>
-                        <i class="fas fa-chevron-right" style="opacity:0.3; margin-right:15px"></i>
-                    </div>`;
-            });
-        } catch (e) { results.innerHTML = "<p style='text-align:center'>Fehler bei der Suche.</p>"; }
+            podcastDb = data.results;
+            render();
+        } catch (e) { console.error("API Error"); }
     }
 
-    async function loadEpisodes(feedUrl, art) {
-        toggleSearch(false);
-        const list = document.getElementById('episode-list');
-        const header = document.getElementById('episode-header');
-        header.style.display = "block";
-        list.style.display = "block";
-        list.innerHTML = '<div class="loader"></div>';
-        list.scrollIntoView({behavior: 'smooth'});
+    function render() {
+        const feat = podcastDb[0];
+        document.getElementById('header-blur').style.backgroundImage = `url('${feat.artworkUrl600}')`;
+        document.getElementById('sticky-icon').src = feat.artworkUrl100;
+        document.getElementById('sticky-name').innerText = feat.collectionName;
 
-        let xmlContent = null;
-        for (let proxy of PROXIES) {
-            try {
-                const r = await fetch(proxy + encodeURIComponent(feedUrl));
-                const d = await r.json();
-                xmlContent = d.contents || d;
-                if(xmlContent) break;
-            } catch(e) {}
-        }
+        document.getElementById('featured-hero').innerHTML = `
+            <div class="featured-banner">
+                <div class="featured-img-bg" style="background: url('${feat.artworkUrl600}') center/cover"></div>
+                <div class="featured-overlay"></div>
+                <div class="featured-info">
+                    <div class="featured-title-wrap"><span class="featured-title">${feat.collectionName}</span></div>
+                    <button class="get-btn">Hören</button>
+                </div>
+            </div>`;
 
-        if(!xmlContent) { list.innerHTML = "<p style='padding:20px'>Feed konnte nicht geladen werden.</p>"; return; }
-
-        const xml = new DOMParser().parseFromString(xmlContent, "text/xml");
-        const items = xml.querySelectorAll("item");
-        list.innerHTML = "";
+        const trending = document.getElementById('scroll-trending');
+        const feed = document.getElementById('update-feed');
         
-        items.forEach((item, i) => {
-            if(i > 20) return;
-            const title = item.querySelector("title")?.textContent || "Episode " + i;
-            const enc = item.querySelector("enclosure");
-            if(!enc) return;
-            const url = enc.getAttribute("url");
-            
-            list.innerHTML += `
-                <div class="app-item animate-entry" onclick="playMedia('${url}', '${title.replace(/'/g, "\\'")}', '${art}')">
+        podcastDb.slice(1, 10).forEach(p => {
+            const card = document.createElement('div');
+            card.className = 'card-item animate-entry';
+            card.onmousedown = (e) => startLongPress(e, p);
+            card.onmouseup = cancelLongPress;
+            card.ontouchstart = (e) => startLongPress(e, p);
+            card.ontouchend = cancelLongPress;
+            card.innerHTML = `
+                <img src="${p.artworkUrl600}" class="card-icon">
+                <div class="card-name-wrap"><span class="card-name">${p.collectionName}</span></div>
+            `;
+            trending.appendChild(card);
+        });
+
+        podcastDb.slice(10, 20).forEach(p => {
+            feed.innerHTML += `
+                <div class="app-item animate-entry">
+                    <img src="${p.artworkUrl100}" class="app-icon">
                     <div class="app-info">
-                        <span class="app-name">${title}</span>
-                        <span class="app-meta">Audio • ${new Date(item.querySelector("pubDate")?.textContent).toLocaleDateString()}</span>
+                        <div class="app-name">${p.collectionName}</div>
+                        <div style="font-size:12px; color:var(--ios-subtext)">${p.artistName}</div>
                     </div>
-                    <div class="play-badge">HÖREN</div>
+                    <div class="laden-badge">PLAY</div>
                 </div>`;
         });
     }
 
-    function playMedia(url, title, art) {
-        const container = document.getElementById('player-container');
-        const wrapper = document.getElementById('media-wrapper');
-        document.getElementById('player-title').innerText = title;
-        document.getElementById('player-art').src = art;
-        document.getElementById('sticky-icon').src = art;
-        document.getElementById('sticky-name').innerText = title;
-        document.getElementById('header-blur').style.backgroundImage = `url(${art})`;
-        
-        container.style.display = "block";
-        wrapper.innerHTML = `
-            <audio id="main-audio" autoplay src="${url}"></audio>
-            <div class="custom-controls">
-                <button class="play-pause-btn" onclick="togglePlay()"><i id="pp-icon" class="fas fa-pause"></i></button>
-                <input type="range" class="seek-bar" id="seek" value="0" min="0" step="1">
-            </div>
-        `;
-        
-        const audio = document.getElementById('main-audio');
-        const seek = document.getElementById('seek');
-        
-        audio.ontimeupdate = () => {
-            seek.max = audio.duration;
-            seek.value = audio.currentTime;
-        };
-        seek.oninput = () => audio.currentTime = seek.value;
-        window.scrollTo({top: 0, behavior: 'smooth'});
-    }
-
-    function togglePlay() {
-        const a = document.getElementById('main-audio');
-        const icon = document.getElementById('pp-icon');
-        if(a.paused) { a.play(); icon.className = "fas fa-pause"; }
-        else { a.pause(); icon.className = "fas fa-play"; }
-    }
-
-    function closePlayer() {
-        const a = document.getElementById('main-audio');
-        if(a) a.pause();
-        document.getElementById('player-container').style.display = "none";
-    }
-
-    async function init() {
-        const trending = document.getElementById('scroll-trending');
-        const hero = document.getElementById('featured-hero');
-        try {
-            const r = await fetch(`https://itunes.apple.com/search?term=podcast&limit=10&country=de`);
-            const d = await r.json();
-            const feat = d.results[0];
-            
-            hero.innerHTML = `
-                <div class="featured-banner animate-entry" onclick="loadEpisodes('${feat.feedUrl}', '${feat.artworkUrl600}')">
-                    <div class="featured-img-bg" style="background: url('${feat.artworkUrl600}') center/cover"></div>
-                    <div class="featured-info">
-                        <span style="color:var(--ios-blue); font-weight:800; font-size:12px">EMPFEHLUNG</span>
-                        <div class="featured-title">${feat.collectionName}</div>
-                        <div style="color:white; opacity:0.7">${feat.artistName}</div>
+    async function performSearch(query) {
+        if(!query) return;
+        const res = await fetch(`https://itunes.apple.com/search?term=${query}&entity=podcast&limit=10`);
+        const data = await res.json();
+        const resultsBox = document.getElementById('search-results');
+        resultsBox.innerHTML = "";
+        data.results.forEach(p => {
+            resultsBox.innerHTML += `
+                <div class="app-item" style="background:rgba(255,255,255,0.05); margin-bottom:5px; border-radius:12px; padding:10px;">
+                    <img src="${p.artworkUrl100}" class="app-icon" style="width:40px; height:40px;">
+                    <div class="app-info">
+                        <div class="app-name" style="font-size:14px;">${p.collectionName}</div>
                     </div>
                 </div>`;
-
-            d.results.slice(1).forEach(p => {
-                trending.innerHTML += `
-                    <div class="card-item animate-entry" onclick="loadEpisodes('${p.feedUrl}', '${p.artworkUrl600}')">
-                        <img src="${p.artworkUrl600}" class="card-icon">
-                        <span class="card-name">${p.collectionName}</span>
-                    </div>`;
-            });
-        } catch(e) { trending.innerHTML = "Fehler beim Laden."; }
+        });
     }
 
-    window.onscroll = () => {
-        const h = document.getElementById('main-header');
-        if(window.scrollY > 40) h.classList.add('scrolled');
-        else h.classList.remove('scrolled');
-    };
+    let lastScrollTop = 0;
+    window.addEventListener('scroll', () => {
+        const header = document.getElementById('main-header');
+        const nav = document.querySelector('.bottom-nav');
+        if (window.scrollY > 40) header.classList.add('scrolled');
+        else header.classList.remove('scrolled');
 
-    init();
+        let st = window.scrollY;
+        if (st > lastScrollTop && st > 50) nav.classList.add('nav-scrolled');
+        else nav.classList.remove('nav-scrolled');
+        lastScrollTop = st;
+    });
+
+    window.onload = loadPodcasts;
 </script>
+
+<div style="text-align: center; margin-top: 20px; padding: 10px; opacity: 0.5;">
+    <p style="font-size: 12px; margin: 0;">PodStream v1.0</p>
+    <p style="font-size: 10px; margin-top: 5px;">Powered by iTunes API</p>
+</div>
 </body>
 </html>
