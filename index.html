@@ -1,30 +1,34 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="PodStream">
-    <meta name="description" content="Höre deine Lieblingspodcasts!">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="DownAPK">
+    <meta name="description" content="Lade deine Lieblinsapps herunter!">
+    <meta name="keywords" content="DownAPK, APK, Download, Down, APKMirror, APKPure">
     <meta name="author" content="Nexus">
     
-    <meta property="og:title" content="PodStream - Podcasts kostenlos streamen!">
-    <meta property="og:description" content="Deine Shows - überall!">
-    <meta property="og:image" content="https://images.unsplash.com/photo-1590602847861-f357a9332bbc?q=80&w=500&auto=format&fit=crop">
+    <meta property="og:title" content="DownAPK - Lade kostenlos APKs herunter!">
+    <meta property="og:description" content="Lade deine Apps - kostenlos!">
+    <meta property="og:image" content="https://lh3.googleusercontent.com/d/1K8g5EPJgvE0-RbGiyJVGWFaCBc9s27gM">
     <meta property="og:type" content="website">
 
+<link rel="manifest" href="/manifest.json">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>PodStream</title>
+    <title>DownAPK</title>
 
-    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/1051/1051994.png">
-    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/1051/1051994.png">
+<link rel="icon" type="image/png" href="https://lh3.googleusercontent.com/d/1K8g5EPJgvE0-RbGiyJVGWFaCBc9s27gM">
+
+<link rel="apple-touch-icon" href="https://lh3.googleusercontent.com/d/1K8g5EPJgvE0-RbGiyJVGWFaCBc9s27gM">
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
     <style>
         :root {
+            /* Default Dark Mode */
             --ios-bg: #000000;
             --ios-card: #1C1C1E;
-            --ios-blue: #FF2D55; /* Podcast-Rot als Akzent */
+            --ios-blue: #0A84FF;
             --ios-text: #FFFFFF;
             --ios-subtext: #8E8E93;
             --ios-separator: #38383A;
@@ -32,16 +36,18 @@
             --nav-bg: rgba(20, 20, 20, 0.5);
             --nav-item: rgba(255,255,255,0.5);
             --nav-active: #FFF;
+            
             --radius-l: 32px;
             --radius-m: 18px;
             --header-height: 100px;
             --header-collapsed: 70px;
         }
 
+        /* --- LIGHT MODE VARIABLES --- */
         body.light-mode {
             --ios-bg: #F2F2F7;
             --ios-card: #FFFFFF;
-            --ios-blue: #D81B60;
+            --ios-blue: #007AFF;
             --ios-text: #000000;
             --ios-subtext: #8E8E93;
             --ios-separator: #C6C6C8;
@@ -61,199 +67,526 @@
 
         a { text-decoration: none !important; color: inherit !important; -webkit-tap-highlight-color: transparent; }
 
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes scrollText { 0% { transform: translateX(0); } 20% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
-        @keyframes popBounce { 0% { transform: scale(1); } 40% { transform: scale(1.3); } 100% { transform: scale(1); } }
-        @keyframes scaleIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+        /* ANIMATIONS */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-        .animate-entry { opacity: 0; animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+        @keyframes scrollText {
+            0% { transform: translateX(0); }
+            20% { transform: translateX(0); }
+            100% { transform: translateX(-100%); }
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.4; }
+            100% { opacity: 1; }
+        }
+        
+        @keyframes popBounce {
+            0% { transform: scale(1); }
+            40% { transform: scale(1.3); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes scaleIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .animate-entry {
+            opacity: 0; 
+            animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+        
         .delay-1 { animation-delay: 0.1s; }
         .delay-2 { animation-delay: 0.2s; }
         .delay-3 { animation-delay: 0.3s; }
         .delay-4 { animation-delay: 0.4s; }
 
+        /* --- HEADER & STICKY LOGIC START --- */
         header { 
-            position: fixed; top: 0; left: 0; width: 100%; height: var(--header-height);
-            z-index: 1000; display: flex; align-items: center; justify-content: flex-start;
-            padding: 0 20px; box-sizing: border-box; transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+            position: fixed; top: 0; left: 0; width: 100%; 
+            height: var(--header-height);
+            z-index: 1000;
+            display: flex; align-items: center; justify-content: flex-start; /* Flex Start behalten */
+            padding: 0 20px; box-sizing: border-box;
+            transition: height 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), background 0.4s;
+            overflow: visible; /* Visible für den Button */
         }
+
         .header-spacer { height: var(--header-height); width: 100%; }
+
         .header-blur-bg {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background-size: cover !important; background-position: center !important;
-            filter: blur(25px) brightness(0.4); opacity: 0; transition: opacity 0.5s ease; z-index: 1;
+            filter: blur(25px) brightness(0.4);
+            opacity: 0; transition: opacity 0.5s ease;
+            z-index: 1;
         }
+        /* Im Light Mode weniger abdunkeln */
         body.light-mode .header-blur-bg { filter: blur(25px) brightness(1.2); }
 
-        .logo { font-size: 34px; font-weight: 800; letter-spacing: -1px; position: relative; z-index: 2; transition: all 0.4s; color: var(--ios-text); }
-
-        .header-more-btn {
-            width: 34px; height: 34px; border-radius: 50%; background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-            display: flex; align-items: center; justify-content: center; margin-left: auto;
-            cursor: pointer; z-index: 2000; color: var(--ios-blue); font-size: 16px; border: 1px solid rgba(255,255,255,0.05);
+        .logo { 
+            font-size: 34px; font-weight: 800; letter-spacing: -1px; 
+            position: relative; z-index: 2;
+            transform-origin: left center;
+            transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+            color: var(--ios-text);
         }
-        body.light-mode .header-more-btn { background: rgba(0,0,0,0.05); }
+
+        /* --- NEU: Header More Button --- */
+        .header-more-btn {
+            width: 34px; height: 34px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            display: flex; align-items: center; justify-content: center;
+            margin-left: auto; /* Push to right */
+            cursor: pointer;
+            z-index: 2000; /* Über Sticky Bar */
+            color: var(--ios-blue);
+            font-size: 16px;
+            transition: background 0.2s, color 0.2s;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        body.light-mode .header-more-btn {
+            background: rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        .header-more-btn:active { opacity: 0.7; transform: scale(0.95); }
+
 
         .sticky-app-bar {
             position: absolute; left: 0; top: 0; width: 100%; height: 100%;
             display: flex; align-items: center; justify-content: space-between;
-            padding: 0 20px; box-sizing: border-box; z-index: 3; opacity: 0;
-            transform: translateY(20px); transition: all 0.4s; pointer-events: none; padding-right: 60px;
+            padding: 0 20px; box-sizing: border-box;
+            z-index: 3;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+            pointer-events: none;
+            padding-right: 60px; /* Platz für More Button lassen */
         }
+        
         .sticky-left { display: flex; align-items: center; overflow: hidden; }
-        .sticky-icon { width: 38px; height: 38px; border-radius: 8px; margin-right: 12px; background: #333; }
+        .sticky-icon { width: 38px; height: 38px; border-radius: 8px; margin-right: 12px; background: #333; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
         .sticky-info-text { display: flex; flex-direction: column; overflow: hidden; }
         .sticky-name { font-weight: 600; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 120px; color: var(--ios-text); }
         .sticky-sub { font-size: 11px; opacity: 0.7; color: var(--ios-text); }
+        
         .sticky-btn {
-            background: var(--ios-blue); color: white; border: none; padding: 6px 16px; border-radius: 20px;
-            font-weight: 700; font-size: 12px; cursor: pointer;
+            background: rgba(255,255,255,0.2); color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+            backdrop-filter: blur(10px);
+            padding: 6px 16px; border-radius: 20px;
+            font-weight: 700; font-size: 12px;
+            cursor: pointer; transition: background 0.2s;
+            white-space: nowrap;
         }
+        body.light-mode .sticky-btn { color: #000; border: 1px solid rgba(0,0,0,0.1); background: rgba(255,255,255,0.8); }
+        .sticky-btn:hover { background: rgba(255,255,255,0.3); }
 
-        header.scrolled { height: var(--header-collapsed); background: rgba(0,0,0,0.3); border-bottom: var(--glass-border); }
-        header.scrolled .logo { opacity: 0; transform: translateY(-20px) scale(0.8); }
-        header.scrolled .sticky-app-bar { opacity: 1; transform: translateY(0); pointer-events: auto; }
+        header.scrolled {
+            height: var(--header-collapsed);
+            background: rgba(0,0,0,0.3);
+            border-bottom: var(--glass-border);
+        }
+        body.light-mode header.scrolled { background: rgba(255,255,255,0.6); }
+
         header.scrolled .header-blur-bg { opacity: 1; }
-
-        .category-scroll { display: flex; overflow-x: auto; padding: 10px 20px; gap: 10px; scrollbar-width: none; }
-        .category-scroll::-webkit-scrollbar { display: none; }
-        .cat-pill {
-            background: rgba(255,255,255,0.08); color: var(--ios-subtext); padding: 8px 18px;
-            border-radius: 20px; font-size: 14px; font-weight: 600; white-space: nowrap; cursor: pointer; transition: 0.3s;
+        header.scrolled .logo { opacity: 0; transform: translateY(-20px) scale(0.8); }
+        header.scrolled .sticky-app-bar { 
+            opacity: 1; transform: translateY(0); pointer-events: auto; 
         }
-        .cat-pill.active { background: var(--ios-blue); color: white; box-shadow: 0 4px 15px rgba(255, 45, 85, 0.4); }
 
+        /* --- CATEGORY PILLS --- */
+        .category-scroll {
+            display: flex;
+            overflow-x: auto;
+            padding: 10px 20px;
+            gap: 10px;
+            scrollbar-width: none;
+            margin-bottom: 5px;
+        }
+        .category-scroll::-webkit-scrollbar { display: none; }
+        
+        .cat-pill {
+            background: rgba(255,255,255,0.08);
+            color: var(--ios-subtext);
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+        body.light-mode .cat-pill { background: rgba(0,0,0,0.05); color: #666; }
+
+        .cat-pill:hover { background: rgba(255,255,255,0.15); color: var(--ios-text); }
+        body.light-mode .cat-pill:hover { background: rgba(0,0,0,0.1); }
+
+        .cat-pill.active {
+            background: var(--ios-blue);
+            color: white;
+            box-shadow: 0 4px 15px rgba(10, 132, 255, 0.4);
+        }
+
+        /* --- SKELETON SCREENS --- */
+        .skeleton-loader { padding: 20px; }
+        .skeleton { background: #2C2C2E; border-radius: 8px; animation: pulse 1.5s infinite ease-in-out; }
+        body.light-mode .skeleton { background: #E5E5EA; }
+        .sk-hero { height: 420px; border-radius: var(--radius-l); margin-bottom: 30px; width: 100%; }
+        .sk-row { display: flex; gap: 18px; overflow: hidden; margin-bottom: 30px; }
+        .sk-card { width: 120px; height: 120px; border-radius: 26px; flex-shrink: 0; }
+        .sk-list { margin-top: 20px; }
+        .sk-item { display: flex; align-items: center; margin-bottom: 20px; }
+        .sk-icon { width: 62px; height: 62px; border-radius: 14px; margin-right: 15px; }
+        .sk-text-lines { flex: 1; }
+        .sk-line { height: 10px; border-radius: 4px; margin-bottom: 8px; }
+        .sk-line.short { width: 40%; }
+        .sk-line.long { width: 70%; }
+
+        /* FEATURED BANNER */
         .featured-banner {
             margin: 15px 20px 30px; background: #111; border-radius: var(--radius-l);
             height: 420px; position: relative; overflow: hidden; display: flex;
             flex-direction: column; justify-content: flex-end; border: var(--glass-border);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.6); transition: transform 0.3s ease;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
-        .featured-img-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover !important; filter: brightness(0.5); transition: 5s ease; }
-        .featured-banner:hover .featured-img-bg { transform: scale(1.1); }
-        .featured-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.95) 100%); z-index: 2; }
-        .featured-info { position: relative; z-index: 3; padding: 30px; text-align: center; display: flex; flex-direction: column; align-items: center; width: 100%; box-sizing: border-box; }
-        .featured-title-wrap { width: 100%; overflow: hidden; white-space: nowrap; }
-        .featured-title { font-size: 28px; font-weight: 800; color: white !important; }
-        .get-btn { background: #FFFFFF; color: #000; padding: 12px 50px; border-radius: 25px; font-weight: 700; cursor: pointer; border: none; }
+        body.light-mode .featured-banner { box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
+        .featured-banner:hover { transform: scale(1.02); box-shadow: 0 30px 60px rgba(0,0,0,0.8); }
+        body.light-mode .featured-banner:hover { box-shadow: 0 30px 60px rgba(0,0,0,0.2); }
 
-        .section-title { padding: 20px 20px 15px; font-size: 22px; font-weight: 700; display: flex; justify-content: space-between; color: var(--ios-text); }
+        .featured-img-bg {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-size: cover !important; background-position: center !important;
+            filter: brightness(0.5); z-index: 1; transition: transform 5s ease;
+        }
+        .featured-banner:hover .featured-img-bg { transform: scale(1.1); }
+        .featured-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.95) 100%);
+            z-index: 2;
+        }
+        .featured-info { position: relative; z-index: 3; padding: 30px; text-align: center; display: flex; flex-direction: column; align-items: center; width: 100%; box-sizing: border-box; }
+        .featured-tag { color: #bf55ec; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+        .featured-title-wrap { width: 100%; overflow: hidden; white-space: nowrap; margin-bottom: 5px; }
+        .featured-title { font-size: 28px; font-weight: 800; color: white !important; display: inline-block; }
+        .featured-banner:hover .featured-title { animation: scrollText 4s linear infinite; }
+        .featured-desc { font-size: 15px; color: #ccc; margin-bottom: 20px; }
+        .get-btn { 
+            background: #FFFFFF; color: #000; padding: 12px 50px; border-radius: 25px; 
+            font-weight: 700; font-size: 16px; border: none; transition: transform 0.2s; cursor: pointer;
+        }
+        .get-btn:hover { transform: scale(1.05); background: #eee; }
+
+        /* SECTIONS */
+        .section-title { padding: 20px 20px 15px; font-size: 22px; font-weight: 700; display: flex; justify-content: space-between; align-items: center; color: var(--ios-text); }
+        .section-more { color: var(--ios-blue); font-size: 16px; font-weight: 400; cursor: pointer; transition: opacity 0.2s; }
+        .section-more:hover { opacity: 0.7; }
         .horizontal-scroll { display: flex; overflow-x: auto; padding: 0 20px 25px; gap: 18px; scrollbar-width: none; }
         .horizontal-scroll::-webkit-scrollbar { display: none; }
 
-        .card-item { width: 120px; min-width: 120px; cursor: pointer; transition: 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        /* CARDS & ITEMS */
+        .card-item { width: 120px; min-width: 120px; cursor: pointer; transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); -webkit-touch-callout: none; }
         .card-item:hover { transform: translateY(-5px) scale(1.03); }
-        .card-icon { width: 120px; height: 120px; border-radius: 26px; object-fit: cover; border: var(--glass-border); background: #222; }
-        .card-name-wrap { width: 100%; overflow: hidden; white-space: nowrap; mask-image: linear-gradient(to right, black 90%, transparent 100%); }
-        .card-name { font-size: 14px; font-weight: 500; color: var(--ios-text) !important; }
-        .card-item:hover .card-name { animation: scrollText 3s linear infinite; padding-right: 20px; }
+        .card-icon { width: 120px; height: 120px; border-radius: 26px; object-fit: cover; border: var(--glass-border); margin-bottom: 10px; background: #222; transition: filter 0.3s; pointer-events: none; }
+        .card-item:hover .card-icon { filter: brightness(1.2); }
+        .card-name-wrap { width: 100%; overflow: hidden; white-space: nowrap; margin-bottom: 2px; mask-image: linear-gradient(to right, black 90%, transparent 100%); pointer-events: none; }
+        .card-name { font-size: 14px; font-weight: 500; color: var(--ios-text) !important; display: inline-block; text-overflow: ellipsis; }
+        .card-item:hover .card-name { text-overflow: clip; animation: scrollText 3s linear infinite; padding-right: 20px; }
+        .card-author { font-size: 12px; color: var(--ios-subtext); pointer-events: none; }
 
-        .app-list-container { background: var(--ios-card); margin: 0 20px; border-radius: var(--radius-m); padding: 0 16px; border: var(--glass-border); }
-        .app-item { display: flex; padding: 15px 0; border-bottom: 0.5px solid var(--ios-separator); align-items: center; cursor: pointer; }
+        .app-list-container { background: var(--ios-card); margin: 0 20px; border-radius: var(--radius-m); padding: 0 16px; border: var(--glass-border); transition: background 0.3s; }
+        .app-item { display: flex; padding: 15px 0; border-bottom: 0.5px solid var(--ios-separator); align-items: center; cursor: pointer; transition: background 0.2s, transform 0.2s; -webkit-touch-callout: none; }
         .app-item:last-child { border-bottom: none; }
-        .app-icon { width: 62px; height: 62px; border-radius: 14px; margin-right: 15px; border: var(--glass-border); object-fit: cover; }
-        .app-info { flex-grow: 1; min-width: 0; }
-        .app-name { font-weight: 600; font-size: 17px; color: var(--ios-text) !important; }
-        .laden-badge { background: #333; color: var(--ios-blue); padding: 6px 18px; border-radius: 20px; font-weight: 800; font-size: 12px; }
+        .app-item:hover { background: rgba(125,125,125,0.05); transform: scale(1.01); }
+        .app-icon { width: 62px; height: 62px; border-radius: 14px; margin-right: 15px; border: var(--glass-border); background: #222; object-fit: cover; pointer-events: none; }
+        .app-info { flex-grow: 1; min-width: 0; overflow: hidden; pointer-events: none; }
+        .app-name-wrap { width: 100%; overflow: hidden; white-space: nowrap; margin-bottom: 3px; mask-image: linear-gradient(to right, black 90%, transparent 100%); }
+        .app-name { font-weight: 600; font-size: 17px; color: var(--ios-text) !important; display: inline-block; text-overflow: ellipsis; }
+        .app-item:hover .app-name { text-overflow: clip; animation: scrollText 4s linear infinite; padding-right: 30px; }
+        .app-meta { font-size: 13px; color: var(--ios-subtext); }
+        .laden-badge { background: #333; color: var(--ios-blue); padding: 6px 18px; border-radius: 20px; font-weight: 800; font-size: 12px; transition: background 0.2s; pointer-events: none; }
+        body.light-mode .laden-badge { background: #F2F2F7; }
+        .app-item:hover .laden-badge { background: #444; color: #fff; }
+
+        /* LOAD MORE BUTTON */
+        .load-more-btn {
+            background: var(--ios-card); color: var(--ios-blue);
+            border: var(--glass-border); padding: 12px 35px;
+            border-radius: 30px; font-weight: 600; font-size: 15px;
+            cursor: pointer; transition: all 0.3s ease; margin: 20px auto;
+            display: inline-block; box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        .load-more-btn:hover { background: rgba(125,125,125,0.1); transform: scale(1.05); }
+        #load-more-container { transition: opacity 0.5s ease; text-align: center; }
+
+        /* ERROR & SEARCH */
+        .error-msg { text-align: center; padding: 50px 20px; color: var(--ios-subtext); font-size: 16px; font-weight: 500; }
+        .error-icon { font-size: 40px; margin-bottom: 15px; opacity: 0.5; display: block; }
 
         /* SEARCH BAR */
         .search-bar {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(10, 10, 10, 0.7); backdrop-filter: blur(40px) saturate(180%);
-            z-index: 5000; opacity: 0; pointer-events: none; transition: 0.3s ease; padding-top: 60px;
+            background: rgba(10, 10, 10, 0.7); 
+            backdrop-filter: blur(40px) saturate(180%);
+            z-index: 5000; 
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.3s ease, backdrop-filter 0.3s ease;
+            padding-top: 60px;
         }
+        body.light-mode .search-bar { background: rgba(255, 255, 255, 0.6); }
+
         .search-bar.active { opacity: 1; pointer-events: auto; }
-        .input-wrap { flex: 1; background: rgba(255, 255, 255, 0.12); border-radius: 12px; display: flex; align-items: center; padding: 12px 15px; }
-        .input-wrap input { background: transparent; border: none; color: white; font-size: 17px; width: 100%; outline: none; margin-left: 10px; }
+        
+        .search-box { 
+            display: flex; align-items: center; padding: 0 20px; gap: 15px; 
+            transform: translateY(-10px); transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        .search-bar.active .search-box { transform: translateY(0); }
+
+        .input-wrap { 
+            flex: 1; 
+            background: rgba(255, 255, 255, 0.12);
+            border-radius: 12px; 
+            display: flex; align-items: center; padding: 12px 15px; 
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: background 0.2s;
+        }
+        body.light-mode .input-wrap { background: rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.05); }
+
+        .input-wrap:focus-within { background: rgba(255, 255, 255, 0.18); }
+        body.light-mode .input-wrap:focus-within { background: rgba(0,0,0,0.1); }
+        
+        .input-wrap input { background: transparent; border: none; color: white; font-size: 17px; width: 100%; outline: none; margin-left: 10px; font-weight: 500; }
+        body.light-mode .input-wrap input { color: #000; }
+        .input-wrap input::placeholder { color: rgba(255,255,255,0.4); }
+        body.light-mode .input-wrap input::placeholder { color: rgba(0,0,0,0.4); }
+
+        /* SEARCH HISTORY */
+        .search-history-container { padding: 0 20px; margin-top: 20px; }
+        .history-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; color: var(--ios-text); }
+        .history-title { font-size: 18px; font-weight: 700; }
+        .history-clear { font-size: 14px; color: var(--ios-blue); cursor: pointer; }
+        .history-item { 
+            display: flex; align-items: center; padding: 12px 0; 
+            border-bottom: 0.5px solid var(--ios-separator); cursor: pointer; 
+        }
+        .history-item i { margin-right: 15px; color: var(--ios-subtext); font-size: 14px; }
+        .history-text { font-size: 16px; color: var(--ios-blue); }
 
         /* NAV */
         .bottom-nav {
             position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
-            width: 240px; height: 74px; background: var(--nav-bg); backdrop-filter: blur(50px);
-            border-radius: 37px; display: flex; justify-content: space-evenly; align-items: center;
-            z-index: 4000; border: 1px solid rgba(255,255,255,0.15); transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            width: 240px; height: 74px; 
+            background: var(--nav-bg); 
+            backdrop-filter: blur(50px) saturate(160%);
+            -webkit-backdrop-filter: blur(50px) saturate(160%);
+            border-radius: 37px;
+            display: flex; justify-content: space-evenly; align-items: center;
+            z-index: 4000; 
+            border: 1px solid rgba(255,255,255,0.15);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
+        body.light-mode .bottom-nav { border: 1px solid rgba(0,0,0,0.1); box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
         .bottom-nav.nav-scrolled { width: 140px; height: 52px; bottom: 20px; }
-        .nav-item { color: var(--nav-item); text-align: center; cursor: pointer; }
-        .nav-item.active { color: var(--ios-blue); }
-        .nav-item i { font-size: 24px; display: block; margin-bottom: 4px; }
-        .nav-item span { font-size: 10px; font-weight: 600; text-transform: uppercase; transition: 0.3s; }
+        .animate-nav { animation: fadeInUp 0.8s 0.6s backwards; }
+        .nav-item { color: var(--nav-item); text-align: center; cursor: pointer; transition: color 0.3s, transform 0.2s; }
+        .nav-item.active { color: var(--nav-active); text-shadow: 0 0 15px rgba(255,255,255,0.3); }
+        body.light-mode .nav-item.active { text-shadow: none; }
+        .nav-item.active i { animation: popBounce 0.4s ease forwards; color: var(--ios-blue); }
+        .nav-item:hover { transform: scale(1.1); color: var(--nav-active); }
+        .nav-item i { font-size: 24px; display: block; margin-bottom: 4px; transition: margin 0.3s ease; }
+        .nav-item span { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; display: block; opacity: 1; height: auto; transition: opacity 0.3s ease, height 0.3s ease, margin 0.3s ease; }
         .bottom-nav.nav-scrolled .nav-item span { opacity: 0; height: 0; margin: 0; overflow: hidden; }
+        .bottom-nav.nav-scrolled .nav-item i { margin-bottom: 0; }
 
-        /* CONTEXT MENU */
+        /* --- CONTEXT MENU STYLES --- */
         .context-menu-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6); backdrop-filter: blur(15px);
-            z-index: 6000; display: none; justify-content: center; align-items: center; opacity: 0; transition: 0.2s;
+            background: rgba(0,0,0,0.6); 
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            z-index: 6000;
+            display: none; 
+            justify-content: center; 
+            align-items: center; 
+            opacity: 0; transition: opacity 0.2s ease;
         }
-        .context-menu-overlay.active { display: flex; opacity: 1; }
-        .context-preview-card { background: rgba(30,30,30,0.85); border-radius: 20px; padding: 25px; text-align: center; border: var(--glass-border); width: 260px; }
-        .ctx-icon { width: 100px; height: 100px; border-radius: 20px; margin-bottom: 15px; }
-        .ctx-cancel-btn { background: rgba(255,255,255,0.1); color: white; border: none; width: 100%; padding: 12px; border-radius: 12px; margin-top: 10px; }
+        body.light-mode .context-menu-overlay { background: rgba(255,255,255,0.4); }
 
+        .context-menu-overlay.active { display: flex; opacity: 1; }
+        
+        .context-menu-wrapper {
+            width: 90%; max-width: 280px; 
+            text-align: center;
+            animation: scaleIn 0.25s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+        
+        .context-preview-card {
+            background: rgba(30,30,30,0.85); 
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border-radius: 20px; padding: 25px 20px;
+            display: flex; flex-direction: column; align-items: center;
+            margin-bottom: 15px; border: var(--glass-border);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+        }
+        body.light-mode .context-preview-card { background: rgba(255,255,255,0.85); box-shadow: 0 15px 35px rgba(0,0,0,0.15); }
+        
+        .ctx-icon { width: 90px; height: 90px; border-radius: 20px; margin-bottom: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.3); object-fit: cover; background: #222; }
+        
+        .ctx-name { 
+            font-size: 18px; font-weight: 700; margin-bottom: 5px; color: var(--ios-text); 
+            width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
+        }
+        .ctx-author { 
+            font-size: 13px; color: var(--ios-subtext); margin-bottom: 20px; 
+            width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
+        }
+        
+        .ctx-btn {
+            background: #FFF; color: #000;
+            width: 100%; padding: 12px 0; border-radius: 12px;
+            font-weight: 600; font-size: 16px; margin-top: 5px;
+            cursor: pointer; border: none;
+        }
+        body.light-mode .ctx-btn { background: #000; color: #FFF; }
+        
+        .ctx-cancel-btn {
+            background: rgba(255,255,255,0.15); color: #FFF;
+            backdrop-filter: blur(20px); width: 100%; padding: 14px 0;
+            border-radius: 14px; font-weight: 600; font-size: 16px;
+            border: none; cursor: pointer;
+        }
+        body.light-mode .ctx-cancel-btn { background: rgba(0,0,0,0.05); color: #000; }
+
+        /* --- NEU: SPEZIFISCHE STYLES FÜR DAS MENU --- */
+        .menu-list-wrapper {
+            background: rgba(30,30,30,0.85); 
+            backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+            border-radius: 14px;
+            overflow: hidden;
+            border: var(--glass-border);
+            display: flex; flex-direction: column;
+            width: 250px;
+        }
+        body.light-mode .menu-list-wrapper { background: rgba(250,250,250,0.9); border: 1px solid rgba(0,0,0,0.1); }
+
+        .menu-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 16px 16px;
+            cursor: pointer;
+            transition: background 0.2s;
+            color: var(--ios-text);
+            font-size: 16px;
+        }
+        .menu-item:active { background: rgba(255,255,255,0.1); }
+        body.light-mode .menu-item:active { background: rgba(0,0,0,0.1); }
+        
+        .menu-separator { height: 1px; background: var(--ios-separator); width: 100%; margin-left: 16px; }
+
+        .hidden { display: none; }
+
+        /* --- DESKTOP WARNING OVERLAY --- */
         #desktop-overlay {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: #000; z-index: 10000; display: none;
-            flex-direction: column; align-items: center; justify-content: center; color: white; text-align: center;
+            background: #000; z-index: 10000;
+            display: none; /* Default hidden on mobile */
+            flex-direction: column; align-items: center; justify-content: center;
+            padding: 20px; box-sizing: border-box;
+            color: white; text-align: center;
         }
-        @media (min-width: 769px) { #desktop-overlay { display: flex; } }
-        body.overlay-closed #desktop-overlay { display: none !important; }
+        /* Show on screens wider than 768px (typical tablet/PC breakpoint) */
+        @media (min-width: 769px) {
+            #desktop-overlay { display: flex; }
+        }
+        /* Force hide via JS class if dismissed */
+        body.overlay-closed #desktop-overlay {
+            display: none !important;
+        }
     </style>
 </head>
 <body>
 
 <div id="desktop-overlay">
-    <i class="fas fa-podcast" style="font-size: 80px; color: var(--ios-blue); margin-bottom: 20px;"></i>
-    <h1 style="font-size: 32px; font-weight: 800;">PodStream</h1>
-    <p style="color: #8E8E93; margin-bottom: 30px;">Für das beste Erlebnis öffne uns am Handy.</p>
-    <button onclick="document.body.classList.add('overlay-closed')" style="background: white; color: black; border: none; padding: 12px 24px; border-radius: 25px; font-weight: 700; cursor: pointer;">Trotzdem fortfahren</button>
+    <img src="https://lh3.googleusercontent.com/d/1CenhIHZl9A4D9vyuWJErFtyPTQDtQZqU" alt="Mobile optimized" style="max-width: 300px; width: 80%; border-radius: 20px; margin-bottom: 20px; object-fit: contain;">
+    <h1 style="font-size: 32px; font-weight: 800; margin: 0 0 10px 0;">Ooops!</h1>
+    <p style="color: #8E8E93; font-size: 16px; margin: 0 0 30px 0;">Diese Webseite ist für dein Handy optimiert.</p>
+    <button onclick="closeDesktopOverlay()" style="background: white; color: black; border: none; padding: 12px 24px; border-radius: 25px; font-weight: 700; font-size: 16px; cursor: pointer; margin-bottom: 20px; transition: transform 0.2s;">Trotzdem fortfahren</button>
+    <a href="warum.html" style="color: #0A84FF; font-size: 14px; text-decoration: none;">Warum kommt diese Meldung?</a>
 </div>
-
 <div id="context-menu-overlay" class="context-menu-overlay" onclick="closeContextMenu()">
-    <div class="context-preview-card" onclick="event.stopPropagation()">
-        <img id="ctx-icon" class="ctx-icon" src="">
-        <div id="ctx-name" style="font-weight: 700; font-size: 18px;">Show Name</div>
-        <div id="ctx-author" style="color: var(--ios-subtext); margin-bottom: 20px;">Artist</div>
-        <button class="get-btn" style="width: 100%; padding: 12px 0;" onclick="closeContextMenu()">Jetzt hören</button>
+    <div class="context-menu-wrapper" onclick="event.stopPropagation()">
+        <div class="context-preview-card">
+            <img id="ctx-icon" class="ctx-icon" src="">
+            <div id="ctx-name" class="ctx-name">App Name</div>
+            <div id="ctx-author" class="ctx-author">Developer</div>
+            <button class="ctx-btn" id="ctx-action-btn">Details ansehen</button>
+        </div>
         <button class="ctx-cancel-btn" onclick="closeContextMenu()">Abbrechen</button>
     </div>
 </div>
 
 <div id="settings-menu-overlay" class="context-menu-overlay" onclick="toggleSettings(false)">
-    <div class="context-preview-card" style="width: auto; padding: 0; overflow: hidden;">
-        <div style="padding: 15px 25px; border-bottom: 0.5px solid var(--ios-separator);" onclick="toggleTheme()">
-            <span id="theme-text">Zu Light Mode</span>
+    <div class="context-menu-wrapper" style="width: auto;" onclick="event.stopPropagation()">
+        <div class="menu-list-wrapper">
+            <div class="menu-item" onclick="toggleTheme()">
+                <span id="theme-text">Zu Light Mode wechseln</span>
+                <i id="theme-icon" class="fas fa-sun"></i>
+            </div>
+            
+            <div class="menu-separator"></div>
+            
+            <div class="menu-item" onclick="location.reload()">
+                <span>Seite neu laden</span>
+                <i class="fas fa-rotate-right"></i>
+            </div>
         </div>
-        <div style="padding: 15px 25px;" onclick="location.reload()">Neu laden</div>
     </div>
 </div>
 
 <div class="search-bar" id="search-overlay">
-    <div style="display:flex; padding: 0 20px; gap:15px; align-items:center">
+    <div class="search-box">
         <div class="input-wrap">
             <i class="fas fa-search" style="color:var(--ios-subtext)"></i>
-            <input type="text" id="search-input" placeholder="Podcasts suchen..." oninput="performSearch(this.value)">
+            <input type="text" id="search-input" placeholder="Apps, Spiele und Tools..." autocomplete="off">
         </div>
-        <span onclick="toggleSearch(false)" style="color:var(--ios-blue); cursor:pointer">Abbrechen</span>
+        <span onclick="toggleSearch(false)" style="color:var(--ios-blue); font-size:17px; cursor:pointer; font-weight:500;">Abbrechen</span>
     </div>
-    <div id="search-results" class="app-list-container" style="margin-top:25px; background: transparent; border:none;"></div>
+    
+    <div id="search-history" class="search-history-container" style="display:none;">
+        <div class="history-header">
+            <span class="history-title">Letzte Suchen</span>
+            <span class="history-clear" onclick="clearHistory()">Löschen</span>
+        </div>
+        <div id="history-list"></div>
+    </div>
+
+    <div id="search-results" class="app-list-container animate-entry" style="margin-top:25px; max-height: 75vh; overflow-y: auto; background: transparent; border: none; padding: 0;"></div>
 </div>
 
 <header id="main-header" class="animate-entry">
     <div class="header-blur-bg" id="header-blur"></div>
-    <div class="logo">PodStream</div>
+    <div class="logo">DownAPK</div>
     
-    <div class="sticky-app-bar" id="sticky-bar">
+    <div class="sticky-app-bar" id="sticky-bar" onclick="window.location.href='#'">
         <div class="sticky-left">
-            <img id="sticky-icon" src="" class="sticky-icon">
+            <img id="sticky-icon" src="" class="sticky-icon" onerror="this.style.background='#333'">
             <div class="sticky-info-text">
                 <span id="sticky-name" class="sticky-name">Laden...</span>
-                <span class="sticky-sub">Podcast</span>
+                <span class="sticky-sub">Empfehlung</span>
             </div>
         </div>
-        <button class="sticky-btn">HÖREN</button>
+        <button class="sticky-btn">LADEN</button>
     </div>
 
     <div class="header-more-btn" onclick="toggleSettings(true)">
@@ -263,155 +596,469 @@
 
 <div class="header-spacer"></div>
 
-<div id="content-main">
+<div id="skeleton-loader" class="skeleton-loader">
+    <div class="skeleton sk-hero"></div>
+    <div class="sk-row">
+        <div class="skeleton sk-card"></div>
+        <div class="skeleton sk-card"></div>
+        <div class="skeleton sk-card"></div>
+        <div class="skeleton sk-card"></div>
+    </div>
+    <div class="skeleton sk-list-item" style="height: 30px; width: 150px; margin-bottom: 20px;"></div>
+    <div class="sk-list">
+        <div class="sk-item">
+            <div class="skeleton sk-icon"></div>
+            <div class="sk-text-lines">
+                <div class="skeleton sk-line long"></div>
+                <div class="skeleton sk-line short"></div>
+            </div>
+        </div>
+        <div class="sk-item">
+            <div class="skeleton sk-icon"></div>
+            <div class="sk-text-lines">
+                <div class="skeleton sk-line long"></div>
+                <div class="skeleton sk-line short"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="content-main" style="display: none;">
+    
     <div class="category-scroll animate-entry">
-        <div class="cat-pill active">Alle</div>
-        <div class="cat-pill">True Crime</div>
-        <div class="cat-pill">Wissen</div>
-        <div class="cat-pill">Comedy</div>
-        <div class="cat-pill">Nachrichten</div>
-        <div class="cat-pill">Technik</div>
+        <div class="cat-pill active" onclick="selectCat(this, 'Alle')">Alle</div>
+        <div class="cat-pill" onclick="selectCat(this, 'Spiele')">Spiele</div>
+        <div class="cat-pill" onclick="selectCat(this, 'Tools')">Tools</div>
+        <div class="cat-pill" onclick="selectCat(this, 'Social Media')">Social Media</div>
+        <div class="cat-pill" onclick="selectCat(this, 'Privacy')">Privacy</div>
+        <div class="cat-pill" onclick="selectCat(this, 'Media')">Media</div>
+        <div class="cat-pill" onclick="selectCat(this, 'Produktivität')">Produktivität</div>
+        <div class="cat-pill" onclick="selectCat(this, 'Lifestyle')">Lifestyle</div>
+        <div class="cat-pill" onclick="selectCat(this, 'Bildung')">Bildung</div>
+        <div class="cat-pill" onclick="selectCat(this, 'Finanzen')">Finanzen</div>
     </div>
 
     <div id="featured-hero" class="animate-entry delay-1"></div>
 
-    <div class="section-title animate-entry delay-2">Trending Shows</div>
+    <div class="section-title animate-entry delay-2">Angesagt <i class="fas fa-chevron-right" onclick="viewAll('Angesagt')" style="font-size:14px; opacity:0.3; cursor:pointer;"></i></div>
     <div class="horizontal-scroll animate-entry delay-2" id="scroll-trending"></div>
 
-    <div class="section-title animate-entry delay-3">Empfehlungen</div>
-    <div id="update-feed" class="app-list-container animate-entry delay-3"></div>
+    <div class="section-title animate-entry delay-3">Top Apps <span class="section-more" onclick="viewAll('Top Apps')">Alle</span></div>
+    <div class="horizontal-scroll animate-entry delay-3" id="scroll-top"></div>
+
+    <div class="section-title animate-entry delay-4">Neueste Updates</div>
+    <div id="update-feed" class="app-list-container animate-entry delay-4"></div>
+    
+    <div id="load-more-container" class="animate-entry delay-4">
+        <button class="load-more-btn" onclick="loadMore()">Mehr laden</button>
+    </div>
 </div>
 
 <nav class="bottom-nav animate-nav">
-    <div class="nav-item active" onclick="toggleSearch(false)">
+    <div class="nav-item active" id="btn-home" onclick="toggleSearch(false)">
         <i class="fas fa-house"></i>
         <span>Home</span>
     </div>
-    <div class="nav-item" onclick="toggleSearch(true)">
+    <div class="nav-item" id="btn-search" onclick="toggleSearch(true)">
         <i class="fas fa-magnifying-glass"></i>
         <span>Suche</span>
     </div>
 </nav>
 
 <script>
-    let isLightMode = false;
-    let podcastDb = [];
-
-    // Long Press Logic
-    let pressTimer;
-    function startLongPress(e, app) {
-        pressTimer = setTimeout(() => {
-            if(navigator.vibrate) navigator.vibrate(50);
-            document.getElementById('ctx-icon').src = app.artworkUrl600 || app.artworkUrl100;
-            document.getElementById('ctx-name').innerText = app.collectionName;
-            document.getElementById('ctx-author').innerText = app.artistName;
-            document.getElementById('context-menu-overlay').classList.add('active');
-        }, 500);
+    // --- DESKTOP OVERLAY LOGIC ---
+    function closeDesktopOverlay() {
+        document.body.classList.add('overlay-closed');
     }
-    function cancelLongPress() { clearTimeout(pressTimer); }
-    function closeContextMenu() { document.getElementById('context-menu-overlay').classList.remove('active'); }
 
-    function toggleSettings(show) { document.getElementById('settings-menu-overlay').classList.toggle('active', show); }
-    function toggleSearch(show) { document.getElementById('search-overlay').classList.toggle('active', show); }
+    // --- THEME LOGIC START ---
+    let isLightMode = false;
+
+    function toggleSettings(show) {
+        const overlay = document.getElementById('settings-menu-overlay');
+        if(show) {
+            overlay.classList.add('active');
+        } else {
+            overlay.classList.remove('active');
+        }
+    }
 
     function toggleTheme() {
         isLightMode = !isLightMode;
-        document.body.classList.toggle('light-mode', isLightMode);
-        document.getElementById('theme-text').innerText = isLightMode ? "Zu Dark Mode" : "Zu Light Mode";
+        
+        // CSS Klasse am Body umschalten
+        if (isLightMode) {
+            document.body.classList.add('light-mode');
+            document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]').setAttribute("content", "default");
+        } else {
+            document.body.classList.remove('light-mode');
+            document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]').setAttribute("content", "black-translucent");
+        }
+
+        // Text und Icon im Menü anpassen
+        const text = document.getElementById('theme-text');
+        const icon = document.getElementById('theme-icon');
+        
+        if (isLightMode) {
+            text.innerText = "Zu Dark Mode wechseln";
+            icon.className = "fas fa-moon";
+        } else {
+            text.innerText = "Zu Light Mode wechseln";
+            icon.className = "fas fa-sun";
+        }
+
+        // Menü schließen
         toggleSettings(false);
     }
+    // --- THEME LOGIC END ---
 
-    async function loadPodcasts() {
+    // Kategorien hinzugefügt für Filter-Logik
+    let appDatabase = [
+        { name: "PhotoSwooper", author: "krille-chan", pkg: "com.github.krille_chan.photoswooper", icon: "https://f-droid.org/repo/com.github.krille_chan.photoswooper/en-US/icon.png", ver: "2.1.0", cat: "Tools" },
+        { name: "OmWeather", author: "woheller69", pkg: "org.woheller69.omweather", icon: "https://f-droid.org/repo/org.woheller69.omweather/en-US/icon.png", ver: "1.5.2", cat: "Tools" },
+        { name: "NewPipe", author: "Team NewPipe", pkg: "org.schabi.newpipe", icon: "https://f-droid.org/repo/org.schabi.newpipe/en-US/icon.png", ver: "0.27.0", cat: "Media" },
+        { name: "Telegram FOSS", author: "Telegram", pkg: "org.telegram.messenger", icon: "https://f-droid.org/repo/org.telegram.messenger/en-US/icon.png", ver: "10.3.1", cat: "Social Media" },
+        { name: "AdAway", author: "AdAway", pkg: "org.adaway", icon: "https://f-droid.org/repo/org.adaway/en-US/icon.png", ver: "6.1.1", cat: "Privacy" },
+        { name: "F-Droid", author: "F-Droid", pkg: "org.fdroid.fdroid", icon: "https://f-droid.org/repo/org.fdroid.fdroid/en-US/icon.png", ver: "1.19", cat: "Tools" },
+        { name: "AntennaPod", author: "AntennaPod", pkg: "de.danoeh.antennapod", icon: "https://f-droid.org/repo/de.danoeh.antennapod/en-US/icon.png", ver: "3.2.0", cat: "Media" },
+        { name: "VLC", author: "VideoLAN", pkg: "org.videolan.vlc", icon: "https://f-droid.org/repo/org.videolan.vlc/en-US/icon.png", ver: "3.5.4", cat: "Media" },
+        { name: "SuperTuxKart", author: "Tux", pkg: "org.supertuxkart", icon: "https://f-droid.org/repo/org.supertuxkart.stk/en-US/icon.png", ver: "1.4", cat: "Spiele" } 
+    ];
+
+    let currentFeedApps = [];
+    let currentFeedCount = 0;
+    const feedBatchSize = 4; // Lade 4 Apps auf einmal für den Showcase
+
+    async function loadFDroidApps() {
+        // Kurzer Delay für Skeleton-Demo
+        await new Promise(r => setTimeout(r, 600));
+
         try {
-            const resp = await fetch('https://itunes.apple.com/search?term=podcast&limit=20&country=de');
-            const data = await resp.json();
-            podcastDb = data.results;
-            render();
-        } catch (e) { console.error("API Error"); }
+            const response = await fetch('/api/apps');
+            const data = await response.json();
+            const remoteApps = data.map(app => ({
+                name: app.name,
+                author: app.author,
+                pkg: app.packageName,
+                icon: app.icon,
+                ver: app.version,
+                cat: "Tools" // Default cat für API items
+            }));
+            appDatabase = [...appDatabase, ...remoteApps];
+        } catch (e) { console.log("Verwende Offline DB"); } 
+        finally { render('Alle'); }
     }
 
-    function render() {
-        const feat = podcastDb[0];
-        document.getElementById('header-blur').style.backgroundImage = `url('${feat.artworkUrl600}')`;
-        document.getElementById('sticky-icon').src = feat.artworkUrl100;
-        document.getElementById('sticky-name').innerText = feat.collectionName;
+    function shuffle(array) { return array.sort(() => Math.random() - 0.5); }
+
+    // --- SEARCH LOGIC ---
+    let searchHistory = JSON.parse(localStorage.getItem('downApkHistory')) || [];
+
+    function addToHistory(term) {
+        if(!term) return;
+        searchHistory = searchHistory.filter(item => item !== term); // Remove duplicate
+        searchHistory.unshift(term);
+        if(searchHistory.length > 5) searchHistory.pop();
+        localStorage.setItem('downApkHistory', JSON.stringify(searchHistory));
+    }
+
+    function clearHistory() {
+        searchHistory = [];
+        localStorage.removeItem('downApkHistory');
+        renderHistory();
+    }
+
+    function renderHistory() {
+        const list = document.getElementById('history-list');
+        const container = document.getElementById('search-history');
+        const input = document.getElementById('search-input');
+        
+        if (input.value !== "") {
+            container.style.display = 'none';
+            return;
+        }
+
+        if (searchHistory.length === 0) {
+            container.style.display = 'none';
+        } else {
+            container.style.display = 'block';
+            list.innerHTML = "";
+            searchHistory.forEach(term => {
+                list.innerHTML += `
+                    <div class="history-item" onclick="performSearch('${term}'); document.getElementById('search-input').value = '${term}'">
+                        <i class="fas fa-clock"></i>
+                        <span class="history-text">${term}</span>
+                    </div>
+                `;
+            });
+        }
+    }
+
+    function toggleSearch(show) {
+        const overlay = document.getElementById('search-overlay');
+        const btnSearch = document.getElementById('btn-search');
+        const btnHome = document.getElementById('btn-home');
+        
+        if(show) {
+            overlay.classList.add('active');
+            btnSearch.classList.add('active');
+            btnHome.classList.remove('active');
+            renderHistory();
+            setTimeout(() => document.getElementById('search-input').focus(), 100);
+        } else {
+            overlay.classList.remove('active');
+            btnSearch.classList.remove('active');
+            btnHome.classList.add('active');
+            document.getElementById('search-input').blur();
+        }
+    }
+
+    function viewAll(title) {
+        toggleSearch(true);
+        document.getElementById('search-input').value = ""; 
+        renderHistory();
+    }
+
+    // Filter-Funktion für Kategorien
+    function selectCat(el, category) {
+        document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
+        el.classList.add('active');
+        render(category);
+    }
+
+    // --- CONTEXT MENU LOGIC START ---
+    let pressTimer;
+    let selectedApp = {};
+
+    // Helper für Long Press Simulation in Template Strings
+    function startLongPress(e, name, author, icon, pkg) {
+        selectedApp = { name, author, icon, pkg };
+        pressTimer = setTimeout(() => {
+            openContextMenu();
+        }, 500); 
+    }
+
+    function cancelLongPress() {
+        clearTimeout(pressTimer);
+    }
+
+    // Für Desktop Rechtsklick
+    function handleContext(e, name, author, icon, pkg) {
+        e.preventDefault();
+        selectedApp = { name, author, icon, pkg };
+        openContextMenu();
+        return false;
+    }
+
+    function openContextMenu() {
+        if(navigator.vibrate) navigator.vibrate(50); // Haptic Feedback
+        const overlay = document.getElementById('context-menu-overlay');
+        document.getElementById('ctx-icon').src = selectedApp.icon;
+        document.getElementById('ctx-name').innerText = selectedApp.name;
+        document.getElementById('ctx-author').innerText = selectedApp.author;
+        
+        document.getElementById('ctx-action-btn').onclick = () => {
+             window.location.href = `app.html?id=${selectedApp.pkg}`;
+        };
+        
+        overlay.classList.add('active');
+    }
+
+    function closeContextMenu() {
+        document.getElementById('context-menu-overlay').classList.remove('active');
+    }
+    // --- CONTEXT MENU LOGIC END ---
+
+    function renderError() {
+        document.getElementById('skeleton-loader').style.display = 'none';
+        document.getElementById('content-main').style.display = 'block';
+        const errorHTML = `<div class="error-msg"><i class="fas fa-wifi error-icon"></i>Keine Apps gefunden.</div>`;
+        document.getElementById('scroll-trending').innerHTML = errorHTML;
+    }
+
+    // Erstellt das HTML für ein App-Item der Update-Liste
+    function getAppItemHTML(app) {
+        return `
+            <div class="app-item animate-entry" 
+                 onclick="if(!document.getElementById('context-menu-overlay').classList.contains('active')) window.location.href='app.html?id=${app.pkg}'"
+                 ontouchstart="startLongPress(event, '${app.name}', '${app.author}', '${app.icon}', '${app.pkg}')"
+                 ontouchend="cancelLongPress()"
+                 ontouchmove="cancelLongPress()"
+                 oncontextmenu="return handleContext(event, '${app.name}', '${app.author}', '${app.icon}', '${app.pkg}')">
+                <img src="${app.icon}" class="app-icon" onerror="this.src='https://f-droid.org/repo/${app.pkg}/en-US/icon.png'">
+                <div class="app-info">
+                    <div class="app-name-wrap"><span class="app-name">${app.name}</span></div>
+                    <div class="app-meta">${app.cat} • v${app.ver}</div>
+                </div>
+                <div class="laden-badge">LADEN</div>
+            </div>
+        `;
+    }
+
+    // Läd mehr Apps, wenn auf den Button geklickt wird
+    function loadMore() {
+        const feed = document.getElementById('update-feed');
+        const nextCount = Math.min(currentFeedCount + feedBatchSize, currentFeedApps.length);
+        
+        currentFeedApps.slice(currentFeedCount, nextCount).forEach(app => {
+            feed.innerHTML += getAppItemHTML(app);
+        });
+        
+        currentFeedCount = nextCount;
+        
+        if (currentFeedCount >= currentFeedApps.length) {
+            const container = document.getElementById('load-more-container');
+            container.style.opacity = '0';
+            setTimeout(() => { container.style.display = 'none'; }, 500);
+        }
+    }
+
+    // Render akzeptiert jetzt Filter
+    function render(filterCat) {
+        document.getElementById('skeleton-loader').style.display = 'none';
+        document.getElementById('content-main').style.display = 'block';
+
+        if (!appDatabase || appDatabase.length === 0) { renderError(); return; }
+
+        // Filtern
+        let filteredApps = appDatabase;
+        if (filterCat && filterCat !== 'Alle') {
+            filteredApps = appDatabase.filter(app => app.cat === filterCat);
+        }
+
+        if(filteredApps.length === 0) {
+             document.getElementById('scroll-trending').innerHTML = `<div style="padding:20px; color:#666;">Keine Apps in "${filterCat}"</div>`;
+             document.getElementById('scroll-top').innerHTML = "";
+             document.getElementById('update-feed').innerHTML = "";
+             document.getElementById('load-more-container').style.display = 'none';
+             return;
+        }
+
+        const shuffled = shuffle([...filteredApps]);
+        const feat = shuffled[0];
+
+        // Header Update
+        document.getElementById('header-blur').style.backgroundImage = `url('${feat.icon}')`;
+        document.getElementById('sticky-icon').src = feat.icon;
+        document.getElementById('sticky-name').innerText = feat.name;
+        document.getElementById('sticky-bar').onclick = () => window.location.href = `app.html?id=${feat.pkg}`;
 
         document.getElementById('featured-hero').innerHTML = `
-            <div class="featured-banner">
-                <div class="featured-img-bg" style="background: url('${feat.artworkUrl600}') center/cover"></div>
+            <div class="featured-banner" onclick="window.location.href='app.html?id=${feat.pkg}'">
+                <div class="featured-img-bg" style="background: url('${feat.icon}') center/cover"></div>
                 <div class="featured-overlay"></div>
                 <div class="featured-info">
-                    <div class="featured-title-wrap"><span class="featured-title">${feat.collectionName}</span></div>
-                    <button class="get-btn">Hören</button>
+                    <span class="featured-tag">Highlights</span>
+                    <div class="featured-title-wrap"><span class="featured-title">${feat.name}</span></div>
+                    <div class="featured-desc">Von ${feat.author} • ${feat.cat || 'App'}</div>
+                    <button class="get-btn">Laden</button>
                 </div>
-            </div>`;
+            </div>
+        `;
 
         const trending = document.getElementById('scroll-trending');
+        const top = document.getElementById('scroll-top');
         const feed = document.getElementById('update-feed');
+        trending.innerHTML = ""; top.innerHTML = ""; feed.innerHTML = "";
         
-        podcastDb.slice(1, 10).forEach(p => {
-            const card = document.createElement('div');
-            card.className = 'card-item animate-entry';
-            card.onmousedown = (e) => startLongPress(e, p);
-            card.onmouseup = cancelLongPress;
-            card.ontouchstart = (e) => startLongPress(e, p);
-            card.ontouchend = cancelLongPress;
-            card.innerHTML = `
-                <img src="${p.artworkUrl600}" class="card-icon">
-                <div class="card-name-wrap"><span class="card-name">${p.collectionName}</span></div>
-            `;
-            trending.appendChild(card);
+        // Updated Card with Touch/Context Listeners
+        const createCard = (app) => `
+            <div class="card-item animate-entry" 
+                 onclick="if(!document.getElementById('context-menu-overlay').classList.contains('active')) window.location.href='app.html?id=${app.pkg}'"
+                 ontouchstart="startLongPress(event, '${app.name}', '${app.author}', '${app.icon}', '${app.pkg}')"
+                 ontouchend="cancelLongPress()"
+                 ontouchmove="cancelLongPress()"
+                 oncontextmenu="return handleContext(event, '${app.name}', '${app.author}', '${app.icon}', '${app.pkg}')">
+                <img src="${app.icon}" class="card-icon" onerror="this.src='https://f-droid.org/repo/${app.pkg}/en-US/icon.png'">
+                <div class="card-name-wrap"><span class="card-name">${app.name}</span></div>
+                <span class="card-author">${app.author}</span>
+            </div>
+        `;
+
+        shuffled.slice(0, 8).forEach(app => trending.innerHTML += createCard(app));
+        [...shuffled].reverse().slice(0, 8).forEach(app => top.innerHTML += createCard(app));
+        
+        // --- NEUE LADE-LOGIK FÜR DEN FEED ---
+        currentFeedApps = shuffled;
+        currentFeedCount = Math.min(feedBatchSize, currentFeedApps.length);
+        
+        currentFeedApps.slice(0, currentFeedCount).forEach(app => {
+            feed.innerHTML += getAppItemHTML(app);
         });
 
-        podcastDb.slice(10, 20).forEach(p => {
-            feed.innerHTML += `
-                <div class="app-item animate-entry">
-                    <img src="${p.artworkUrl100}" class="app-icon">
-                    <div class="app-info">
-                        <div class="app-name">${p.collectionName}</div>
-                        <div style="font-size:12px; color:var(--ios-subtext)">${p.artistName}</div>
-                    </div>
-                    <div class="laden-badge">PLAY</div>
-                </div>`;
-        });
+        const loadMoreContainer = document.getElementById('load-more-container');
+        if (currentFeedApps.length > currentFeedCount) {
+            loadMoreContainer.style.display = 'block';
+            setTimeout(() => { loadMoreContainer.style.opacity = '1'; }, 50);
+        } else {
+            loadMoreContainer.style.display = 'none';
+        }
     }
 
-    async function performSearch(query) {
-        if(!query) return;
-        const res = await fetch(`https://itunes.apple.com/search?term=${query}&entity=podcast&limit=10`);
-        const data = await res.json();
+    function performSearch(query) {
         const resultsBox = document.getElementById('search-results');
+        const historyBox = document.getElementById('search-history');
+        
+        if (query === "") {
+            renderHistory();
+            resultsBox.innerHTML = "";
+            return;
+        }
+
+        historyBox.style.display = 'none';
         resultsBox.innerHTML = "";
-        data.results.forEach(p => {
-            resultsBox.innerHTML += `
-                <div class="app-item" style="background:rgba(255,255,255,0.05); margin-bottom:5px; border-radius:12px; padding:10px;">
-                    <img src="${p.artworkUrl100}" class="app-icon" style="width:40px; height:40px;">
-                    <div class="app-info">
-                        <div class="app-name" style="font-size:14px;">${p.collectionName}</div>
-                    </div>
-                </div>`;
-        });
+        const filtered = appDatabase.filter(a => a.name.toLowerCase().includes(query.toLowerCase()) || a.pkg.toLowerCase().includes(query.toLowerCase())).slice(0, 50);
+        
+        if(filtered.length === 0) {
+            resultsBox.innerHTML = "<div style='padding:40px; color:#888; text-align:center;'>Keine Treffer.</div>";
+        } else {
+            filtered.forEach(app => {
+                resultsBox.innerHTML += `
+                    <div class="app-item" style="padding: 10px 16px; background: rgba(255,255,255,0.05); margin-bottom: 1px;" 
+                         onclick="addToHistory('${app.name}'); window.location.href='app.html?id=${app.pkg}'">
+                        <img src="${app.icon}" class="app-icon" style="width:48px; height:48px;" onerror="this.src='https://f-droid.org/repo/${app.pkg}/en-US/icon.png'">
+                        <div class="app-info">
+                            <div class="app-name-wrap"><span class="app-name" style="font-size:16px;">${app.name}</span></div>
+                            <div class="app-meta">${app.cat}</div>
+                        </div>
+                        <i class="fas fa-chevron-right" style="opacity:0.3; font-size:12px;"></i>
+                    </div>`;
+            });
+        }
     }
 
+    // SCROLL LOGIK ERWEITERT
     let lastScrollTop = 0;
+    const bottomNav = document.querySelector('.bottom-nav');
+
     window.addEventListener('scroll', () => {
+        // Header Logik
         const header = document.getElementById('main-header');
-        const nav = document.querySelector('.bottom-nav');
         if (window.scrollY > 40) header.classList.add('scrolled');
         else header.classList.remove('scrolled');
 
-        let st = window.scrollY;
-        if (st > lastScrollTop && st > 50) nav.classList.add('nav-scrolled');
-        else nav.classList.remove('nav-scrolled');
-        lastScrollTop = st;
+        // NAV BAR LOGIK
+        let st = window.scrollY || document.documentElement.scrollTop;
+        if (st > lastScrollTop && st > 50) {
+            bottomNav.classList.add('nav-scrolled');
+        } else if (st < lastScrollTop) {
+            bottomNav.classList.remove('nav-scrolled');
+        }
+        lastScrollTop = st <= 0 ? 0 : st;
     });
 
-    window.onload = loadPodcasts;
+    document.getElementById('search-input').addEventListener('input', (e) => performSearch(e.target.value));
+    window.onload = () => { loadFDroidApps(); };
 </script>
 
-<div style="text-align: center; margin-top: 20px; padding: 10px; opacity: 0.5;">
-    <p style="font-size: 12px; margin: 0;">PodStream v1.0</p>
-    <p style="font-size: 10px; margin-top: 5px;">Powered by iTunes API</p>
+<div style="text-align: center; margin-top: 20px; padding: 10px;">
+    <p style="color: #888888; font-size: 12px; margin: 0;">Version 26.83</p>
+    <p style="color: #666666; font-size: 10px; margin-top: 5px; opacity: 0.7;">By Nexus with ❤️</p>
+    <div style="width: 100%; text-align: center; margin-top: 15px;">
+        <a href="https://nexus-ashy.vercel.app/" style="color: #00ff00; text-decoration: none; font-size: 12px; font-weight: bold;">Mehr von uns</a>
+    </div>
 </div>
 </body>
 </html>
+
+
